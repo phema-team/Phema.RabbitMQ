@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System;
+using Microsoft.Extensions.DependencyInjection;
+using RabbitMQ.Client;
 
 namespace Phema.Rabbit
 {
@@ -6,7 +8,15 @@ namespace Phema.Rabbit
 	{
 		public static IRabbitBuilder AddRabbit(this IServiceCollection services)
 		{
-			return null;
+			services.AddHostedService<RabbitHostedService>();
+			services.ConfigureOptions<ConnectionFactoryPostConfigureOptions>();
+			return new RabbitBuilder(services);
+		}
+		
+		public static IRabbitBuilder AddRabbit(this IServiceCollection services, Action<RabbitOptions> action)
+		{
+			services.Configure(action);
+			return services.AddRabbit();
 		}
 	}
 }

@@ -11,12 +11,12 @@ namespace Phema.Rabbit
 		public RabbitOptions()
 		{
 			Encoding = Encoding.UTF8;
-			Actions = new List<Action<IServiceProvider, IConnection>>();
+			ConsumerActions = new List<Action<IServiceProvider, IConnection>>();
 		}
 
 		public Encoding Encoding { get; set; }
+		internal IList<Action<IServiceProvider, IConnection>> ConsumerActions { get; }
 		
-		internal IList<Action<IServiceProvider, IConnection>> Actions { get; }
 		public string HostName { get; set; }
 		public AmqpTcpEndpoint Endpoint { get; set; }
 		public string Password { get; set; }
@@ -42,5 +42,6 @@ namespace Phema.Rabbit
 		public bool? TopologyRecoveryEnabled { get; set; }
 		public SslProtocols? AmqpUriSslProtocols { get; set; }
 		public bool? UseBackgroundThreadsForIO { get; set; }
+		public string InstanceName { get; set; }
 	}
 }

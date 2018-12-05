@@ -10,27 +10,28 @@ namespace Phema.Rabbit.Sandbox
 		public string Name { get; set; }
 	}
 	
-	public class TestModelConsumer : RabbitConsumer<TestPayload>
+	public class TestPayloadConsumer : RabbitConsumer<TestPayload>
 	{
 		protected override int Parallelism => 5;
-		protected override string Tag => "TestModelConsumer";
+		protected override string Name => "TestModelConsumer";
 
-		protected override async Task Consume(TestPayload payload)
+		protected override Task Consume(TestPayload payload)
 		{
-			await Task.Delay(10_000);
 			Console.WriteLine(payload.Name);
+
+			return Task.CompletedTask;
 		}
 	}
 	
 	public class TestPayloadProducer : RabbitProducer<TestPayload>
 	{
-		public void Send(TestPayload testPayload)
+		public void Send(string name)
 		{
-			Produce(testPayload);
+			Produce(new TestPayload { Name = name });
 		}
 	}
 	
-	public class TestModelQueue : DurableRabbitQueue<TestPayload>
+	public class TestModelQueue : RabbitQueue<TestPayload>
 	{
 		protected override string Name => "TestModelQueue";
 	}
@@ -50,11 +51,12 @@ namespace Phema.Rabbit.Sandbox
 				{
 					options.HostName = "92.63.96.49";
 					options.Port = 4000;
+					options.InstanceName = "Phema.Rabbit.Sandbox";
 				})
 				.AddConsumers(consumers =>
-					consumers.AddConsumer<TestPayload, TestModelConsumer, TestModelQueue>())
-				.AddProducers(producers =>
-					producers.AddProducer<TestPayload, TestPayloadProducer, TestModelQueue, TestModelExchange>());
+					consumers.AddConsumer<TestPayload, TestPayloadConsumer, TestModelQueue>())
+				.AddProducers<TestModelExchange>(producers =>
+					producers.AddProducer<TestPayload, TestPayloadProducer, TestModelQueue>());
 		}
 
 		public void Configure(IApplicationBuilder app)
@@ -65,10 +67,7 @@ namespace Phema.Rabbit.Sandbox
 
 				for (var i = 0; i < 100_000; i++)
 				{
-					producer.Send(new TestPayload
-					{
-						Name = context.Request.Headers["Message"]
-					});
+					producer.Send(context.Request.Headers["Message"] + i);
 				}
 				
 				return Task.CompletedTask;

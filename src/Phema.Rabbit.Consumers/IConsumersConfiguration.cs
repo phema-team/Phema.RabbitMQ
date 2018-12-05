@@ -32,23 +32,23 @@ namespace Phema.Rabbit
 			services.TryAddSingleton<TRabbitQueue>();
 
 			services.Configure<RabbitOptions>(options =>
-				options.Actions.Add((provider, connection) =>
+				options.ConsumerActions.Add((provider, connection) =>
 				{
 					var consumer = provider.GetRequiredService<TRabbitConsumer>();
 
+					var channel = connection.CreateModel();
+					
 					for (var index = 0; index < consumer.Parallelism; index++)
 					{
-						var model = connection.CreateModel();
-
 						var queue = provider.GetRequiredService<TRabbitQueue>();
-						model.QueueDeclare(
+						channel.QueueDeclare(
 							queue: queue.Name,
 							durable: queue.Durable,
 							exclusive: queue.Exclusive,
 							autoDelete: queue.AutoDelete,
 							arguments: queue.Arguments);
 						
-						var handler = new AsyncEventingBasicConsumer(model);
+						var handler = new AsyncEventingBasicConsumer(channel);
 
 						handler.Received += (sender, args) =>
 						{
@@ -58,10 +58,10 @@ namespace Phema.Rabbit
 							}
 						};
 
-						model.BasicConsume(
+						channel.BasicConsume(
 							queue: queue.Name,
 							autoAck: consumer.AutoAck,
-							consumerTag: $"{consumer.Tag}_{index}",
+							consumerTag: $"{consumer.Name}_{index}",
 							noLocal: consumer.NoLocal,
 							exclusive: consumer.Exclusive,
 							arguments: consumer.Arguments,

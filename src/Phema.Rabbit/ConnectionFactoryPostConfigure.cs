@@ -3,11 +3,11 @@ using RabbitMQ.Client;
 
 namespace Phema.Rabbit
 {
-	public class ConnectionFactoryPostConfigureOptions : IPostConfigureOptions<ConnectionFactory>
+	public class ConnectionFactoryPostConfigure : IPostConfigureOptions<ConnectionFactory>
 	{
 		private readonly RabbitOptions options;
 
-		public ConnectionFactoryPostConfigureOptions(IOptions<RabbitOptions> options)
+		public ConnectionFactoryPostConfigure(IOptions<RabbitOptions> options)
 		{
 			this.options = options.Value;
 		}

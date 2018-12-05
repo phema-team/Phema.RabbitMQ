@@ -8,26 +8,24 @@ using RabbitMQ.Client;
 
 namespace Phema.Rabbit
 {
-	internal sealed class RabbitHostedService : IHostedService
+	internal sealed class RabbitConsumersHostedService : IHostedService
 	{
-		private IConnection connection;
+		private readonly IConnection connection;
 		private readonly IServiceProvider provider;
 
-		public RabbitHostedService(IServiceProvider provider)
+		public RabbitConsumersHostedService(IServiceProvider provider, IConnection connection)
 		{
 			this.provider = provider;
+			this.connection = connection;
 		}
 		
 		public Task StartAsync(CancellationToken cancellationToken)
 		{
-			var connectionFactory = provider.GetRequiredService<IOptions<ConnectionFactory>>().Value;
-			connection = connectionFactory.CreateConnection();
-
 			var options = provider.GetRequiredService<IOptions<RabbitOptions>>().Value;
 
-			foreach (var action in options.Actions)
+			foreach (var consumer in options.ConsumerActions)
 			{
-				action(provider, connection);
+				consumer(provider, connection);
 			}
 			
 			return Task.CompletedTask;

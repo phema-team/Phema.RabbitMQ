@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Phema.Rabbit
 {
@@ -7,7 +8,8 @@ namespace Phema.Rabbit
 		public static IRabbitBuilder AddConsumers(this IRabbitBuilder builder, Action<IConsumersConfiguration> action)
 		{
 			action(new ConsumersConfiguration(builder.Services));
-
+			builder.Services.AddHostedService<RabbitConsumersHostedService>();
+			
 			return builder;
 		}
 	}

@@ -4,9 +4,10 @@ namespace Phema.Rabbit
 {
 	public static class RabbitBuilderExtensions
 	{
-		public static IRabbitBuilder AddProducers(this IRabbitBuilder builder, Action<IProducersConfiguration> action)
+		public static IRabbitBuilder AddProducers<TRabbitExchange>(this IRabbitBuilder builder, Action<IProducersConfiguration<TRabbitExchange>> action)
+			where TRabbitExchange : RabbitExchange
 		{
-			action(new ProducersConfiguration(builder.Services));
+			action(new ProducersConfiguration<TRabbitExchange>(builder.Services));
 			return builder;
 		}
 	}

@@ -1,5 +1,8 @@
 ﻿using System;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
+using RabbitMQ.Client;
 
 namespace Phema.Rabbit
 {
@@ -7,8 +10,19 @@ namespace Phema.Rabbit
 	{
 		public static IRabbitBuilder AddRabbit(this IServiceCollection services)
 		{
-			services.AddHostedService<RabbitHostedService>();
-			services.ConfigureOptions<ConnectionFactoryPostConfigureOptions>();
+			services.ConfigureOptions<ConnectionFactoryPostConfigure>();
+
+			services.TryAddSingleton(provider =>
+			{
+				var factory = provider.GetRequiredService<IOptions<ConnectionFactory>>().Value;
+
+				var options = provider.GetRequiredService<IOptions<RabbitOptions>>().Value;
+
+				return options.InstanceName == null
+					? factory.CreateConnection()
+					: factory.CreateConnection(options.InstanceName);
+			});
+			
 			return new RabbitBuilder(services);
 		}
 		

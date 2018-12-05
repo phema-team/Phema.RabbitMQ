@@ -32,11 +32,11 @@ namespace Phema.Rabbit
 			{
 				var connection = provider.GetRequiredService<IConnection>();
 				
-				var model = connection.CreateModel();
+				var channel = connection.CreateModel();
 
 				var exchange = provider.GetRequiredService<TRabbitExchange>();
 					
-				model.ExchangeDeclare(
+				channel.ExchangeDeclare(
 					exchange: exchange.Name,
 					type: exchange.Type,
 					durable: exchange.Durable,
@@ -45,14 +45,14 @@ namespace Phema.Rabbit
 					
 				var queue = provider.GetRequiredService<TRabbitQueue>();
 
-				model.QueueDeclare(
+				channel.QueueDeclare(
 					queue: queue.Name,
 					durable: queue.Durable,
 					exclusive: queue.Exclusive,
 					autoDelete: queue.AutoDelete,
 					arguments: queue.Arguments);
 					
-				model.QueueBind(
+				channel.QueueBind(
 					queue: queue.Name,
 					exchange: exchange.Name,
 					routingKey: queue.Name,
@@ -61,9 +61,9 @@ namespace Phema.Rabbit
 				var options = provider.GetRequiredService<IOptions<RabbitOptions>>().Value;
 				var producer = ActivatorUtilities.CreateInstance<TRabbitProducer>(provider);
 
-				producer.Model = model;
-				producer.ProduceAction = (m, payload) =>
-					m.BasicPublish(
+				producer.Channel = channel;
+				producer.ProduceAction = (model, payload) =>
+					model.BasicPublish(
 						exchange.Name,
 						queue.Name,
 						producer.Properties,

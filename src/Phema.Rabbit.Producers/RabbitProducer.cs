@@ -5,20 +5,20 @@ namespace Phema.Rabbit
 {
 	public class RabbitProducer<TPayload> : IDisposable
 	{
-		internal IModel Model { get; set; }
+		internal IModel Channel { get; set; }
 		internal Action<IModel, TPayload> ProduceAction { get; set; }
 		
 		protected internal virtual IBasicProperties Properties => null;
 
 		protected void Produce(TPayload payload)
 		{
-			ProduceAction(Model, payload);
+			ProduceAction(Channel, payload);
 		}
 
 		public void Dispose()
 		{
-			Model.Close();
-			Model.Dispose();
+			Channel.Close();
+			Channel.Dispose();
 		}
 	}
 }

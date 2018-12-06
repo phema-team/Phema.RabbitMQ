@@ -9,7 +9,7 @@ namespace Phema.Rabbit
 		public abstract string Name { get; }
 		internal virtual string Type => throw new InvalidOperationException();
 		public virtual bool Durable => true;
-		public virtual bool AutoDelete => true;
+		public virtual bool AutoDelete => false;
 		public virtual IDictionary<string, object> Arguments => null;
 	}
 	

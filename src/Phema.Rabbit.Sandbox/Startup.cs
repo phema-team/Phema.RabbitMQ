@@ -12,12 +12,20 @@ namespace Phema.Rabbit.Sandbox
 	
 	public class TestPayloadConsumer : RabbitConsumer<TestPayload>
 	{
-		protected override int Parallelism => 5;
 		protected override string Name => "TestModelConsumer";
+		protected override int Parallelism => 32;
+		protected override ushort? Prefetch => 10;
+		
+		private readonly RandomScoped scoped;
 
+		public TestPayloadConsumer(RandomScoped scoped)
+		{
+			this.scoped = scoped;
+		}
+		
 		protected override Task Consume(TestPayload payload)
 		{
-			Console.WriteLine(payload.Name);
+			Console.WriteLine(payload.Name + " - " + scoped.Type);
 
 			return Task.CompletedTask;
 		}
@@ -40,12 +48,24 @@ namespace Phema.Rabbit.Sandbox
 	{
 		public override string Name => "TestModelExchange";
 	}
+
+	public class RandomScoped
+	{
+		public RandomScoped()
+		{
+			Type = Guid.NewGuid();
+		}
+		
+		public Guid Type { get; set; }
+	}
 	
 	public class Startup
 	{
 		public void ConfigureServices(IServiceCollection services)
 		{
 			services.AddMvc();
+
+			services.AddScoped<RandomScoped>();
 
 			services.AddRabbit(options =>
 				{

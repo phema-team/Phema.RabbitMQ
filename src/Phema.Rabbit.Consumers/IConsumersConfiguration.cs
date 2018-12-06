@@ -1,10 +1,5 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
-using RabbitMQ.Client.Events;
 
 namespace Phema.Rabbit
 {
@@ -14,7 +9,7 @@ namespace Phema.Rabbit
 			where TRabbitConsumer : RabbitConsumer<TPayload>
 			where TRabbitQueue : RabbitQueue<TPayload>;
 	}
-	
+
 	internal class ConsumersConfiguration : IConsumersConfiguration
 	{
 		private readonly IServiceCollection services;
@@ -24,11 +19,11 @@ namespace Phema.Rabbit
 			this.services = services;
 		}
 
-		public IConsumersConfiguration AddConsumer<TPayload, TRabbitConsumer, TRabbitQueue>() 
-			where TRabbitConsumer : RabbitConsumer<TPayload> 
+		public IConsumersConfiguration AddConsumer<TPayload, TRabbitConsumer, TRabbitQueue>()
+			where TRabbitConsumer : RabbitConsumer<TPayload>
 			where TRabbitQueue : RabbitQueue<TPayload>
 		{
-			services.TryAddSingleton<TRabbitConsumer>();
+			services.TryAddScoped<TRabbitConsumer>();
 			services.TryAddSingleton<TRabbitQueue>();
 
 			services.Configure<RabbitOptions>(options =>
@@ -37,27 +32,23 @@ namespace Phema.Rabbit
 					var consumer = provider.GetRequiredService<TRabbitConsumer>();
 
 					var channel = connection.CreateModel();
+
+					var queue = provider.GetRequiredService<TRabbitQueue>();
+						
+					channel.QueueDeclare(
+						queue: queue.Name,
+						durable: queue.Durable,
+						exclusive: queue.Exclusive,
+						autoDelete: queue.AutoDelete,
+						arguments: queue.Arguments);
+
+					if (consumer.Prefetch != null)
+					{
+						channel.BasicQos(0, consumer.Prefetch.Value, false);
+					}
 					
 					for (var index = 0; index < consumer.Parallelism; index++)
 					{
-						var queue = provider.GetRequiredService<TRabbitQueue>();
-						channel.QueueDeclare(
-							queue: queue.Name,
-							durable: queue.Durable,
-							exclusive: queue.Exclusive,
-							autoDelete: queue.AutoDelete,
-							arguments: queue.Arguments);
-						
-						var handler = new AsyncEventingBasicConsumer(channel);
-
-						handler.Received += (sender, args) =>
-						{
-							using (var scope = provider.CreateScope())
-							{
-								return BasicConsume<TPayload, TRabbitConsumer>(scope.ServiceProvider, args);
-							}
-						};
-
 						channel.BasicConsume(
 							queue: queue.Name,
 							autoAck: consumer.AutoAck,
@@ -65,22 +56,11 @@ namespace Phema.Rabbit
 							noLocal: consumer.NoLocal,
 							exclusive: consumer.Exclusive,
 							arguments: consumer.Arguments,
-							consumer: handler);
+							consumer: new RabbitBasicConsumer<TPayload, TRabbitConsumer>(provider, channel));
 					}
 				}));
 
 			return this;
-		}
-
-		private static Task BasicConsume<TPayload, TRabbitConsumer>(IServiceProvider provider, BasicDeliverEventArgs args)
-			where TRabbitConsumer : RabbitConsumer<TPayload>
-		{
-			var consumer = provider.GetRequiredService<TRabbitConsumer>();
-			var options = provider.GetRequiredService<IOptions<RabbitOptions>>().Value;
-
-			var model = JsonConvert.DeserializeObject<TPayload>(options.Encoding.GetString(args.Body));
-
-			return consumer.Consume(model);
 		}
 	}
 }

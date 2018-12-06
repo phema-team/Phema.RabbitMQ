@@ -7,7 +7,7 @@ namespace Phema.Rabbit
 		protected internal abstract string Name { get; }
 		protected internal virtual bool Durable => true;
 		protected internal virtual bool Exclusive => false;
-		protected internal virtual bool AutoDelete => true;
+		protected internal virtual bool AutoDelete => false;
 		protected internal virtual IDictionary<string, object> Arguments => null;
 	}
 }

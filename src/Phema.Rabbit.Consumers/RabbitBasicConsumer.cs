@@ -38,12 +38,12 @@ namespace Phema.Rabbit
 				{
 					if (!consumer.AutoAck)
 					{
-						Model.BasicNack(deliveryTag, false, true);
+						Model.BasicNack(deliveryTag, false, consumer.Requeue);
 					}
 
 					throw;
 				}
-
+				
 				if (!consumer.AutoAck)
 				{
 					Model.BasicAck(deliveryTag, false);

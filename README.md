@@ -31,16 +31,11 @@ public class TestModelQueue : RabbitQueue<TestPayload>
   protected override string Name => "TestModelQueue";
 }
 
-public class TestModelExchange : DirectRabbitExchange
-{
-  public override string Name => "TestModelExchange";
-}
-
 // Startup.cs
 services.AddRabbit(options => { /*...*/ })
   .AddConsumers(consumers =>
     consumers.AddConsumer<TestPayload, TestModelConsumer, TestModelQueue>())
-  .AddProducers<TestModelExchange>(producers =>
+  .AddDirectProducers(producers =>
     producers.AddProducer<TestPayload, TestPayloadProducer, TestModelQueue>());
 ```
 
@@ -63,9 +58,14 @@ services.AddRabbit(options => { /*...*/ })
 - Для консьюмеров используется `IHostedService`, после завершения заботы AspNetCore хоста, они не смогут больше обрабатывать сообщения, даже если приложение продолжит свою работу
 - Чтобы задать название инстанса в реббите определите `options.InstanceName`
 - Если хотите работать с реббитом напрямую - в DI добавлен `IConnection` текущего инстанса
-- Все консьюмеры используют `AsyncEventingBasicConsumer` для обработки сообщений
+- Все консьюмеры используют наследника `AsyncEventingBasicConsumer` для обработки сообщений
 - Можно не добавлять `RabbitOptions` через `AddRabbit(options => ...)`, если используются сторонние механизмы конфигурации
 - Через `RabbitOptions` можно определить кодировку, по-умолчанию - `utf-8`
-- Для сериализации используется `Newtonsoft.Json` без возможности замены
-
+- Для сериализации используется `Newtonsoft.Json` без возможности замены. Для конфигурации настроек сериализации есть `RabbitOptions.SerializerSettings`
+- `RabbitConsumer` - `Scoped`-сервис. Использует одну модель для обработки. Создается на каждое новое сообщение. Это нужно для обновления всех `Scoped` сервисов в зависимостях консьюмера
+- В качестве `RoutingKey` в очереди по-умолчанию используется ее имя.
+- Если у `RabbitProducer` не указан `RoutingKey` используется ключ из `RabbitQueue`
+- Для асинхронного добавления в очередь используется `ProduceAsync` у `RabbitProducer`
+- По-умолчанию `Prefetch` у `RabbitConsumer` равен нулю
+- По-умолчанию `Mandatory` у `RabbitProducer` задан в `false`. Реббит будет выкидывать такие сообщения, если не найдет подходящую очередь (Зависит от типа `RabbitExchange`, `RoutingKey` у `RabbitQueue` и `RoutingKey` у `RabbitProducer`)
 

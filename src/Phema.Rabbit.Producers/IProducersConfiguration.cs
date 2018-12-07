@@ -31,46 +31,48 @@ namespace Phema.Rabbit
 			services.TryAddScoped(provider =>
 			{
 				var connection = provider.GetRequiredService<IConnection>();
-				
+
 				var channel = connection.CreateModel();
 
 				var exchange = provider.GetRequiredService<TRabbitExchange>();
-					
-				channel.ExchangeDeclare(
+
+				channel.ExchangeDeclareNoWait(
 					exchange: exchange.Name,
 					type: exchange.Type,
 					durable: exchange.Durable,
 					autoDelete: exchange.AutoDelete,
 					arguments: exchange.Arguments);
-					
+
 				var queue = provider.GetRequiredService<TRabbitQueue>();
 
-				channel.QueueDeclare(
+				channel.QueueDeclareNoWait(
 					queue: queue.Name,
 					durable: queue.Durable,
 					exclusive: queue.Exclusive,
 					autoDelete: queue.AutoDelete,
 					arguments: queue.Arguments);
-					
-				channel.QueueBind(
+
+				channel.QueueBindNoWait(
 					queue: queue.Name,
 					exchange: exchange.Name,
 					routingKey: queue.Name,
 					arguments: queue.Arguments);
 
-				var options = provider.GetRequiredService<IOptions<RabbitOptions>>().Value;
+				var rabbitOptions = provider.GetRequiredService<IOptions<RabbitOptions>>().Value;
 				var producer = ActivatorUtilities.CreateInstance<TRabbitProducer>(provider);
-
+				
 				producer.Channel = channel;
 				producer.ProduceAction = (model, payload) =>
 					model.BasicPublish(
 						exchange.Name,
 						queue.Name,
-						producer.Properties,
-						options.Encoding.GetBytes(JsonConvert.SerializeObject(payload)));
+						queue.Mandatory,
+						queue.Properties,
+						rabbitOptions.Encoding.GetBytes(JsonConvert.SerializeObject(payload, rabbitOptions.SerializerSettings)));
 
 				return producer;
 			});
+
 			services.TryAddSingleton<TRabbitQueue>();
 			services.TryAddSingleton<TRabbitExchange>();
 			

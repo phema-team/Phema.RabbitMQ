@@ -7,7 +7,7 @@ namespace Phema.Rabbit
 	{
 		protected internal abstract string Name { get; }
 		protected internal virtual int Parallelism => 1;
-		protected internal virtual ushort? Prefetch => null; 
+		protected internal virtual ushort Prefetch => 0; 
 		protected internal virtual bool AutoAck => false;
 		protected internal virtual bool Requeue => true;
 		protected internal virtual bool NoLocal => true;

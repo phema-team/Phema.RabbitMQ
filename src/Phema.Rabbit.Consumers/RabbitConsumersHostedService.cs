@@ -21,7 +21,7 @@ namespace Phema.Rabbit
 		
 		public Task StartAsync(CancellationToken cancellationToken)
 		{
-			var options = provider.GetRequiredService<IOptions<RabbitOptions>>().Value;
+			var options = provider.GetRequiredService<IOptions<RabbitConsumerOptions>>().Value;
 
 			foreach (var consumer in options.ConsumerActions)
 			{

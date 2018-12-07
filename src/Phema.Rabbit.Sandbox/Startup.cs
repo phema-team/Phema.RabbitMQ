@@ -13,9 +13,8 @@ namespace Phema.Rabbit.Sandbox
 	public class TestPayloadConsumer : RabbitConsumer<TestPayload>
 	{
 		protected override string Name => "TestModelConsumer";
-		protected override int Parallelism => 32;
-		protected override ushort? Prefetch => 10;
-		
+
+		protected override ushort Prefetch => 800;
 		private readonly RandomScoped scoped;
 
 		public TestPayloadConsumer(RandomScoped scoped)
@@ -27,26 +26,21 @@ namespace Phema.Rabbit.Sandbox
 		{
 			Console.WriteLine(payload.Name + " - " + scoped.Type);
 
-			return Task.CompletedTask;
+			return Task.Delay(1_000);
 		}
 	}
 	
 	public class TestPayloadProducer : RabbitProducer<TestPayload>
 	{
-		public void Send(string name)
+		public Task SendAsync(string name)
 		{
-			Produce(new TestPayload { Name = name });
+			return ProduceAsync(new TestPayload { Name = name });
 		}
 	}
 	
 	public class TestModelQueue : RabbitQueue<TestPayload>
 	{
 		protected override string Name => "TestModelQueue";
-	}
-	
-	public class TestModelExchange : DirectRabbitExchange
-	{
-		public override string Name => "TestModelExchange";
 	}
 
 	public class RandomScoped
@@ -75,22 +69,20 @@ namespace Phema.Rabbit.Sandbox
 				})
 				.AddConsumers(consumers =>
 					consumers.AddConsumer<TestPayload, TestPayloadConsumer, TestModelQueue>())
-				.AddProducers<TestModelExchange>(producers =>
+				.AddProducers<DirectRabbitExchange>(producers =>
 					producers.AddProducer<TestPayload, TestPayloadProducer, TestModelQueue>());
 		}
 
 		public void Configure(IApplicationBuilder app)
 		{
-			app.Use((context, next) =>
+			app.Use(async (context, next) =>
 			{
 				var producer = context.RequestServices.GetRequiredService<TestPayloadProducer>();
 
-				for (var i = 0; i < 100_000; i++)
+				for (var i = 0; i < 10; i++)
 				{
-					producer.Send(context.Request.Headers["Message"] + i);
+					await producer.SendAsync(context.Request.Headers["Message"] + i);
 				}
-				
-				return Task.CompletedTask;
 			});
 		}
 	}

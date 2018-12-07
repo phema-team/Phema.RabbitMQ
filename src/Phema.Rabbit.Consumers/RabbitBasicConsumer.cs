@@ -18,17 +18,21 @@ namespace Phema.Rabbit
 			this.provider = provider;
 		}
 		
-		public override async Task HandleBasicDeliver(string consumerTag, ulong deliveryTag, bool redelivered, string exchange, string routingKey,
-			IBasicProperties properties, byte[] body)
+		public override async Task HandleBasicDeliver(
+			string consumerTag, 
+			ulong deliveryTag, 
+			bool redelivered, 
+			string exchange, 
+			string routingKey,
+			IBasicProperties properties, 
+			byte[] body)
 		{
 			using (var scope = provider.CreateScope())
 			{
-				var scopeProvider = scope.ServiceProvider;
-				
-				var consumer = scopeProvider.GetRequiredService<TRabbitConsumer>();
-				var options = scopeProvider.GetRequiredService<IOptions<RabbitOptions>>().Value;
+				var consumer = scope.ServiceProvider.GetRequiredService<TRabbitConsumer>();
+				var options = scope.ServiceProvider.GetRequiredService<IOptions<RabbitOptions>>().Value;
 
-				var model = JsonConvert.DeserializeObject<TPayload>(options.Encoding.GetString(body));
+				var model = JsonConvert.DeserializeObject<TPayload>(options.Encoding.GetString(body), options.SerializerSettings);
 
 				try
 				{
@@ -40,7 +44,7 @@ namespace Phema.Rabbit
 					{
 						Model.BasicNack(deliveryTag, false, consumer.Requeue);
 					}
-
+					
 					throw;
 				}
 				

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Security.Authentication;
 using System.Text;
+using Newtonsoft.Json;
 using RabbitMQ.Client;
 
 namespace Phema.Rabbit
@@ -11,11 +12,11 @@ namespace Phema.Rabbit
 		public RabbitOptions()
 		{
 			Encoding = Encoding.UTF8;
-			ConsumerActions = new List<Action<IServiceProvider, IConnection>>();
+			SerializerSettings = new JsonSerializerSettings();
 		}
 
 		public Encoding Encoding { get; set; }
-		internal IList<Action<IServiceProvider, IConnection>> ConsumerActions { get; }
+		public JsonSerializerSettings SerializerSettings { get; set; }
 		
 		public string HostName { get; set; }
 		public AmqpTcpEndpoint Endpoint { get; set; }

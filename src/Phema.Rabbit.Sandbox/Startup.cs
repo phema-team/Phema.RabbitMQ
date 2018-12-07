@@ -9,38 +9,41 @@ namespace Phema.Rabbit.Sandbox
 	{
 		public string Name { get; set; }
 	}
-	
+
 	public class TestPayloadConsumer : RabbitConsumer<TestPayload>
 	{
-		protected override string Name => "TestModelConsumer";
-
-		protected override ushort Prefetch => 800;
 		private readonly RandomScoped scoped;
 
 		public TestPayloadConsumer(RandomScoped scoped)
 		{
 			this.scoped = scoped;
 		}
-		
+
 		protected override Task Consume(TestPayload payload)
 		{
 			Console.WriteLine(payload.Name + " - " + scoped.Type);
 
-			return Task.Delay(1_000);
+			return Task.CompletedTask;
 		}
+		
+		protected override ushort Prefetch => 800;
+		protected override string Name => "TestModelConsumer";
 	}
-	
+
 	public class TestPayloadProducer : RabbitProducer<TestPayload>
 	{
 		public Task SendAsync(string name)
 		{
-			return ProduceAsync(new TestPayload { Name = name });
+			return ProduceAsync(new TestPayload
+			{
+				Name = name
+			});
 		}
 	}
-	
-	public class TestModelQueue : RabbitQueue<TestPayload>
+
+	public class TestPayloadQueue : RabbitQueue<TestPayload>
 	{
-		protected override string Name => "TestModelQueue";
+		protected override string Name => "TestPayloadQueue";
 	}
 
 	public class RandomScoped
@@ -49,10 +52,15 @@ namespace Phema.Rabbit.Sandbox
 		{
 			Type = Guid.NewGuid();
 		}
-		
+
 		public Guid Type { get; set; }
 	}
-	
+
+	public class TestPayloadFanoutExchange : FanoutRabbitExchange<TestPayload>
+	{
+		public override string Name => "TestPayloadFanoutExchange";
+	}
+
 	public class Startup
 	{
 		public void ConfigureServices(IServiceCollection services)
@@ -68,9 +76,9 @@ namespace Phema.Rabbit.Sandbox
 					options.InstanceName = "Phema.Rabbit.Sandbox";
 				})
 				.AddConsumers(consumers =>
-					consumers.AddConsumer<TestPayload, TestPayloadConsumer, TestModelQueue>())
-				.AddProducers<DirectRabbitExchange>(producers =>
-					producers.AddProducer<TestPayload, TestPayloadProducer, TestModelQueue>());
+					consumers.AddConsumer<TestPayload, TestPayloadConsumer, TestPayloadQueue>())
+				.AddFanoutProducers<TestPayload, TestPayloadFanoutExchange>(producers =>
+					producers.AddProducer<TestPayloadProducer, TestPayloadQueue>());
 		}
 
 		public void Configure(IApplicationBuilder app)
@@ -79,7 +87,7 @@ namespace Phema.Rabbit.Sandbox
 			{
 				var producer = context.RequestServices.GetRequiredService<TestPayloadProducer>();
 
-				for (var i = 0; i < 10; i++)
+				for (var i = 0; i < 10_000; i++)
 				{
 					await producer.SendAsync(context.Request.Headers["Message"] + i);
 				}

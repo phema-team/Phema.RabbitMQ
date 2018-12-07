@@ -11,6 +11,6 @@ namespace Phema.Rabbit
 			ConsumerActions = new List<Action<IServiceProvider, IConnection>>();
 		}
 		
-		internal IList<Action<IServiceProvider, IConnection>> ConsumerActions { get; }
+		public IList<Action<IServiceProvider, IConnection>> ConsumerActions { get; }
 	}
 }

@@ -12,27 +12,43 @@ namespace Phema.Rabbit
 		public virtual IDictionary<string, object> Arguments => null;
 	}
 	
-	public class DirectRabbitExchange : RabbitExchange
+	public abstract class DirectRabbitExchange : RabbitExchange
 	{
-		public override string Name => "amq.direct";
 		internal override string Type => ExchangeType.Direct;
 	}
-	
-	public class FanoutRabbitExchange<TPayload> : RabbitExchange
+
+	internal sealed class DefaultDirectRabbitExchange : DirectRabbitExchange
 	{
-		public override string Name => "amq.fanout";
+		public override string Name => "amq.direct";
+	}
+	
+	public abstract class FanoutRabbitExchange<TPayload> : RabbitExchange
+	{
 		internal override string Type => ExchangeType.Fanout;
 	}
-	
-	public class HeadersRabbitExchange : RabbitExchange
+
+	internal sealed class DefaultFanoutRabbitExchange<TPayload> : FanoutRabbitExchange<TPayload>
 	{
-		public override string Name => "amq.headers";
-		internal override string Type => ExchangeType.Headers;
+		public override string Name => "amq.fanout";
 	}
 	
-	public class TopicRabbitExchange : RabbitExchange
+	public abstract class HeadersRabbitExchange : RabbitExchange
+	{
+		internal override string Type => ExchangeType.Headers;
+	}
+
+	internal class DefaultHeadersRabbitExchange : HeadersRabbitExchange
+	{
+		public override string Name => "amq.headers";
+	}
+	
+	public abstract class TopicRabbitExchange : RabbitExchange
+	{
+		internal override string Type => ExchangeType.Topic;
+	}
+
+	internal class DefaultTopicRabbitExchange : TopicRabbitExchange
 	{
 		public override string Name => "amq.topic";
-		internal override string Type => ExchangeType.Topic;
 	}
 }

@@ -21,18 +21,18 @@ namespace Phema.Rabbit
 			where TRabbitQueue : RabbitQueue<TPayload>;
 	}
 	
-	internal sealed class ProducersConfiguration<TPayload, TRabbitExchange> 
-		: IProducersConfiguration<TPayload, TRabbitExchange>
-		where TRabbitExchange : FanoutRabbitExchange<TPayload>
+	internal sealed class ProducersConfiguration<TPayload, TFanoutRabbitExchange> 
+		: IProducersConfiguration<TPayload, TFanoutRabbitExchange>
+		where TFanoutRabbitExchange : FanoutRabbitExchange<TPayload>
 	{
-		private readonly IProducersConfiguration<TRabbitExchange> configuration;
+		private readonly IProducersConfiguration<TFanoutRabbitExchange> configuration;
 
-		public ProducersConfiguration(IProducersConfiguration<TRabbitExchange> configuration)
+		public ProducersConfiguration(IProducersConfiguration<TFanoutRabbitExchange> configuration)
 		{
 			this.configuration = configuration;
 		}
 
-		public IProducersConfiguration<TRabbitExchange> AddProducer<TRabbitProducer, TRabbitQueue>()
+		public IProducersConfiguration<TFanoutRabbitExchange> AddProducer<TRabbitProducer, TRabbitQueue>()
 			where TRabbitProducer : RabbitProducer<TPayload>
 			where TRabbitQueue : RabbitQueue<TPayload>
 		{
@@ -97,7 +97,6 @@ namespace Phema.Rabbit
 			});
 
 			services.TryAddSingleton<TRabbitQueue>();
-			services.TryAddSingleton<TRabbitExchange>();
 			
 			return this;
 		}

@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Phema.Rabbit
 {
@@ -8,7 +9,9 @@ namespace Phema.Rabbit
 			this IRabbitBuilder builder, 
 			Action<IProducersConfiguration<DirectRabbitExchange>> action)
 		{
-			return builder.AddDirectProducers<DirectRabbitExchange>(action);
+			builder.Services.TryAddSingleton<DirectRabbitExchange, DefaultDirectRabbitExchange>();
+			action(new ProducersConfiguration<DirectRabbitExchange>(builder.Services));
+			return builder;
 		}
 		
 		public static IRabbitBuilder AddDirectProducers<TDirectRabbitExchange>(
@@ -16,6 +19,7 @@ namespace Phema.Rabbit
 			Action<IProducersConfiguration<TDirectRabbitExchange>> action)
 			where TDirectRabbitExchange : DirectRabbitExchange
 		{
+			builder.Services.TryAddSingleton<TDirectRabbitExchange>();
 			action(new ProducersConfiguration<TDirectRabbitExchange>(builder.Services));
 			return builder;
 		}
@@ -24,16 +28,18 @@ namespace Phema.Rabbit
 			this IRabbitBuilder builder, 
 			Action<IProducersConfiguration<TPayload, FanoutRabbitExchange<TPayload>>> action)
 		{
+			builder.Services.TryAddSingleton<FanoutRabbitExchange<TPayload>, DefaultFanoutRabbitExchange<TPayload>>();
 			return builder.AddFanoutProducers<TPayload, FanoutRabbitExchange<TPayload>>(action);
 		}
 		
-		public static IRabbitBuilder AddFanoutProducers<TPayload, TDirectRabbitExchange>(
+		public static IRabbitBuilder AddFanoutProducers<TPayload, TFanoutRabbitExchange>(
 			this IRabbitBuilder builder, 
-			Action<IProducersConfiguration<TPayload, FanoutRabbitExchange<TPayload>>> action)
-			where TDirectRabbitExchange : FanoutRabbitExchange<TPayload>
+			Action<IProducersConfiguration<TPayload, TFanoutRabbitExchange>> action)
+			where TFanoutRabbitExchange : FanoutRabbitExchange<TPayload>
 		{
-			action(new ProducersConfiguration<TPayload, FanoutRabbitExchange<TPayload>>(
-				new ProducersConfiguration<FanoutRabbitExchange<TPayload>>(builder.Services)));
+			builder.Services.TryAddSingleton<TFanoutRabbitExchange>();
+			action(new ProducersConfiguration<TPayload, TFanoutRabbitExchange>(
+				new ProducersConfiguration<TFanoutRabbitExchange>(builder.Services)));
 			
 			return builder;
 		}
@@ -42,7 +48,9 @@ namespace Phema.Rabbit
 			this IRabbitBuilder builder, 
 			Action<IProducersConfiguration<HeadersRabbitExchange>> action)
 		{
-			return builder.AddHeadersProducers<HeadersRabbitExchange>(action);
+			builder.Services.TryAddSingleton<HeadersRabbitExchange, DefaultHeadersRabbitExchange>();
+			action(new ProducersConfiguration<HeadersRabbitExchange>(builder.Services));
+			return builder;
 		}
 		
 		public static IRabbitBuilder AddHeadersProducers<THeadersRabbitExchange>(
@@ -50,6 +58,7 @@ namespace Phema.Rabbit
 			Action<IProducersConfiguration<THeadersRabbitExchange>> action)
 			where THeadersRabbitExchange : HeadersRabbitExchange
 		{
+			builder.Services.TryAddSingleton<THeadersRabbitExchange>();
 			action(new ProducersConfiguration<THeadersRabbitExchange>(builder.Services));
 			return builder;
 		}
@@ -58,7 +67,9 @@ namespace Phema.Rabbit
 			this IRabbitBuilder builder, 
 			Action<IProducersConfiguration<TopicRabbitExchange>> action)
 		{
-			return builder.AddTopicProducers<TopicRabbitExchange>(action);
+			builder.Services.TryAddSingleton<TopicRabbitExchange, DefaultTopicRabbitExchange>();
+			action(new ProducersConfiguration<TopicRabbitExchange>(builder.Services));
+			return builder;
 		}
 		
 		public static IRabbitBuilder AddTopicProducers<TTopicRabbitExchange>(
@@ -66,6 +77,7 @@ namespace Phema.Rabbit
 			Action<IProducersConfiguration<TTopicRabbitExchange>> action)
 			where TTopicRabbitExchange : TopicRabbitExchange
 		{
+			builder.Services.TryAddSingleton<TTopicRabbitExchange>();
 			action(new ProducersConfiguration<TTopicRabbitExchange>(builder.Services));
 			return builder;
 		}

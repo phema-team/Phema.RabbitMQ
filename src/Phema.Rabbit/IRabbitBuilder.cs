@@ -6,6 +6,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Phema.Rabbit
 {
+	/// <summary>
+	/// Used for configuring rabbit services
+	/// </summary>
 	public interface IRabbitBuilder
 	{
 		IServiceCollection Services { get; }

@@ -12,6 +12,9 @@ namespace Phema.Rabbit
 		public virtual IDictionary<string, object> Arguments => null;
 	}
 	
+	/// <summary>
+	/// Used to define exchange with <c>direct</c> type
+	/// </summary>
 	public abstract class DirectRabbitExchange : RabbitExchange
 	{
 		internal override string Type => ExchangeType.Direct;
@@ -22,6 +25,9 @@ namespace Phema.Rabbit
 		public override string Name => "amq.direct";
 	}
 	
+	/// <summary>
+	/// Used to define exchange with <c>fanout</c> type
+	/// </summary>
 	public abstract class FanoutRabbitExchange<TPayload> : RabbitExchange
 	{
 		internal override string Type => ExchangeType.Fanout;
@@ -32,6 +38,9 @@ namespace Phema.Rabbit
 		public override string Name => "amq.fanout";
 	}
 	
+	/// <summary>
+	/// Used to define exchange with <c>headers</c> type
+	/// </summary>
 	public abstract class HeadersRabbitExchange : RabbitExchange
 	{
 		internal override string Type => ExchangeType.Headers;
@@ -42,6 +51,9 @@ namespace Phema.Rabbit
 		public override string Name => "amq.headers";
 	}
 	
+	/// <summary>
+	/// Used to define exchange with <c>topic</c> type 
+	/// </summary>
 	public abstract class TopicRabbitExchange : RabbitExchange
 	{
 		internal override string Type => ExchangeType.Topic;

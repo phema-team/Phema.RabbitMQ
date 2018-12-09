@@ -8,7 +8,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Phema.Rabbit\Phema.Rabbit.csproj" />
+		<ProjectReference Include="..\Phema.Rabbit\Phema.Rabbit.csproj"/>
 	</ItemGroup>
 
 </Project>

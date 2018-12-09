@@ -8,7 +8,12 @@ using RabbitMQ.Client.Events;
 
 namespace Phema.Rabbit
 {
-	public class RabbitBasicConsumer<TPayload, TRabbitConsumer> : AsyncEventingBasicConsumer
+	/// <summary>
+	/// Used for consuming rabbit messages
+	/// </summary>
+	/// <typeparam name="TPayload"></typeparam>
+	/// <typeparam name="TRabbitConsumer"></typeparam>
+	internal class RabbitBasicConsumer<TPayload, TRabbitConsumer> : AsyncEventingBasicConsumer
 		where TRabbitConsumer : RabbitConsumer<TPayload>
 	{
 		private readonly IServiceProvider provider;

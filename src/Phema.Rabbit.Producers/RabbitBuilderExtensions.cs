@@ -5,6 +5,9 @@ namespace Phema.Rabbit
 {
 	public static class RabbitBuilderExtensions
 	{
+		/// <summary>
+		/// Used to add <see cref="DirectRabbitExchange"/> producer services
+		/// </summary>
 		public static IRabbitBuilder AddDirectProducers(
 			this IRabbitBuilder builder, 
 			Action<IProducersConfiguration<DirectRabbitExchange>> action)
@@ -14,6 +17,9 @@ namespace Phema.Rabbit
 			return builder;
 		}
 		
+		/// <summary>
+		/// Used to add <see cref="TDirectRabbitExchange"/> producer services
+		/// </summary>
 		public static IRabbitBuilder AddDirectProducers<TDirectRabbitExchange>(
 			this IRabbitBuilder builder, 
 			Action<IProducersConfiguration<TDirectRabbitExchange>> action)
@@ -24,6 +30,9 @@ namespace Phema.Rabbit
 			return builder;
 		}
 		
+		/// <summary>
+		/// Used to add <see cref="FanoutRabbitExchange{TPayload}"/> producer services
+		/// </summary>
 		public static IRabbitBuilder AddFanoutProducers<TPayload>(
 			this IRabbitBuilder builder, 
 			Action<IProducersConfiguration<TPayload, FanoutRabbitExchange<TPayload>>> action)
@@ -32,6 +41,9 @@ namespace Phema.Rabbit
 			return builder.AddFanoutProducers<TPayload, FanoutRabbitExchange<TPayload>>(action);
 		}
 		
+		/// <summary>
+		/// Used to add <see cref="TFanoutRabbitExchange"/> producer services
+		/// </summary>
 		public static IRabbitBuilder AddFanoutProducers<TPayload, TFanoutRabbitExchange>(
 			this IRabbitBuilder builder, 
 			Action<IProducersConfiguration<TPayload, TFanoutRabbitExchange>> action)
@@ -44,6 +56,9 @@ namespace Phema.Rabbit
 			return builder;
 		}
 		
+		/// <summary>
+		/// Used to add <see cref="HeadersRabbitExchange"/> producer services
+		/// </summary>
 		public static IRabbitBuilder AddHeadersProducers(
 			this IRabbitBuilder builder, 
 			Action<IProducersConfiguration<HeadersRabbitExchange>> action)
@@ -53,6 +68,9 @@ namespace Phema.Rabbit
 			return builder;
 		}
 		
+		/// <summary>
+		/// Used to add <see cref="THeadersRabbitExchange"/> producer services
+		/// </summary>
 		public static IRabbitBuilder AddHeadersProducers<THeadersRabbitExchange>(
 			this IRabbitBuilder builder, 
 			Action<IProducersConfiguration<THeadersRabbitExchange>> action)
@@ -63,6 +81,9 @@ namespace Phema.Rabbit
 			return builder;
 		}
 		
+		/// <summary>
+		/// Used to add <see cref="TopicRabbitExchange"/> producer services
+		/// </summary>
 		public static IRabbitBuilder AddTopicProducers(
 			this IRabbitBuilder builder, 
 			Action<IProducersConfiguration<TopicRabbitExchange>> action)
@@ -72,6 +93,9 @@ namespace Phema.Rabbit
 			return builder;
 		}
 		
+		/// <summary>
+		/// Used to add <see cref="TTopicRabbitExchange"/> producer services
+		/// </summary>
 		public static IRabbitBuilder AddTopicProducers<TTopicRabbitExchange>(
 			this IRabbitBuilder builder, 
 			Action<IProducersConfiguration<TTopicRabbitExchange>> action)

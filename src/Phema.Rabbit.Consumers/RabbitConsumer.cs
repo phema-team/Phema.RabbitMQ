@@ -3,6 +3,9 @@ using System.Threading.Tasks;
 
 namespace Phema.Rabbit
 {
+	/// <summary>
+	/// Used to define <see cref="RabbitConsumer{TPayload}"/>
+	/// </summary>
 	public abstract class RabbitConsumer<TPayload>
 	{
 		protected internal abstract string Name { get; }

@@ -5,19 +5,31 @@ using RabbitMQ.Client;
 
 namespace Phema.Rabbit
 {
+	/// <summary>
+	/// Used to configuring <see cref="RabbitProducer{TPayload,TRabbitExchange}"/> for <see cref="FanoutRabbitExchange{TPayload}"/>
+	/// </summary>
 	public interface IProducersConfiguration<TPayload, TRabbitExchange>
 		where TRabbitExchange : FanoutRabbitExchange<TPayload>
 	{
+		/// <summary>
+		/// Used to add <see cref="TRabbitProducer"/> service
+		/// </summary>
 		IProducersConfiguration<TRabbitExchange> AddProducer<TRabbitProducer, TRabbitQueue>()
-			where TRabbitProducer : RabbitProducer<TPayload>
+			where TRabbitProducer : RabbitProducer<TPayload, TRabbitExchange>
 			where TRabbitQueue : RabbitQueue<TPayload>;
 	}
 	
+	/// <summary>
+	/// Used for configuring <see cref="RabbitProducer{TPayload,TRabbitExchange}"/>
+	/// </summary>
 	public interface IProducersConfiguration<TRabbitExchange>
 		where TRabbitExchange : RabbitExchange
 	{
+		/// <summary>
+		/// Used to add <see cref="TRabbitProducer"/> service
+		/// </summary>
 		IProducersConfiguration<TRabbitExchange> AddProducer<TPayload, TRabbitProducer, TRabbitQueue>()
-			where TRabbitProducer : RabbitProducer<TPayload>
+			where TRabbitProducer : RabbitProducer<TPayload, TRabbitExchange>
 			where TRabbitQueue : RabbitQueue<TPayload>;
 	}
 	
@@ -33,7 +45,7 @@ namespace Phema.Rabbit
 		}
 
 		public IProducersConfiguration<TFanoutRabbitExchange> AddProducer<TRabbitProducer, TRabbitQueue>()
-			where TRabbitProducer : RabbitProducer<TPayload>
+			where TRabbitProducer : RabbitProducer<TPayload, TFanoutRabbitExchange>
 			where TRabbitQueue : RabbitQueue<TPayload>
 		{
 			return configuration.AddProducer<TPayload, TRabbitProducer, TRabbitQueue>();
@@ -51,7 +63,7 @@ namespace Phema.Rabbit
 		}
 		
 		public IProducersConfiguration<TRabbitExchange> AddProducer<TPayload, TRabbitProducer, TRabbitQueue>() 
-			where TRabbitProducer : RabbitProducer<TPayload>
+			where TRabbitProducer : RabbitProducer<TPayload, TRabbitExchange>
 			where TRabbitQueue : RabbitQueue<TPayload>
 		{
 			services.TryAddScoped(provider =>

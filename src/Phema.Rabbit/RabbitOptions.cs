@@ -7,6 +7,9 @@ using RabbitMQ.Client;
 
 namespace Phema.Rabbit
 {
+	/// <summary>
+	/// Used for configuring <see cref="ConnectionFactory"/>
+	/// </summary>
 	public class RabbitOptions
 	{
 		public RabbitOptions()
@@ -15,6 +18,9 @@ namespace Phema.Rabbit
 			SerializerSettings = new JsonSerializerSettings();
 		}
 
+		/// <summary>
+		/// Serialization and deserialization message encoding 
+		/// </summary>
 		public Encoding Encoding { get; set; }
 		public JsonSerializerSettings SerializerSettings { get; set; }
 		

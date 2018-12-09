@@ -5,6 +5,9 @@ namespace Phema.Rabbit
 {
 	public static class RabbitBuilderExtensions
 	{
+		/// <summary>
+		/// Used to add <see cref="RabbitConsumer{TPayload}"/> consumer services
+		/// </summary>
 		public static IRabbitBuilder AddConsumers(this IRabbitBuilder builder, Action<IConsumersConfiguration> action)
 		{
 			action(new ConsumersConfiguration(builder.Services));

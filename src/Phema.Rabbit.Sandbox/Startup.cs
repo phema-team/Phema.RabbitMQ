@@ -30,7 +30,7 @@ namespace Phema.Rabbit.Sandbox
 		protected override string Name => "TestModelConsumer";
 	}
 
-	public class TestPayloadProducer : RabbitProducer<TestPayload>
+	public class TestPayloadProducer : RabbitProducer<TestPayload, DirectRabbitExchange>
 	{
 		public Task SendAsync(string name)
 		{
@@ -56,11 +56,6 @@ namespace Phema.Rabbit.Sandbox
 		public Guid Type { get; set; }
 	}
 
-	public class TestPayloadFanoutExchange : FanoutRabbitExchange<TestPayload>
-	{
-		public override string Name => "TestPayloadFanoutExchange";
-	}
-
 	public class Startup
 	{
 		public void ConfigureServices(IServiceCollection services)
@@ -77,8 +72,8 @@ namespace Phema.Rabbit.Sandbox
 				})
 				.AddConsumers(consumers =>
 					consumers.AddConsumer<TestPayload, TestPayloadConsumer, TestPayloadQueue>())
-				.AddFanoutProducers<TestPayload, TestPayloadFanoutExchange>(producers =>
-					producers.AddProducer<TestPayloadProducer, TestPayloadQueue>());
+				.AddDirectProducers(producers =>
+					producers.AddProducer<TestPayload, TestPayloadProducer, TestPayloadQueue>());
 		}
 
 		public void Configure(IApplicationBuilder app)

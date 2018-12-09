@@ -4,6 +4,9 @@ using RabbitMQ.Client;
 
 namespace Phema.Rabbit
 {
+	/// <summary>
+	/// Used in <see cref="RabbitConsumersHostedService"/>
+	/// </summary>
 	internal class RabbitConsumerOptions
 	{
 		public RabbitConsumerOptions()

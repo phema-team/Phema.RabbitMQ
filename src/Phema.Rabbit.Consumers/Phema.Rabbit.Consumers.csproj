@@ -8,11 +8,11 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Phema.Rabbit\Phema.Rabbit.csproj" />
+		<ProjectReference Include="..\Phema.Rabbit\Phema.Rabbit.csproj"/>
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="2.1.1" />
+		<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="2.1.1"/>
 	</ItemGroup>
 
 </Project>

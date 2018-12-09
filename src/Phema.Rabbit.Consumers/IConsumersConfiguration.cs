@@ -3,6 +3,9 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Phema.Rabbit
 {
+	/// <summary>
+	/// Used for configuring <see cref="RabbitConsumer{TPayload}"/>
+	/// </summary>
 	public interface IConsumersConfiguration
 	{
 		IConsumersConfiguration AddConsumer<TPayload, TRabbitConsumer, TRabbitQueue>()

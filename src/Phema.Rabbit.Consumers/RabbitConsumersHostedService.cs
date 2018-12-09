@@ -8,6 +8,9 @@ using RabbitMQ.Client;
 
 namespace Phema.Rabbit
 {
+	/// <summary>
+	/// Used for setup <see cref="RabbitConsumer{TPayload}"/> services
+	/// </summary>
 	internal sealed class RabbitConsumersHostedService : IHostedService
 	{
 		private readonly IConnection connection;

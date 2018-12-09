@@ -2,6 +2,10 @@
 
 namespace Phema.Rabbit
 {
+	/// <summary>
+	/// Used to define <see cref="RabbitQueue{TPayload}"/>
+	/// </summary>
+	/// <typeparam name="TPayload"></typeparam>
 	public abstract class RabbitQueue<TPayload>
 	{
 		protected internal abstract string Name { get; }

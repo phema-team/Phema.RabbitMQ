@@ -3,6 +3,9 @@ using Microsoft.Extensions.Options;
 
 namespace Phema.Rabbit
 {
+	/// <summary>
+	/// Used for configuring <see cref="RabbitConsumerOptions"/> to use in <see cref="RabbitConsumersHostedService"/>
+	/// </summary>
 	internal class RabbitConsumerConfigureOptions<TPayload, TRabbitConsumer, TRabbitQueue> : IConfigureOptions<RabbitConsumerOptions>
 		where TRabbitConsumer : RabbitConsumer<TPayload>
 		where TRabbitQueue : RabbitQueue<TPayload>

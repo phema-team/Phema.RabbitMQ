@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
+using Phema.Serialization;
 using RabbitMQ.Client;
 
 namespace Phema.Rabbit
@@ -14,7 +14,7 @@ namespace Phema.Rabbit
 		internal IModel Channel { get; set; }
 		internal TRabbitExchange Exchange { get; set; }
 		internal RabbitQueue<TPayload> Queue { get; set; }
-		internal RabbitOptions Options { get; set; }
+		internal ISerializer Serializer { get; set; }
 		
 		protected internal virtual string RoutingKey => null;
 		protected internal virtual bool Mandatory => false;
@@ -30,7 +30,7 @@ namespace Phema.Rabbit
 				RoutingKey ?? Queue.RoutingKey,
 				Mandatory,
 				Properties,
-				Options.Encoding.GetBytes(JsonConvert.SerializeObject(payload, Options.SerializerSettings)));
+				Serializer.Serialize(payload));
 		}
 
 		/// <summary>

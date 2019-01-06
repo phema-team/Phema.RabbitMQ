@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using Phema.Serialization;
 
 namespace Phema.Rabbit.Sandbox
 {
@@ -61,6 +62,8 @@ namespace Phema.Rabbit.Sandbox
 		public void ConfigureServices(IServiceCollection services)
 		{
 			services.AddMvc();
+
+			services.AddJsonSerializer();
 
 			services.AddScoped<RandomScoped>();
 

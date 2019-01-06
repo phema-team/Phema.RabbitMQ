@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Options;
+using Phema.Serialization;
 using RabbitMQ.Client;
 
 namespace Phema.Rabbit
@@ -97,13 +97,13 @@ namespace Phema.Rabbit
 					routingKey: queue.Name,
 					arguments: queue.Arguments);
 
-				var options = provider.GetRequiredService<IOptions<RabbitOptions>>().Value;
+				var serializer = provider.GetRequiredService<ISerializer>();
 				var producer = ActivatorUtilities.CreateInstance<TRabbitProducer>(provider);
 				
 				producer.Channel = channel;
 				producer.Exchange = exchange;
 				producer.Queue = queue;
-				producer.Options = options;
+				producer.Serializer = serializer;
 
 				return producer;
 			});

@@ -1,8 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
+using Phema.Serialization;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
@@ -35,9 +34,9 @@ namespace Phema.Rabbit
 			using (var scope = provider.CreateScope())
 			{
 				var consumer = scope.ServiceProvider.GetRequiredService<TRabbitConsumer>();
-				var options = scope.ServiceProvider.GetRequiredService<IOptions<RabbitOptions>>().Value;
+				var serializer = scope.ServiceProvider.GetRequiredService<ISerializer>();
 
-				var model = JsonConvert.DeserializeObject<TPayload>(options.Encoding.GetString(body), options.SerializerSettings);
+				var model = serializer.Deserialize<TPayload>(body);
 
 				try
 				{

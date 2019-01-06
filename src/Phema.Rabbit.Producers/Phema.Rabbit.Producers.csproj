@@ -8,6 +8,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Phema.Serialization" Version="1.0.0" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<ProjectReference Include="..\Phema.Rabbit\Phema.Rabbit.csproj"/>
 	</ItemGroup>
 

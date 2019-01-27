@@ -1,8 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using Microsoft.Extensions.DependencyInjection;
-
-[assembly: InternalsVisibleTo("Phema.Rabbit.Consumers")]
-[assembly: InternalsVisibleTo("Phema.Rabbit.Producers")]
+﻿using Microsoft.Extensions.DependencyInjection;
 
 namespace Phema.Rabbit
 {

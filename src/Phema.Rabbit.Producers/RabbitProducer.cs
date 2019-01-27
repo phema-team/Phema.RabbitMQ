@@ -16,9 +16,9 @@ namespace Phema.Rabbit
 		internal RabbitQueue<TPayload> Queue { get; set; }
 		internal ISerializer Serializer { get; set; }
 		
-		protected internal virtual string RoutingKey => null;
-		protected internal virtual bool Mandatory => false;
-		protected internal virtual IBasicProperties Properties => null;
+		protected virtual string RoutingKey => null;
+		protected virtual bool Mandatory => false;
+		protected virtual IBasicProperties Properties => null;
 		
 		/// <summary>
 		/// Used to sent <see cref="TPayload"/> to broker
@@ -34,7 +34,7 @@ namespace Phema.Rabbit
 		}
 
 		/// <summary>
-		/// Used to asynchronosly sent <see cref="TPayload"/> to broker
+		/// Used to asynchronously sent <see cref="TPayload"/> to broker
 		/// </summary>
 		protected Task ProduceAsync(TPayload payload)
 		{

@@ -1,7 +1,7 @@
 # Phema.Rabbit
 
 ```csharp
-services.AddPhemaRabbitMq("test", options => options.HostName = "database.otaku-shelter.ru")
+services.AddPhemaRabbitMq("test", options => options.HostName = "")
   .AddQueues(options =>
     options.AddQueue("queuename")
       .Durable()

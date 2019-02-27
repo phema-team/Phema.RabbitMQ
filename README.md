@@ -1,41 +1,32 @@
 # Phema.Rabbit
 
 ```csharp
-
-public class TestPayload
-{
-  public string Name { get; set; }
-}
-
-public class TestModelConsumer : RabbitConsumer<TestPayload>
-{
-  protected override string Tag => "TestModelConsumer";
-
-  protected override async Task Consume(TestPayload payload)
-  {
-    await Console.Out.WriteLineAsync(payload.Name);
-  }
-}
-
-public class TestPayloadProducer : RabbitProducer<TestPayload>
-{
-  public void Send(TestPayload testPayload)
-  {
-    Produce(testPayload);
-  }
-}
-
-public class TestModelQueue : RabbitQueue<TestPayload>
-{
-  protected override string Name => "TestModelQueue";
-}
-
-// Startup.cs
-services.AddRabbit(options => { /*...*/ })
-  .AddConsumers(consumers =>
-    consumers.AddConsumer<TestPayload, TestModelConsumer, TestModelQueue>())
-  .AddDirectProducers(producers =>
-    producers.AddProducer<TestPayload, TestPayloadProducer, TestModelQueue>());
+services.AddPhemaRabbitMq("test", options => options.HostName = "database.otaku-shelter.ru")
+  .AddQueues(options =>
+    options.AddQueue("queuename")
+      .Durable()
+      .Exclusive()
+      .AutoDelete()
+      .WithArgument(null))
+  .AddConsumers(options =>
+    options.AddConsumer<TestPayload, TestPayloadConsumer>("queuename")
+      .WithConsumerTag("consumertag")
+      .WithPrefetch(0)
+      .WithConsumers(1)
+      .Exclusive()
+      .NoLocal()
+      .AutoAck()
+      .Requeue(multiple: true)
+      .WithArgument(null))
+  .AddExchanges(options =>
+    options.AddDirectExchange("amq.direct")
+      .Durable()
+      .AutoDelete()
+      .WithArgument(null))
+  .AddProducers(options =>
+    options.AddProducer<TestPayload>("amq.direct", "queuename")
+      .Mandatory()
+      .WithProperty(p => p.Persistent = true));
 ```
 
 - Библиотека разделена на три части: 

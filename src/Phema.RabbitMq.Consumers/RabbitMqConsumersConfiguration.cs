@@ -39,23 +39,26 @@ namespace Phema.RabbitMq
 					var queue = provider.GetRequiredService<IOptions<RabbitMqQueuesOptions>>()
 						.Value
 						.Queues
-						.First(q => q.Name == consumer.QueueName);
+						.FirstOrDefault(q => q.Name == consumer.QueueName);
 					
 					var channel = provider.GetRequiredService<IModel>();
-					
-					channel.QueueDeclareNoWait(
-						queue: queue.Name,
-						durable: queue.Durable,
-						exclusive: queue.Exclusive,
-						autoDelete: queue.AutoDelete,
-						arguments: queue.Arguments);
+
+					if (queue != null)
+					{
+						channel.QueueDeclareNoWait(
+							queue: queue.Name,
+							durable: queue.Durable,
+							exclusive: queue.Exclusive,
+							autoDelete: queue.AutoDelete,
+							arguments: queue.Arguments);
+					}
 
 					channel.BasicQos(0, consumer.Prefetch, global: false);
 					
 					for (var index = 0; index < consumer.Consumers; index++)
 					{
 						channel.BasicConsume(
-							queue: queue.Name,
+							queue: consumer.QueueName,
 							autoAck: consumer.AutoAck,
 							consumerTag: $"{consumer.Tag}_{index}",
 							noLocal: consumer.NoLocal,

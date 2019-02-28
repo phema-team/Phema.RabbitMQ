@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Runtime.Serialization;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -38,32 +39,41 @@ namespace Phema.RabbitMq
 				var exchange = provider.GetRequiredService<IOptions<RabbitMqExchangesOptions>>()
 					.Value
 					.Exchanges
-					.First(ex => ex.Name == producer.ExchangeName);
+					.FirstOrDefault(ex => ex.Name == producer.ExchangeName);
 
-				channel.ExchangeDeclareNoWait(
-					exchange: exchange.Name,
-					type: exchange.Type,
-					durable: exchange.Durable,
-					autoDelete: exchange.AutoDelete,
-					arguments: exchange.Arguments);
+				if (exchange != null)
+				{
+					channel.ExchangeDeclareNoWait(
+						exchange: exchange.Name,
+						type: exchange.Type,
+						durable: exchange.Durable,
+						autoDelete: exchange.AutoDelete,
+						arguments: exchange.Arguments);
+				}
 
 				var queue = provider.GetRequiredService<IOptions<RabbitMqQueuesOptions>>()
 					.Value
 					.Queues
-					.First(q => q.Name == producer.QueueName);
+					.FirstOrDefault(q => q.Name == producer.QueueName);
 
-				channel.QueueDeclareNoWait(
-					queue: queue.Name,
-					durable: queue.Durable,
-					exclusive: queue.Exclusive,
-					autoDelete: queue.AutoDelete,
-					arguments: queue.Arguments);
+				if (queue != null)
+				{
+					channel.QueueDeclareNoWait(
+						queue: queue.Name,
+						durable: queue.Durable,
+						exclusive: queue.Exclusive,
+						autoDelete: queue.AutoDelete,
+						arguments: queue.Arguments);
+				}
 
-				channel.QueueBindNoWait(
-					queue: queue.Name,
-					exchange: exchange.Name,
-					routingKey: queue.Name,
-					arguments: queue.Arguments);
+				if (exchange != null && queue != null)
+				{
+					channel.QueueBindNoWait(
+						queue: queue.Name,
+						exchange: exchange.Name,
+						routingKey: queue.Name,
+						arguments: queue.Arguments);
+				}
 
 				var serializer = provider.GetRequiredService<ISerializer>();
 

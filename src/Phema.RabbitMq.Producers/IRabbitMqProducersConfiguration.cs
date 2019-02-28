@@ -66,14 +66,11 @@ namespace Phema.RabbitMq
 						arguments: queue.Arguments);
 				}
 
-				if (exchange != null && queue != null)
-				{
-					channel.QueueBindNoWait(
-						queue: queue.Name,
-						exchange: exchange.Name,
-						routingKey: queue.Name,
-						arguments: queue.Arguments);
-				}
+				channel.QueueBindNoWait(
+					queue: producer.QueueName,
+					exchange: producer.ExchangeName,
+					routingKey: producer.QueueName,
+					arguments: queue?.Arguments);
 
 				var serializer = provider.GetRequiredService<ISerializer>();
 

@@ -43,8 +43,7 @@ namespace Phema.RabbitMq
 					
 					var channel = provider.GetRequiredService<IModel>();
 					
-					
-					channel.QueueDeclare(
+					channel.QueueDeclareNoWait(
 						queue: queue.Name,
 						durable: queue.Durable,
 						exclusive: queue.Exclusive,
@@ -58,7 +57,7 @@ namespace Phema.RabbitMq
 						channel.BasicConsume(
 							queue: queue.Name,
 							autoAck: consumer.AutoAck,
-							consumerTag: $"{consumer.ConsumerTag}_{index}",
+							consumerTag: $"{consumer.Tag}_{index}",
 							noLocal: consumer.NoLocal,
 							exclusive: consumer.Exclusive,
 							arguments: consumer.Arguments,

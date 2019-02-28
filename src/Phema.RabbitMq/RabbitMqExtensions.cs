@@ -13,7 +13,7 @@ namespace Phema.RabbitMq
 		public static IRabbitMqConfiguration AddPhemaRabbitMq(
 			this IServiceCollection services,
 			string instanceName,
-			Action<ConnectionFactory> options)
+			Action<ConnectionFactory> options = null)
 		{
 			services.TryAddSingleton(sp =>
 			{
@@ -22,7 +22,7 @@ namespace Phema.RabbitMq
 					DispatchConsumersAsync = true
 				};
 				
-				options(factory);
+				options?.Invoke(factory);
 				
 				return factory.CreateConnection(instanceName);
 			});

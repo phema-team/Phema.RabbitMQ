@@ -47,11 +47,11 @@ namespace Phema.RabbitMq
 						.GetRequiredService<TPayloadConsumer>()
 						.Consume(model);
 				}
-				catch (Exception)
+				catch
 				{
 					if (!consumer.AutoAck)
 					{
-						Model.BasicNack(deliveryTag, false, consumer.Requeue);
+						Model.BasicNack(deliveryTag, consumer.Multiple, !redelivered && consumer.Requeue);
 					}
 					
 					throw;
@@ -59,7 +59,7 @@ namespace Phema.RabbitMq
 				
 				if (!consumer.AutoAck)
 				{
-					Model.BasicAck(deliveryTag, false);
+					Model.BasicAck(deliveryTag, consumer.Multiple);
 				}
 			}
 		}

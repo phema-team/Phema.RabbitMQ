@@ -13,7 +13,7 @@ namespace Phema.RabbitMq
 		}
 
 		public string QueueName { get; }
-		public string ConsumerTag { get; set; }
+		public string Tag { get; set; }
 		public ushort Prefetch { get; set; }
 		public int Consumers { get; set; }
 		public bool Exclusive { get; set; }

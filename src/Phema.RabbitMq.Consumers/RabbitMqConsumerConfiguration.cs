@@ -4,7 +4,7 @@ namespace Phema.RabbitMq
 {
 	public interface IRabbitMqConsumerConfiguration
 	{
-		IRabbitMqConsumerConfiguration WithConsumerTag(string consumerTag);
+		IRabbitMqConsumerConfiguration WithTag(string consumerTag);
 		IRabbitMqConsumerConfiguration WithPrefetch(ushort prefetch);
 		IRabbitMqConsumerConfiguration WithConsumers(int consumers);
 		IRabbitMqConsumerConfiguration Exclusive();
@@ -23,9 +23,9 @@ namespace Phema.RabbitMq
 			this.consumer = consumer;
 		}
 
-		public IRabbitMqConsumerConfiguration WithConsumerTag(string consumerTag)
+		public IRabbitMqConsumerConfiguration WithTag(string consumerTag)
 		{
-			consumer.ConsumerTag = consumerTag;
+			consumer.Tag = consumerTag;
 			return this;
 		}
 

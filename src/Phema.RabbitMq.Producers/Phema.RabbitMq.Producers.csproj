@@ -4,15 +4,16 @@
 		<TargetFramework>netcoreapp2.2</TargetFramework>
 		<RootNamespace>Phema.RabbitMq</RootNamespace>
 		<LangVersion>7.3</LangVersion>
-		<Version>2.0.0</Version>
+		<Version>2.0.1</Version>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Phema.RabbitMq\Phema.RabbitMq.csproj"/>
+		<PackageReference Include="Phema.Serialization" Version="1.0.1" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Phema.Serialization" Version="1.0.1"/>
+	  <ProjectReference Include="..\Phema.RabbitMq.Exchanges\Phema.RabbitMq.Exchanges.csproj" />
+	  <ProjectReference Include="..\Phema.RabbitMq.Queues\Phema.RabbitMq.Queues.csproj" />
 	</ItemGroup>
 
 </Project>

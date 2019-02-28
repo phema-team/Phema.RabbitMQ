@@ -6,9 +6,9 @@ namespace Phema.RabbitMq
 	{
 		public static IRabbitMqConfiguration AddQueues(
 		this IRabbitMqConfiguration configuration,
-		Action<IRabbitMqQueuesConfiguration> options = null)
+		Action<IRabbitMqQueuesConfiguration> options)
 		{
-			options?.Invoke(new RabbitMqQueuesConfiguration(configuration.Services));
+			options.Invoke(new RabbitMqQueuesConfiguration(configuration.Services));
 			return configuration;
 		}
 	}

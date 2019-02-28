@@ -7,7 +7,7 @@ namespace Phema.RabbitMq
 	public interface IRabbitMqProducerConfiguration
 	{
 		IRabbitMqProducerConfiguration Mandatory();
-		IRabbitMqProducerConfiguration WithProperty(Action<IBasicProperties> property);
+		IRabbitMqProducerConfiguration WithProperties(params Action<IBasicProperties>[] properties);
 	}
 	
 	internal sealed class RabbitMqProducerConfiguration : IRabbitMqProducerConfiguration
@@ -25,9 +25,13 @@ namespace Phema.RabbitMq
 			return this;
 		}
 
-		public IRabbitMqProducerConfiguration WithProperty(Action<IBasicProperties> property)
+		public IRabbitMqProducerConfiguration WithProperties(params Action<IBasicProperties>[] properties)
 		{
-			producer.Properties.Add(property);
+			foreach (var property in properties)
+			{
+				producer.Properties.Add(property);
+			}
+			
 			return this;
 		}
 	}

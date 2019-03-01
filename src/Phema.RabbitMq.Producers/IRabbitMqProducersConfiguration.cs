@@ -74,15 +74,15 @@ namespace Phema.RabbitMq
 
 				var serializer = provider.GetRequiredService<ISerializer>();
 
+				var properties = channel.CreateBasicProperties();
+
+				foreach (var property in producer.Properties)
+				{
+					property(properties);
+				}
+				
 				return new RabbitMqProducer<TPayload>(payload =>
 				{
-					var properties = channel.CreateBasicProperties();
-
-					foreach (var property in producer.Properties)
-					{
-						property(properties);
-					}
-
 					channel.BasicPublish(
 						exchange: producer.ExchangeName,
 						routingKey: producer.QueueName,

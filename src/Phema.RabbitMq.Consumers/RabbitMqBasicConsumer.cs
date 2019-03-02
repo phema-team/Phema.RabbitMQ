@@ -54,7 +54,7 @@ namespace Phema.RabbitMq
                     }
                     
                     scope.ServiceProvider
-                        .GetRequiredService<ILogger<RabbitMqBasicConsumer<TPayload, TPayloadConsumer>>>()
+                        .GetService<ILogger<RabbitMqBasicConsumer<TPayload, TPayloadConsumer>>>()
                         ?.LogConsumerException<TPayload>(consumer, exception, redelivered);
                     
                     throw;

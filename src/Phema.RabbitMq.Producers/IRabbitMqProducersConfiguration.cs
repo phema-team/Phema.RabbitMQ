@@ -28,9 +28,6 @@ namespace Phema.RabbitMq
 		{
 			var producer = new RabbitMqProducer(exchangeName, queueName);
 
-			services.Configure<RabbitMqProducersOptions>(options =>
-				options.Producers.Add(producer));
-
 			services.TryAddSingleton<IRabbitMqProducer<TPayload>>(provider =>
 			{
 				var channel = provider.GetRequiredService<IConnection>().CreateModel();

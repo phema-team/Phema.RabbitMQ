@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -26,8 +25,6 @@ namespace Phema.RabbitMq
 				
 				return factory.CreateConnection(instanceName);
 			});
-			
-			services.TryAddScoped(sp => sp.GetRequiredService<IConnection>().CreateModel());
 			
 			return new RabbitMqConfiguration(services);
 		}

@@ -7,11 +7,9 @@ namespace Phema.RabbitMq
 	{
 		public RabbitMqConsumersOptions()
 		{
-			Consumers = new List<RabbitMqConsumer>();
 			ConsumerDispatchers = new List<Action<IServiceProvider>>();
 		}
 		
-		public IList<RabbitMqConsumer> Consumers { get; }
 		public IList<Action<IServiceProvider>> ConsumerDispatchers { get; }
 	}
 }

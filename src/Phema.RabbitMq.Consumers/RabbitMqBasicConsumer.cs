@@ -1,5 +1,4 @@
 using System;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -13,15 +12,17 @@ namespace Phema.RabbitMq
         where TPayloadConsumer : IRabbitMqConsumer<TPayload>
     {
         private readonly IServiceProvider provider;
-        private readonly RabbitMqConsumer consumer;
+        private readonly ISerializer serializer;
+        private readonly RabbitMqConsumer<TPayload, TPayloadConsumer> consumer;
 
         public RabbitMqBasicConsumer(
             IServiceProvider provider,
             IModel channel,
-            RabbitMqConsumer consumer)
+            RabbitMqConsumer<TPayload, TPayloadConsumer> consumer)
             : base(channel)
         {
             this.provider = provider;
+            serializer = provider.GetRequiredService<ISerializer>();
             this.consumer = consumer;
         }
 
@@ -36,8 +37,6 @@ namespace Phema.RabbitMq
         {
             using (var scope = provider.CreateScope())
             {
-                var serializer = scope.ServiceProvider.GetRequiredService<ISerializer>();
-
                 var model = serializer.Deserialize<TPayload>(body);
 
                 try

@@ -32,9 +32,9 @@ namespace Phema.RabbitMq
 			services.Configure<RabbitMqProducersOptions>(options =>
 				options.Producers.Add(producer));
 
-			services.TryAddScoped<IRabbitMqProducer<TPayload>>(provider =>
+			services.TryAddSingleton<IRabbitMqProducer<TPayload>>(provider =>
 			{
-				var channel = provider.GetRequiredService<IModel>();
+				var channel = provider.GetRequiredService<IConnection>().CreateModel();
 
 				var exchange = provider.GetRequiredService<IOptions<RabbitMqExchangesOptions>>()
 					.Value

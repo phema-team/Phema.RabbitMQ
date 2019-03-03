@@ -10,6 +10,9 @@ namespace Phema.RabbitMq
 	
 	internal sealed class RabbitMqProducer<TPayload> : IRabbitMqProducer<TPayload>
 	{
+		// Each generic type have unique lock object
+		private static object @lock = new object();
+		
 		private readonly Action<TPayload> producer;
 
 		public RabbitMqProducer(Action<TPayload> producer)
@@ -19,7 +22,11 @@ namespace Phema.RabbitMq
 		
 		public ValueTask Produce(TPayload payload)
 		{
-			producer(payload);
+			lock (@lock)
+			{
+				producer(payload);
+			}
+			
 			return new ValueTask();
 		}
 	}

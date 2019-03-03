@@ -32,8 +32,6 @@ namespace Phema.RabbitMq
 			
 			services.Configure<RabbitMqConsumersOptions>(options =>
 			{
-				options.Consumers.Add(consumer);
-				
 				options.ConsumerDispatchers.Add(provider =>
 				{
 					var queue = provider.GetRequiredService<IOptions<RabbitMqQueuesOptions>>()
@@ -41,8 +39,8 @@ namespace Phema.RabbitMq
 						.Queues
 						.FirstOrDefault(q => q.Name == consumer.QueueName);
 					
-					var channel = provider.GetRequiredService<IModel>();
-
+					var channel = provider.GetRequiredService<IConnection>().CreateModel();
+					
 					if (queue != null)
 					{
 						channel.QueueDeclareNoWait(

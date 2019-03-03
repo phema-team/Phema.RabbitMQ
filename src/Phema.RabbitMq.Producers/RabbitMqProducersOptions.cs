@@ -8,7 +8,7 @@ namespace Phema.RabbitMq
 		{
 			Producers = new List<RabbitMqProducer>();
 		}
-		
+
 		public IList<RabbitMqProducer> Producers { get; }
 	}
 }

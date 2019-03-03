@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace Phema.RabbitMq
 {
 	public interface IRabbitMqQueueConfiguration
@@ -9,7 +7,7 @@ namespace Phema.RabbitMq
 		IRabbitMqQueueConfiguration AutoDelete();
 		IRabbitMqQueueConfiguration WithArgument(string argument, string value);
 	}
-	
+
 	internal sealed class RabbitMqQueueConfiguration : IRabbitMqQueueConfiguration
 	{
 		private readonly RabbitMqQueue queue;

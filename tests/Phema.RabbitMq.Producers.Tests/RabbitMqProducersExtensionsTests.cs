@@ -8,7 +8,7 @@ namespace Phema.RabbitMq.Producers.Tests
 	public class TestPayload
 	{
 	}
-	
+
 	public class RabbitMqProducersExtensionsTests
 	{
 		[Fact]
@@ -27,13 +27,13 @@ namespace Phema.RabbitMq.Producers.Tests
 			var producers = provider.GetRequiredService<IOptions<RabbitMqProducersOptions>>().Value;
 
 			var producer = Assert.Single(producers.Producers);
-			
+
 			Assert.Equal("exchangename", producer.ExchangeName);
 			Assert.Equal("queuename", producer.QueueName);
 			Assert.True(producer.Mandatory);
 			Assert.Single(producer.Properties);
 		}
-		
+
 		[Fact]
 		public void ProducersRegisteredByDefault()
 		{
@@ -48,7 +48,7 @@ namespace Phema.RabbitMq.Producers.Tests
 			var producers = provider.GetRequiredService<IOptions<RabbitMqProducersOptions>>().Value;
 
 			var producer = Assert.Single(producers.Producers);
-			
+
 			Assert.Equal("exchangename", producer.ExchangeName);
 			Assert.Equal("queuename", producer.QueueName);
 			Assert.False(producer.Mandatory);

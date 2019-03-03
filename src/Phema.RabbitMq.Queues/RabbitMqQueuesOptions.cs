@@ -8,7 +8,7 @@ namespace Phema.RabbitMq
 		{
 			Queues = new List<RabbitMqQueue>();
 		}
-		
+
 		public IList<RabbitMqQueue> Queues { get; }
 	}
 }

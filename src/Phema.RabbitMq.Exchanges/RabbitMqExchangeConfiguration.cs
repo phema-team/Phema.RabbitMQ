@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace Phema.RabbitMq
 {
 	public interface IRabbitMqExchangeConfiguration
@@ -8,7 +6,7 @@ namespace Phema.RabbitMq
 		IRabbitMqExchangeConfiguration AutoDelete();
 		IRabbitMqExchangeConfiguration WithArgument(string argument, string value);
 	}
-	
+
 	internal sealed class RabbitMqExchangeConfiguration : IRabbitMqExchangeConfiguration
 	{
 		private readonly RabbitMqExchange exchange;

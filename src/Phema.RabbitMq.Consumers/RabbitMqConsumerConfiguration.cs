@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace Phema.RabbitMq
 {
 	public interface IRabbitMqConsumerConfiguration
@@ -13,7 +11,7 @@ namespace Phema.RabbitMq
 		IRabbitMqConsumerConfiguration Requeue(bool multiple = false);
 		IRabbitMqConsumerConfiguration WithArgument(string argument, string value);
 	}
-	
+
 	internal sealed class RabbitMqConsumerConsiguration : IRabbitMqConsumerConfiguration
 	{
 		private readonly RabbitMqConsumer consumer;
@@ -46,7 +44,7 @@ namespace Phema.RabbitMq
 			consumer.Exclusive = true;
 			return this;
 		}
-		
+
 		public IRabbitMqConsumerConfiguration NoLocal()
 		{
 			consumer.NoLocal = true;

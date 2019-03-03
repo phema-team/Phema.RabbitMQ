@@ -13,7 +13,7 @@ namespace Phema.RabbitMq
 			QueueName = queueName;
 			Properties = new List<Action<IBasicProperties>>();
 		}
-		
+
 		public string ExchangeName { get; }
 		public string QueueName { get; }
 		public bool Mandatory { get; set; }

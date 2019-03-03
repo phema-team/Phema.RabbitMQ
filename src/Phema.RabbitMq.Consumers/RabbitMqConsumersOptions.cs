@@ -9,7 +9,7 @@ namespace Phema.RabbitMq
 		{
 			ConsumerDispatchers = new List<Action<IServiceProvider>>();
 		}
-		
+
 		public IList<Action<IServiceProvider>> ConsumerDispatchers { get; }
 	}
 }

@@ -25,18 +25,18 @@ namespace Phema.RabbitMq.Queues.Tests
 			var queues = provider.GetRequiredService<IOptions<RabbitMqQueuesOptions>>().Value;
 
 			var queue = Assert.Single(queues.Queues);
-			
+
 			Assert.Equal("queuename", queue.Name);
 			Assert.True(queue.Durable);
 			Assert.True(queue.Exclusive);
 			Assert.True(queue.AutoDelete);
 
 			var (arg, value) = Assert.Single(queue.Arguments);
-			
+
 			Assert.Equal("x-argument", arg);
 			Assert.Equal("somevalue", value);
 		}
-		
+
 		[Fact]
 		public void QueuesRegisteredByDefault()
 		{
@@ -50,7 +50,7 @@ namespace Phema.RabbitMq.Queues.Tests
 			var queues = provider.GetRequiredService<IOptions<RabbitMqQueuesOptions>>().Value;
 
 			var queue = Assert.Single(queues.Queues);
-			
+
 			Assert.Equal("queuename", queue.Name);
 			Assert.False(queue.Durable);
 			Assert.False(queue.Exclusive);

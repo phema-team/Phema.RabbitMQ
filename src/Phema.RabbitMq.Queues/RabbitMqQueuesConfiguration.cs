@@ -6,7 +6,7 @@ namespace Phema.RabbitMq
 	{
 		IRabbitMqQueueConfiguration AddQueue(string queueName);
 	}
-	
+
 	internal sealed class RabbitMqQueuesConfiguration : IRabbitMqQueuesConfiguration
 	{
 		private readonly IServiceCollection services;
@@ -15,14 +15,14 @@ namespace Phema.RabbitMq
 		{
 			this.services = services;
 		}
-		
+
 		public IRabbitMqQueueConfiguration AddQueue(string queueName)
 		{
 			var queue = new RabbitMqQueue(queueName);
 
-			services.Configure<RabbitMqQueuesOptions>(options => 
+			services.Configure<RabbitMqQueuesOptions>(options =>
 				options.Queues.Add(queue));
-			
+
 			return new RabbitMqQueueConfiguration(queue);
 		}
 	}

@@ -6,7 +6,7 @@ namespace Phema.RabbitMq
 	{
 		IRabbitMqExchangeConfiguration AddExchange(string exchangeType, string exchangeName);
 	}
-	
+
 	internal sealed class RabbitMqExchangesConfiguration : IRabbitMqExchangesConfiguration
 	{
 		private readonly IServiceCollection services;
@@ -15,7 +15,7 @@ namespace Phema.RabbitMq
 		{
 			this.services = services;
 		}
-		
+
 		public IRabbitMqExchangeConfiguration AddExchange(string exchangeType, string exchangeName)
 		{
 			var exchange = new RabbitMqExchange(exchangeType, exchangeName);

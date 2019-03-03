@@ -9,9 +9,8 @@ namespace Phema.RabbitMq.Consumers.Tests
 {
 	public class TestPayload
 	{
-		
 	}
-	
+
 	public class TestPayloadConsumer : IRabbitMqConsumer<TestPayload>
 	{
 		public async ValueTask Consume(TestPayload payload)
@@ -35,7 +34,7 @@ namespace Phema.RabbitMq.Consumers.Tests
 						.Exclusive()
 						.NoLocal()
 						.AutoAck()
-						.Requeue(multiple: true)
+						.Requeue(true)
 						.WithArgument("x-argument", "value"));
 
 			var provider = services.BuildServiceProvider();
@@ -60,7 +59,7 @@ namespace Phema.RabbitMq.Consumers.Tests
 			// Assert.Equal("x-argument", key);
 			// Assert.Equal("value", value);
 		}
-		
+
 		[Fact]
 		public void ConsumersRegisteredByDefault()
 		{
@@ -89,6 +88,5 @@ namespace Phema.RabbitMq.Consumers.Tests
 			//
 			// Assert.Empty(consumer.Arguments);
 		}
-		
 	}
 }

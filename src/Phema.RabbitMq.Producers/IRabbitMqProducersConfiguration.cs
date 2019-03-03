@@ -1,5 +1,4 @@
 using System.Linq;
-using System.Runtime.Serialization;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -42,14 +41,12 @@ namespace Phema.RabbitMq
 					.FirstOrDefault(ex => ex.Name == producer.ExchangeName);
 
 				if (exchange != null)
-				{
 					channel.ExchangeDeclareNoWait(
-						exchange: exchange.Name,
-						type: exchange.Type,
-						durable: exchange.Durable,
-						autoDelete: exchange.AutoDelete,
-						arguments: exchange.Arguments);
-				}
+						exchange.Name,
+						exchange.Type,
+						exchange.Durable,
+						exchange.AutoDelete,
+						exchange.Arguments);
 
 				var queue = provider.GetRequiredService<IOptions<RabbitMqQueuesOptions>>()
 					.Value
@@ -57,38 +54,34 @@ namespace Phema.RabbitMq
 					.FirstOrDefault(q => q.Name == producer.QueueName);
 
 				if (queue != null)
-				{
 					channel.QueueDeclareNoWait(
-						queue: queue.Name,
-						durable: queue.Durable,
-						exclusive: queue.Exclusive,
-						autoDelete: queue.AutoDelete,
-						arguments: queue.Arguments);
-				}
+						queue.Name,
+						queue.Durable,
+						queue.Exclusive,
+						queue.AutoDelete,
+						queue.Arguments);
 
 				channel.QueueBindNoWait(
-					queue: producer.QueueName,
-					exchange: producer.ExchangeName,
-					routingKey: producer.QueueName,
-					arguments: queue?.Arguments);
+					producer.QueueName,
+					producer.ExchangeName,
+					producer.QueueName,
+					queue?.Arguments);
 
 				var serializer = provider.GetRequiredService<ISerializer>();
 
 				var properties = channel.CreateBasicProperties();
 
 				foreach (var property in producer.Properties)
-				{
 					property(properties);
-				}
-				
+
 				return new RabbitMqProducer<TPayload>(payload =>
 				{
 					channel.BasicPublish(
-						exchange: producer.ExchangeName,
-						routingKey: producer.QueueName,
-						mandatory: producer.Mandatory,
-						basicProperties: properties,
-						body: serializer.Serialize(payload));
+						producer.ExchangeName,
+						producer.QueueName,
+						producer.Mandatory,
+						properties,
+						serializer.Serialize(payload));
 				});
 			});
 

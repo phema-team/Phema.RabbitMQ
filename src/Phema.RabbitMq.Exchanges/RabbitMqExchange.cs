@@ -10,7 +10,7 @@ namespace Phema.RabbitMq
 			Name = name;
 			Arguments = new Dictionary<string, object>();
 		}
-		
+
 		public string Type { get; }
 		public string Name { get; }
 		public bool Durable { get; set; }

@@ -13,7 +13,7 @@ namespace Phema.RabbitMq
 		{
 			Services = services;
 		}
-		
+
 		public IServiceCollection Services { get; }
 	}
 }

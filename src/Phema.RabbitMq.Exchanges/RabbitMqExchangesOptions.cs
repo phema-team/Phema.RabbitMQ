@@ -8,7 +8,7 @@ namespace Phema.RabbitMq
 		{
 			Exchanges = new List<RabbitMqExchange>();
 		}
-		
+
 		public IList<RabbitMqExchange> Exchanges { get; }
 	}
 }

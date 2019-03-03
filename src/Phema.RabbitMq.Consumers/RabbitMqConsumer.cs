@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 
 namespace Phema.RabbitMq
@@ -23,7 +22,7 @@ namespace Phema.RabbitMq
 		public bool Multiple { get; set; }
 		public IDictionary<string, object> Arguments { get; }
 	}
-	
+
 	internal sealed class RabbitMqConsumer<TPayload, TPayloadConsumer> : RabbitMqConsumer
 	{
 		public RabbitMqConsumer(string queueName) : base(queueName)

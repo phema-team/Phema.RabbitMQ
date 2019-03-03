@@ -20,12 +20,12 @@ namespace Phema.RabbitMq
 				{
 					DispatchConsumersAsync = true
 				};
-				
+
 				options?.Invoke(factory);
-				
+
 				return factory.CreateConnection(instanceName);
 			});
-			
+
 			return new RabbitMqConfiguration(services);
 		}
 	}

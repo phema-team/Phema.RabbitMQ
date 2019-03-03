@@ -20,16 +20,14 @@ namespace Phema.RabbitMq
 			this.provider = provider;
 			this.connection = connection;
 		}
-		
+
 		public Task StartAsync(CancellationToken cancellationToken)
 		{
 			var options = provider.GetRequiredService<IOptions<RabbitMqConsumersOptions>>().Value;
 
-			foreach (var consumer in options.ConsumerDispatchers)
-			{
-				consumer(provider);
-			}
-			
+			foreach (var dispatcher in options.ConsumerDispatchers)
+				dispatcher(provider);
+
 			return Task.CompletedTask;
 		}
 

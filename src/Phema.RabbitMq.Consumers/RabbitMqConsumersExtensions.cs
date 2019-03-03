@@ -13,7 +13,7 @@ namespace Phema.RabbitMq
 			options(new RabbitMqConsumersConfiguration(configuration.Services));
 
 			configuration.Services.AddHostedService<RabbitMqConsumersHostedService>();
-			
+
 			return configuration;
 		}
 	}

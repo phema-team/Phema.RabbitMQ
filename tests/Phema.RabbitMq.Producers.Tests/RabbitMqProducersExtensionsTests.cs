@@ -24,6 +24,8 @@ namespace Phema.RabbitMQ.Producers.Tests
 						.WithPriority(10)
 						.WithRoutingKey("routingkey")
 						.WithArgument("argument", "value")
+						.WithTimeToLive(2_000)
+						.WithHeader("header", "value")
 						.WithProperties(p => p.Persistent = true));
 		}
 		

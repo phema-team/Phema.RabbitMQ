@@ -10,6 +10,23 @@ namespace Phema.RabbitMQ.Exchanges.Tests
 	public class RabbitMQExchangesExtensionsTests
 	{
 		[Fact]
+		public void UXTest()
+		{
+			var services = new ServiceCollection();
+			
+			services.AddPhemaRabbitMQ("instance")
+				.AddExchanges(options =>
+					options.AddDirectExchange("amq.direct")
+						.Durable()
+						.AutoDelete()
+						.WithArgument("x-argument", "value")
+						.WithBoundExchange("exchangename", exchange =>
+							exchange.WithRoutingKey("routingkey")
+								.WithArgument("argument", "value"))
+						.WithAlternateExchange("alternameexchangename"));
+		}
+		
+		[Fact]
 		public void ExchangesRegistered()
 		{
 			var services = new ServiceCollection();

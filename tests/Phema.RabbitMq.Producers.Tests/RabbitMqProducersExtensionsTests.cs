@@ -12,6 +12,22 @@ namespace Phema.RabbitMQ.Producers.Tests
 	public class RabbitMQProducersExtensionsTests
 	{
 		[Fact]
+		public void UXTest()
+		{
+			var services = new ServiceCollection();
+			
+			services.AddPhemaRabbitMQ("instance")
+				.AddProducers(options =>
+					options.AddProducer<TestPayload>("exchangename", "queuename")
+						.Mandatory()
+						.Persistent()
+						.WithPriority(10)
+						.WithRoutingKey("routingkey")
+						.WithArgument("argument", "value")
+						.WithProperties(p => p.Persistent = true));
+		}
+		
+		[Fact]
 		public void ProducersRegistered()
 		{
 			var services = new ServiceCollection();

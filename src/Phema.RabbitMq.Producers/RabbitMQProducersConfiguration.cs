@@ -1,5 +1,5 @@
+using System;
 using System.Linq;
-using System.Threading.Tasks;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -27,6 +27,12 @@ namespace Phema.RabbitMQ
 
 		public IRabbitMQProducerConfiguration AddProducer<TPayload>(string exchangeName, string queueName)
 		{
+			if (exchangeName is null)
+				throw new ArgumentNullException(nameof(exchangeName));
+			
+			if (queueName is null)
+				throw new ArgumentNullException(nameof(queueName));
+			
 			var producer = new RabbitMQProducer(exchangeName, queueName);
 
 			services.TryAddSingleton<IRabbitMQProducer<TPayload>>(provider =>
@@ -39,12 +45,23 @@ namespace Phema.RabbitMQ
 					.FirstOrDefault(ex => ex.Name == producer.ExchangeName);
 
 				if (exchange != null)
+				{
 					channel.ExchangeDeclareNoWait(
 						exchange.Name,
 						exchange.Type,
 						exchange.Durable,
 						exchange.AutoDelete,
 						exchange.Arguments);
+
+					foreach (var binding in exchange.BoundExchanges)
+					{
+						channel.ExchangeBindNoWait(
+							binding.ExchangeName,
+							exchange.Name,
+							binding.RoutingKey ?? binding.ExchangeName,
+							binding.Arguments);
+					}
+				}
 
 				channel.QueueBindNoWait(
 					producer.QueueName,

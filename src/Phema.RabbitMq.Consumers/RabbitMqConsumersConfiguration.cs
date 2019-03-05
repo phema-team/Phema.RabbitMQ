@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -26,6 +27,9 @@ namespace Phema.RabbitMQ
 		public IRabbitMQConsumerConfiguration AddConsumer<TPayload, TPayloadConsumer>(string queueName)
 			where TPayloadConsumer : class, IRabbitMQConsumer<TPayload>
 		{
+			if (queueName is null)
+				throw new ArgumentNullException(nameof(queueName));
+			
 			services.TryAddScoped<TPayloadConsumer>();
 
 			var consumer = new RabbitMQConsumer<TPayload, TPayloadConsumer>(queueName);

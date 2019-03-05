@@ -1,3 +1,5 @@
+using System;
+
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Phema.RabbitMQ
@@ -18,6 +20,9 @@ namespace Phema.RabbitMQ
 
 		public IRabbitMQQueueConfiguration AddQueue(string queueName)
 		{
+			if (queueName is null)
+				throw new ArgumentNullException(nameof(queueName));
+			
 			var queue = new RabbitMQQueue(queueName);
 
 			services.Configure<RabbitMQQueuesOptions>(options =>

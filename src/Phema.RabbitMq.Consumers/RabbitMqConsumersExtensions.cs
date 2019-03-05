@@ -10,7 +10,10 @@ namespace Phema.RabbitMQ
 			this IRabbitMQConfiguration configuration,
 			Action<IRabbitMQConsumersConfiguration> options)
 		{
-			options(new RabbitMQConsumersConfiguration(configuration.Services));
+			if (options is null)
+				throw new ArgumentNullException(nameof(options));
+			
+			options.Invoke(new RabbitMQConsumersConfiguration(configuration.Services));
 
 			configuration.Services.AddHostedService<RabbitMQConsumersHostedService>();
 

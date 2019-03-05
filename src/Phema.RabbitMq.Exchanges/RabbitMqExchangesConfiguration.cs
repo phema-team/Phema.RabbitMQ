@@ -1,3 +1,5 @@
+using System;
+
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Phema.RabbitMQ
@@ -18,6 +20,12 @@ namespace Phema.RabbitMQ
 
 		public IRabbitMQExchangeConfiguration AddExchange(string exchangeType, string exchangeName)
 		{
+			if (exchangeType is null)
+				throw new ArgumentNullException(nameof(exchangeType));
+			
+			if (exchangeName is null)
+				throw new ArgumentNullException(nameof(exchangeName));
+			
 			var exchange = new RabbitMQExchange(exchangeType, exchangeName);
 
 			services.Configure<RabbitMQExchangesOptions>(options =>

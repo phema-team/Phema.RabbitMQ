@@ -22,6 +22,25 @@ namespace Phema.RabbitMQ.Consumers.Tests
 	public class RabbitMQConsumersExtensionsTests
 	{
 		[Fact]
+		public void UXTest()
+		{
+			var services = new ServiceCollection();
+			
+			services.AddPhemaRabbitMQ("instance")
+				.AddConsumers(options =>
+					options.AddConsumer<TestPayload, TestPayloadConsumer>("queuename")
+						.WithTag("consumertag")
+						.WithPrefetch(0)
+						.WithConsumers(1)
+						.Exclusive()
+						.NoLocal()
+						.AutoAck()
+						.Requeue(true)
+						.WithArgument("x-argument", "value")
+						.WithPriority(10));
+		}
+		
+		[Fact]
 		public void ConsumersRegistered()
 		{
 			var services = new ServiceCollection();

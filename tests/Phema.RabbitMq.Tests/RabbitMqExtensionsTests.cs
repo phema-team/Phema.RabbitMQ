@@ -29,9 +29,6 @@ namespace TestProject1
 
 			var connection = Assert.Single(services.Where(s => s.ServiceType == typeof(IConnection)));
 			Assert.Equal(ServiceLifetime.Singleton, connection.Lifetime);
-
-			var channel = Assert.Single(services.Where(s => s.ServiceType == typeof(IModel)));
-			Assert.Equal(ServiceLifetime.Scoped, channel.Lifetime);
 		}
 	}
 }

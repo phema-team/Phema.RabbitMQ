@@ -8,7 +8,10 @@ namespace Phema.RabbitMQ
 			this IRabbitMQConfiguration configuration,
 			Action<IRabbitMQExchangesConfiguration> options)
 		{
-			options(new RabbitMQExchangesConfiguration(configuration.Services));
+			if (options is null)
+				throw new ArgumentNullException(nameof(options));
+			
+			options.Invoke(new RabbitMQExchangesConfiguration(configuration.Services));
 			return configuration;
 		}
 	}

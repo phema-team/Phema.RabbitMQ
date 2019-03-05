@@ -1,35 +1,21 @@
-using RabbitMQ.Client;
+using System;
 
 namespace Phema.RabbitMQ
 {
 	public static class RabbitMQExchangeConfigurationExtensions
 	{
-		public static IRabbitMQExchangeConfiguration AddDirectExchange(
-			this IRabbitMQExchangesConfiguration configuration,
-			string exchangeName)
+		/// <summary>
+		/// Sets alternate-exchange argument. When message can't be routed in current exchange,
+		/// instead of mark as dead, publish to specified exchange
+		/// </summary>
+		public static IRabbitMQExchangeConfiguration WithAlternateExchange(
+			this IRabbitMQExchangeConfiguration configuration,
+			string exchange)
 		{
-			return configuration.AddExchange(ExchangeType.Direct, exchangeName);
-		}
+			if (exchange is null)
+				throw new ArgumentNullException(nameof(exchange));
 
-		public static IRabbitMQExchangeConfiguration AddFanoutExchange(
-			this IRabbitMQExchangesConfiguration configuration,
-			string exchangeName)
-		{
-			return configuration.AddExchange(ExchangeType.Fanout, exchangeName);
-		}
-
-		public static IRabbitMQExchangeConfiguration AddTopicExchange(
-			this IRabbitMQExchangesConfiguration configuration,
-			string exchangeName)
-		{
-			return configuration.AddExchange(ExchangeType.Topic, exchangeName);
-		}
-
-		public static IRabbitMQExchangeConfiguration AddHeadersExchange(
-			this IRabbitMQExchangesConfiguration configuration,
-			string exchangeName)
-		{
-			return configuration.AddExchange(ExchangeType.Headers, exchangeName);
+			return configuration.WithArgument("alternate-exchange", exchange);
 		}
 	}
 }

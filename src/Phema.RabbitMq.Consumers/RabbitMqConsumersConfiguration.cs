@@ -6,35 +6,35 @@ using Microsoft.Extensions.Options;
 
 using RabbitMQ.Client;
 
-namespace Phema.RabbitMq
+namespace Phema.RabbitMQ
 {
-	public interface IRabbitMqConsumersConfiguration
+	public interface IRabbitMQConsumersConfiguration
 	{
-		IRabbitMqConsumerConfiguration AddConsumer<TPayload, TPayloadConsumer>(string queueName)
-			where TPayloadConsumer : class, IRabbitMqConsumer<TPayload>;
+		IRabbitMQConsumerConfiguration AddConsumer<TPayload, TPayloadConsumer>(string queueName)
+			where TPayloadConsumer : class, IRabbitMQConsumer<TPayload>;
 	}
 
-	internal sealed class RabbitMqConsumersConfiguration : IRabbitMqConsumersConfiguration
+	internal sealed class RabbitMQConsumersConfiguration : IRabbitMQConsumersConfiguration
 	{
 		private readonly IServiceCollection services;
 
-		public RabbitMqConsumersConfiguration(IServiceCollection services)
+		public RabbitMQConsumersConfiguration(IServiceCollection services)
 		{
 			this.services = services;
 		}
 
-		public IRabbitMqConsumerConfiguration AddConsumer<TPayload, TPayloadConsumer>(string queueName)
-			where TPayloadConsumer : class, IRabbitMqConsumer<TPayload>
+		public IRabbitMQConsumerConfiguration AddConsumer<TPayload, TPayloadConsumer>(string queueName)
+			where TPayloadConsumer : class, IRabbitMQConsumer<TPayload>
 		{
 			services.TryAddScoped<TPayloadConsumer>();
 
-			var consumer = new RabbitMqConsumer<TPayload, TPayloadConsumer>(queueName);
+			var consumer = new RabbitMQConsumer<TPayload, TPayloadConsumer>(queueName);
 
-			services.Configure<RabbitMqConsumersOptions>(options =>
+			services.Configure<RabbitMQConsumersOptions>(options =>
 			{
 				options.ConsumerDispatchers.Add(provider =>
 				{
-					var queue = provider.GetRequiredService<IOptions<RabbitMqQueuesOptions>>()
+					var queue = provider.GetRequiredService<IOptions<RabbitMQQueuesOptions>>()
 						.Value
 						.Queues
 						.FirstOrDefault(q => q.Name == consumer.QueueName);
@@ -59,11 +59,11 @@ namespace Phema.RabbitMq
 							consumer.NoLocal,
 							consumer.Exclusive,
 							consumer.Arguments,
-							new RabbitMqBasicConsumer<TPayload, TPayloadConsumer>(provider, channel, consumer));
+							new RabbitMQBasicConsumer<TPayload, TPayloadConsumer>(provider, channel, consumer));
 				});
 			});
 
-			return new RabbitMqConsumerConsiguration(consumer);
+			return new RabbitMQConsumerConfiguration(consumer);
 		}
 	}
 }

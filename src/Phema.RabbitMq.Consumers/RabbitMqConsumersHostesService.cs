@@ -8,14 +8,14 @@ using Microsoft.Extensions.Options;
 
 using RabbitMQ.Client;
 
-namespace Phema.RabbitMq
+namespace Phema.RabbitMQ
 {
-	internal sealed class RabbitMqConsumersHostedService : IHostedService
+	internal sealed class RabbitMQConsumersHostedService : IHostedService
 	{
 		private readonly IConnection connection;
 		private readonly IServiceProvider provider;
 
-		public RabbitMqConsumersHostedService(IServiceProvider provider, IConnection connection)
+		public RabbitMQConsumersHostedService(IServiceProvider provider, IConnection connection)
 		{
 			this.provider = provider;
 			this.connection = connection;
@@ -23,7 +23,7 @@ namespace Phema.RabbitMq
 
 		public Task StartAsync(CancellationToken cancellationToken)
 		{
-			var options = provider.GetRequiredService<IOptions<RabbitMqConsumersOptions>>().Value;
+			var options = provider.GetRequiredService<IOptions<RabbitMQConsumersOptions>>().Value;
 
 			foreach (var dispatcher in options.ConsumerDispatchers)
 				dispatcher(provider);

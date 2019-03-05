@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 
-namespace Phema.RabbitMq
+namespace Phema.RabbitMQ
 {
-	internal sealed class RabbitMqConsumersOptions
+	internal sealed class RabbitMQConsumersOptions
 	{
-		public RabbitMqConsumersOptions()
+		public RabbitMQConsumersOptions()
 		{
 			ConsumerDispatchers = new List<Action<IServiceProvider>>();
 		}

@@ -1,14 +1,14 @@
 using System.Collections.Generic;
 
-namespace Phema.RabbitMq
+namespace Phema.RabbitMQ
 {
-	internal sealed class RabbitMqExchangesOptions
+	internal sealed class RabbitMQExchangesOptions
 	{
-		public RabbitMqExchangesOptions()
+		public RabbitMQExchangesOptions()
 		{
-			Exchanges = new List<RabbitMqExchange>();
+			Exchanges = new List<RabbitMQExchange>();
 		}
 
-		public IList<RabbitMqExchange> Exchanges { get; }
+		public IList<RabbitMQExchange> Exchanges { get; }
 	}
 }

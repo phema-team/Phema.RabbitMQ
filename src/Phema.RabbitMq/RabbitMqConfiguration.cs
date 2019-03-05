@@ -1,15 +1,15 @@
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Phema.RabbitMq
+namespace Phema.RabbitMQ
 {
-	public interface IRabbitMqConfiguration
+	public interface IRabbitMQConfiguration
 	{
 		IServiceCollection Services { get; }
 	}
 
-	internal sealed class RabbitMqConfiguration : IRabbitMqConfiguration
+	internal sealed class RabbitMQConfiguration : IRabbitMQConfiguration
 	{
-		public RabbitMqConfiguration(IServiceCollection services)
+		public RabbitMQConfiguration(IServiceCollection services)
 		{
 			Services = services;
 		}

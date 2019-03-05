@@ -1,4 +1,4 @@
 using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("Phema.RabbitMq.Producers")]
-[assembly: InternalsVisibleTo("Phema.RabbitMq.Exchanges.Tests")]
+[assembly: InternalsVisibleTo("Phema.RabbitMQ.Producers")]
+[assembly: InternalsVisibleTo("Phema.RabbitMQ.Exchanges.Tests")]

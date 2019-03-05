@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Threading.Tasks;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -8,31 +9,31 @@ using Phema.Serialization;
 
 using RabbitMQ.Client;
 
-namespace Phema.RabbitMq
+namespace Phema.RabbitMQ
 {
-	public interface IRabbitMqProducersConfiguration
+	public interface IRabbitMQProducersConfiguration
 	{
-		IRabbitMqProducerConfiguration AddProducer<TPayload>(string exchangeName, string queueName);
+		IRabbitMQProducerConfiguration AddProducer<TPayload>(string exchangeName, string queueName);
 	}
 
-	internal sealed class RabbitMqProducersConfiguration : IRabbitMqProducersConfiguration
+	internal sealed class RabbitMQProducersConfiguration : IRabbitMQProducersConfiguration
 	{
 		private readonly IServiceCollection services;
 
-		public RabbitMqProducersConfiguration(IServiceCollection services)
+		public RabbitMQProducersConfiguration(IServiceCollection services)
 		{
 			this.services = services;
 		}
 
-		public IRabbitMqProducerConfiguration AddProducer<TPayload>(string exchangeName, string queueName)
+		public IRabbitMQProducerConfiguration AddProducer<TPayload>(string exchangeName, string queueName)
 		{
-			var producer = new RabbitMqProducer(exchangeName, queueName);
+			var producer = new RabbitMQProducer(exchangeName, queueName);
 
-			services.TryAddSingleton<IRabbitMqProducer<TPayload>>(provider =>
+			services.TryAddSingleton<IRabbitMQProducer<TPayload>>(provider =>
 			{
 				var channel = provider.GetRequiredService<IConnection>().CreateModel();
 
-				var exchange = provider.GetRequiredService<IOptions<RabbitMqExchangesOptions>>()
+				var exchange = provider.GetRequiredService<IOptions<RabbitMQExchangesOptions>>()
 					.Value
 					.Exchanges
 					.FirstOrDefault(ex => ex.Name == producer.ExchangeName);
@@ -45,44 +46,23 @@ namespace Phema.RabbitMq
 						exchange.AutoDelete,
 						exchange.Arguments);
 
-				var queue = provider.GetRequiredService<IOptions<RabbitMqQueuesOptions>>()
-					.Value
-					.Queues
-					.FirstOrDefault(q => q.Name == producer.QueueName);
-
-				if (queue != null)
-					channel.QueueDeclareNoWait(
-						queue.Name,
-						queue.Durable,
-						queue.Exclusive,
-						queue.AutoDelete,
-						queue.Arguments);
-
 				channel.QueueBindNoWait(
 					producer.QueueName,
 					producer.ExchangeName,
-					producer.QueueName,
-					queue?.Arguments);
+					producer.RoutingKey ?? producer.QueueName,
+					// Queue arguments for topic exchange
+					producer.Arguments);
 
 				var serializer = provider.GetRequiredService<ISerializer>();
 
 				var properties = channel.CreateBasicProperties();
-
 				foreach (var property in producer.Properties)
 					property(properties);
 
-				return new RabbitMqProducer<TPayload>(payload =>
-				{
-					channel.BasicPublish(
-						producer.ExchangeName,
-						producer.QueueName,
-						producer.Mandatory,
-						properties,
-						serializer.Serialize(payload));
-				});
+				return new RabbitMQProducer<TPayload>(channel, serializer, producer, properties);
 			});
 
-			return new RabbitMqProducerConfiguration(producer);
+			return new RabbitMQProducerConfiguration(producer);
 		}
 	}
 }

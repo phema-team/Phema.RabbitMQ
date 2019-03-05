@@ -1,9 +1,9 @@
 using System.Threading.Tasks;
 
-namespace Phema.RabbitMq
+namespace Phema.RabbitMQ
 {
-	public interface IRabbitMqConsumer<TPayload>
+	public interface IRabbitMQConsumer<TPayload>
 	{
-		ValueTask Consume(TPayload payload);
+		Task Consume(TPayload payload);
 	}
 }

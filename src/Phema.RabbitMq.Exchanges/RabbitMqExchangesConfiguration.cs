@@ -1,29 +1,29 @@
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Phema.RabbitMq
+namespace Phema.RabbitMQ
 {
-	public interface IRabbitMqExchangesConfiguration
+	public interface IRabbitMQExchangesConfiguration
 	{
-		IRabbitMqExchangeConfiguration AddExchange(string exchangeType, string exchangeName);
+		IRabbitMQExchangeConfiguration AddExchange(string exchangeType, string exchangeName);
 	}
 
-	internal sealed class RabbitMqExchangesConfiguration : IRabbitMqExchangesConfiguration
+	internal sealed class RabbitMQExchangesConfiguration : IRabbitMQExchangesConfiguration
 	{
 		private readonly IServiceCollection services;
 
-		public RabbitMqExchangesConfiguration(IServiceCollection services)
+		public RabbitMQExchangesConfiguration(IServiceCollection services)
 		{
 			this.services = services;
 		}
 
-		public IRabbitMqExchangeConfiguration AddExchange(string exchangeType, string exchangeName)
+		public IRabbitMQExchangeConfiguration AddExchange(string exchangeType, string exchangeName)
 		{
-			var exchange = new RabbitMqExchange(exchangeType, exchangeName);
+			var exchange = new RabbitMQExchange(exchangeType, exchangeName);
 
-			services.Configure<RabbitMqExchangesOptions>(options =>
+			services.Configure<RabbitMQExchangesOptions>(options =>
 				options.Exchanges.Add(exchange));
 
-			return new RabbitMqExchangeConfiguration(exchange);
+			return new RabbitMQExchangeConfiguration(exchange);
 		}
 	}
 }

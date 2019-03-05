@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 
-namespace Phema.RabbitMq
+namespace Phema.RabbitMQ
 {
-	internal sealed class RabbitMqExchange
+	internal sealed class RabbitMQExchange
 	{
-		public RabbitMqExchange(string type, string name)
+		public RabbitMQExchange(string type, string name)
 		{
 			Type = type;
 			Name = name;

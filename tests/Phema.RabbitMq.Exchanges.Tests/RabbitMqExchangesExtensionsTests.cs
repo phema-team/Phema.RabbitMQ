@@ -5,16 +5,16 @@ using RabbitMQ.Client;
 
 using Xunit;
 
-namespace Phema.RabbitMq.Exchanges.Tests
+namespace Phema.RabbitMQ.Exchanges.Tests
 {
-	public class RabbitMqExchangesExtensionsTests
+	public class RabbitMQExchangesExtensionsTests
 	{
 		[Fact]
 		public void ExchangesRegistered()
 		{
 			var services = new ServiceCollection();
 
-			services.AddPhemaRabbitMq("instance")
+			services.AddPhemaRabbitMQ("instance")
 				.AddExchanges(options =>
 					options.AddDirectExchange("amq.direct")
 						.Durable()
@@ -23,7 +23,7 @@ namespace Phema.RabbitMq.Exchanges.Tests
 
 			var provider = services.BuildServiceProvider();
 
-			var exchanges = provider.GetRequiredService<IOptions<RabbitMqExchangesOptions>>().Value;
+			var exchanges = provider.GetRequiredService<IOptions<RabbitMQExchangesOptions>>().Value;
 
 			var exchange = Assert.Single(exchanges.Exchanges);
 
@@ -43,12 +43,12 @@ namespace Phema.RabbitMq.Exchanges.Tests
 		{
 			var services = new ServiceCollection();
 
-			services.AddPhemaRabbitMq("instance")
+			services.AddPhemaRabbitMQ("instance")
 				.AddExchanges(options => options.AddFanoutExchange("amq.direct"));
 
 			var provider = services.BuildServiceProvider();
 
-			var exchanges = provider.GetRequiredService<IOptions<RabbitMqExchangesOptions>>().Value;
+			var exchanges = provider.GetRequiredService<IOptions<RabbitMQExchangesOptions>>().Value;
 
 			var exchange = Assert.Single(exchanges.Exchanges);
 

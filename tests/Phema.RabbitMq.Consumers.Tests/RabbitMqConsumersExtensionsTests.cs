@@ -6,27 +6,27 @@ using Microsoft.Extensions.Options;
 
 using Xunit;
 
-namespace Phema.RabbitMq.Consumers.Tests
+namespace Phema.RabbitMQ.Consumers.Tests
 {
 	public class TestPayload
 	{
 	}
 
-	public class TestPayloadConsumer : IRabbitMqConsumer<TestPayload>
+	public class TestPayloadConsumer : IRabbitMQConsumer<TestPayload>
 	{
-		public async ValueTask Consume(TestPayload payload)
+		public async Task Consume(TestPayload payload)
 		{
 		}
 	}
 
-	public class RabbitMqConsumersExtensionsTests
+	public class RabbitMQConsumersExtensionsTests
 	{
 		[Fact]
 		public void ConsumersRegistered()
 		{
 			var services = new ServiceCollection();
 
-			services.AddPhemaRabbitMq("instance")
+			services.AddPhemaRabbitMQ("instance")
 				.AddConsumers(options =>
 					options.AddConsumer<TestPayload, TestPayloadConsumer>("queuename")
 						.WithTag("consumertag")
@@ -42,7 +42,7 @@ namespace Phema.RabbitMq.Consumers.Tests
 			
 			var provider = services.BuildServiceProvider();
 
-			var consumers = provider.GetRequiredService<IOptions<RabbitMqConsumersOptions>>().Value;
+			var consumers = provider.GetRequiredService<IOptions<RabbitMQConsumersOptions>>().Value;
 
 			Assert.Single(consumers.ConsumerDispatchers);
 		}

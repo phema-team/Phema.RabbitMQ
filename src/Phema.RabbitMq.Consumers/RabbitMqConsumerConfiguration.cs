@@ -1,70 +1,70 @@
-namespace Phema.RabbitMq
+namespace Phema.RabbitMQ
 {
-	public interface IRabbitMqConsumerConfiguration
+	public interface IRabbitMQConsumerConfiguration
 	{
-		IRabbitMqConsumerConfiguration WithTag(string consumerTag);
-		IRabbitMqConsumerConfiguration WithPrefetch(ushort prefetch);
-		IRabbitMqConsumerConfiguration WithConsumers(int consumers);
-		IRabbitMqConsumerConfiguration Exclusive();
-		IRabbitMqConsumerConfiguration NoLocal();
-		IRabbitMqConsumerConfiguration AutoAck();
-		IRabbitMqConsumerConfiguration Requeue(bool multiple = false);
-		IRabbitMqConsumerConfiguration WithArgument(string argument, string value);
+		IRabbitMQConsumerConfiguration WithTag(string consumerTag);
+		IRabbitMQConsumerConfiguration WithPrefetch(ushort prefetch);
+		IRabbitMQConsumerConfiguration WithConsumers(int consumers);
+		IRabbitMQConsumerConfiguration Exclusive();
+		IRabbitMQConsumerConfiguration NoLocal();
+		IRabbitMQConsumerConfiguration AutoAck();
+		IRabbitMQConsumerConfiguration Requeue(bool multiple = false);
+		IRabbitMQConsumerConfiguration WithArgument(string argument, string value);
 	}
 
-	internal sealed class RabbitMqConsumerConsiguration : IRabbitMqConsumerConfiguration
+	internal sealed class RabbitMQConsumerConfiguration : IRabbitMQConsumerConfiguration
 	{
-		private readonly RabbitMqConsumer consumer;
+		private readonly RabbitMQConsumer consumer;
 
-		public RabbitMqConsumerConsiguration(RabbitMqConsumer consumer)
+		public RabbitMQConsumerConfiguration(RabbitMQConsumer consumer)
 		{
 			this.consumer = consumer;
 		}
 
-		public IRabbitMqConsumerConfiguration WithTag(string consumerTag)
+		public IRabbitMQConsumerConfiguration WithTag(string consumerTag)
 		{
 			consumer.Tag = consumerTag;
 			return this;
 		}
 
-		public IRabbitMqConsumerConfiguration WithPrefetch(ushort prefetch)
+		public IRabbitMQConsumerConfiguration WithPrefetch(ushort prefetch)
 		{
 			consumer.Prefetch = prefetch;
 			return this;
 		}
 
-		public IRabbitMqConsumerConfiguration WithConsumers(int consumers)
+		public IRabbitMQConsumerConfiguration WithConsumers(int consumers)
 		{
 			consumer.Consumers = consumers;
 			return this;
 		}
 
-		public IRabbitMqConsumerConfiguration Exclusive()
+		public IRabbitMQConsumerConfiguration Exclusive()
 		{
 			consumer.Exclusive = true;
 			return this;
 		}
 
-		public IRabbitMqConsumerConfiguration NoLocal()
+		public IRabbitMQConsumerConfiguration NoLocal()
 		{
 			consumer.NoLocal = true;
 			return this;
 		}
 
-		public IRabbitMqConsumerConfiguration AutoAck()
+		public IRabbitMQConsumerConfiguration AutoAck()
 		{
 			consumer.AutoAck = true;
 			return this;
 		}
 
-		public IRabbitMqConsumerConfiguration Requeue(bool multiple = false)
+		public IRabbitMQConsumerConfiguration Requeue(bool multiple = false)
 		{
 			consumer.Requeue = true;
 			consumer.Multiple = multiple;
 			return this;
 		}
 
-		public IRabbitMqConsumerConfiguration WithArgument(string argument, string value)
+		public IRabbitMQConsumerConfiguration WithArgument(string argument, string value)
 		{
 			consumer.Arguments.Add(argument, value);
 			return this;

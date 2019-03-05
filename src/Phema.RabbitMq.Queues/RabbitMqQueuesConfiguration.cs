@@ -1,29 +1,29 @@
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Phema.RabbitMq
+namespace Phema.RabbitMQ
 {
-	public interface IRabbitMqQueuesConfiguration
+	public interface IRabbitMQQueuesConfiguration
 	{
-		IRabbitMqQueueConfiguration AddQueue(string queueName);
+		IRabbitMQQueueConfiguration AddQueue(string queueName);
 	}
 
-	internal sealed class RabbitMqQueuesConfiguration : IRabbitMqQueuesConfiguration
+	internal sealed class RabbitMQQueuesConfiguration : IRabbitMQQueuesConfiguration
 	{
 		private readonly IServiceCollection services;
 
-		public RabbitMqQueuesConfiguration(IServiceCollection services)
+		public RabbitMQQueuesConfiguration(IServiceCollection services)
 		{
 			this.services = services;
 		}
 
-		public IRabbitMqQueueConfiguration AddQueue(string queueName)
+		public IRabbitMQQueueConfiguration AddQueue(string queueName)
 		{
-			var queue = new RabbitMqQueue(queueName);
+			var queue = new RabbitMQQueue(queueName);
 
-			services.Configure<RabbitMqQueuesOptions>(options =>
+			services.Configure<RabbitMQQueuesOptions>(options =>
 				options.Queues.Add(queue));
 
-			return new RabbitMqQueueConfiguration(queue);
+			return new RabbitMQQueueConfiguration(queue);
 		}
 	}
 }

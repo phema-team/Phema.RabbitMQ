@@ -3,13 +3,13 @@ using System.Text;
 
 using Microsoft.Extensions.Logging;
 
-namespace Phema.RabbitMq
+namespace Phema.RabbitMQ
 {
-	internal static class RabbitMqConsumerLoggerExtensions
+	internal static class RabbitMQConsumerLoggerExtensions
 	{
 		public static void LogConsumerException<TPayload>(
 			this ILogger logger,
-			RabbitMqConsumer consumer,
+			RabbitMQConsumer consumer,
 			Exception exception,
 			bool redelivered)
 		{

@@ -5,11 +5,11 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 using RabbitMQ.Client;
 
-namespace Phema.RabbitMq
+namespace Phema.RabbitMQ
 {
-	public static class RabbitMqExtensions
+	public static class RabbitMQExtensions
 	{
-		public static IRabbitMqConfiguration AddPhemaRabbitMq(
+		public static IRabbitMQConfiguration AddPhemaRabbitMQ(
 			this IServiceCollection services,
 			string instanceName,
 			Action<ConnectionFactory> options = null)
@@ -26,7 +26,7 @@ namespace Phema.RabbitMq
 				return factory.CreateConnection(instanceName);
 			});
 
-			return new RabbitMqConfiguration(services);
+			return new RabbitMQConfiguration(services);
 		}
 	}
 }

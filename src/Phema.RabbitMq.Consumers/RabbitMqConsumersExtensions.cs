@@ -2,17 +2,17 @@ using System;
 
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Phema.RabbitMq
+namespace Phema.RabbitMQ
 {
-	public static class RabbitMqConsumersExtensions
+	public static class RabbitMQConsumersExtensions
 	{
-		public static IRabbitMqConfiguration AddConsumers(
-			this IRabbitMqConfiguration configuration,
-			Action<IRabbitMqConsumersConfiguration> options)
+		public static IRabbitMQConfiguration AddConsumers(
+			this IRabbitMQConfiguration configuration,
+			Action<IRabbitMQConsumersConfiguration> options)
 		{
-			options(new RabbitMqConsumersConfiguration(configuration.Services));
+			options(new RabbitMQConsumersConfiguration(configuration.Services));
 
-			configuration.Services.AddHostedService<RabbitMqConsumersHostedService>();
+			configuration.Services.AddHostedService<RabbitMQConsumersHostedService>();
 
 			return configuration;
 		}

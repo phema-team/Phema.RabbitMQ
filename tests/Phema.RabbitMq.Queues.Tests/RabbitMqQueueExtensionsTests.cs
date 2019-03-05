@@ -3,16 +3,16 @@ using Microsoft.Extensions.Options;
 
 using Xunit;
 
-namespace Phema.RabbitMq.Queues.Tests
+namespace Phema.RabbitMQ.Queues.Tests
 {
-	public class RabbitMqQueueExtensionsTests
+	public class RabbitMQQueueExtensionsTests
 	{
 		[Fact]
 		public void QueuesRegistered()
 		{
 			var services = new ServiceCollection();
 
-			services.AddPhemaRabbitMq("instance")
+			services.AddPhemaRabbitMQ("instance")
 				.AddQueues(options =>
 					options.AddQueue("queuename")
 						.Durable()
@@ -22,7 +22,7 @@ namespace Phema.RabbitMq.Queues.Tests
 
 			var provider = services.BuildServiceProvider();
 
-			var queues = provider.GetRequiredService<IOptions<RabbitMqQueuesOptions>>().Value;
+			var queues = provider.GetRequiredService<IOptions<RabbitMQQueuesOptions>>().Value;
 
 			var queue = Assert.Single(queues.Queues);
 
@@ -42,12 +42,12 @@ namespace Phema.RabbitMq.Queues.Tests
 		{
 			var services = new ServiceCollection();
 
-			services.AddPhemaRabbitMq("instance")
+			services.AddPhemaRabbitMQ("instance")
 				.AddQueues(options => options.AddQueue("queuename"));
 
 			var provider = services.BuildServiceProvider();
 
-			var queues = provider.GetRequiredService<IOptions<RabbitMqQueuesOptions>>().Value;
+			var queues = provider.GetRequiredService<IOptions<RabbitMQQueuesOptions>>().Value;
 
 			var queue = Assert.Single(queues.Queues);
 

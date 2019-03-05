@@ -1,14 +1,14 @@
 using System;
 
-namespace Phema.RabbitMq
+namespace Phema.RabbitMQ
 {
-	public static class RabbitMqQueueExtensions
+	public static class RabbitMQQueueExtensions
 	{
-		public static IRabbitMqConfiguration AddQueues(
-			this IRabbitMqConfiguration configuration,
-			Action<IRabbitMqQueuesConfiguration> options)
+		public static IRabbitMQConfiguration AddQueues(
+			this IRabbitMQConfiguration configuration,
+			Action<IRabbitMQQueuesConfiguration> options)
 		{
-			options.Invoke(new RabbitMqQueuesConfiguration(configuration.Services));
+			options.Invoke(new RabbitMQQueuesConfiguration(configuration.Services));
 			return configuration;
 		}
 	}

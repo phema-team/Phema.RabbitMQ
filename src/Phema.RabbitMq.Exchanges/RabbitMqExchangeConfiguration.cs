@@ -1,34 +1,34 @@
-namespace Phema.RabbitMq
+namespace Phema.RabbitMQ
 {
-	public interface IRabbitMqExchangeConfiguration
+	public interface IRabbitMQExchangeConfiguration
 	{
-		IRabbitMqExchangeConfiguration Durable();
-		IRabbitMqExchangeConfiguration AutoDelete();
-		IRabbitMqExchangeConfiguration WithArgument(string argument, string value);
+		IRabbitMQExchangeConfiguration Durable();
+		IRabbitMQExchangeConfiguration AutoDelete();
+		IRabbitMQExchangeConfiguration WithArgument(string argument, string value);
 	}
 
-	internal sealed class RabbitMqExchangeConfiguration : IRabbitMqExchangeConfiguration
+	internal sealed class RabbitMQExchangeConfiguration : IRabbitMQExchangeConfiguration
 	{
-		private readonly RabbitMqExchange exchange;
+		private readonly RabbitMQExchange exchange;
 
-		public RabbitMqExchangeConfiguration(RabbitMqExchange exchange)
+		public RabbitMQExchangeConfiguration(RabbitMQExchange exchange)
 		{
 			this.exchange = exchange;
 		}
 
-		public IRabbitMqExchangeConfiguration Durable()
+		public IRabbitMQExchangeConfiguration Durable()
 		{
 			exchange.Durable = true;
 			return this;
 		}
 
-		public IRabbitMqExchangeConfiguration AutoDelete()
+		public IRabbitMQExchangeConfiguration AutoDelete()
 		{
 			exchange.AutoDelete = true;
 			return this;
 		}
 
-		public IRabbitMqExchangeConfiguration WithArgument(string argument, string value)
+		public IRabbitMQExchangeConfiguration WithArgument(string argument, string value)
 		{
 			exchange.Arguments.Add(argument, value);
 			return this;

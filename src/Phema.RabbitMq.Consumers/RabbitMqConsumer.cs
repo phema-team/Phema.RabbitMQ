@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 
-namespace Phema.RabbitMq
+namespace Phema.RabbitMQ
 {
-	internal class RabbitMqConsumer
+	internal class RabbitMQConsumer
 	{
-		protected RabbitMqConsumer(string queueName)
+		protected RabbitMQConsumer(string queueName)
 		{
 			QueueName = queueName;
 			Consumers = 1;
@@ -23,9 +23,9 @@ namespace Phema.RabbitMq
 		public IDictionary<string, object> Arguments { get; }
 	}
 
-	internal sealed class RabbitMqConsumer<TPayload, TPayloadConsumer> : RabbitMqConsumer
+	internal sealed class RabbitMQConsumer<TPayload, TPayloadConsumer> : RabbitMQConsumer
 	{
-		public RabbitMqConsumer(string queueName) : base(queueName)
+		public RabbitMQConsumer(string queueName) : base(queueName)
 		{
 		}
 	}

@@ -2,13 +2,13 @@
 
 	<PropertyGroup>
 		<TargetFramework>netcoreapp2.2</TargetFramework>
-		<RootNamespace>Phema.RabbitMq</RootNamespace>
+		<RootNamespace>Phema.RabbitMQ</RootNamespace>
 		<LangVersion>7.3</LangVersion>
-		<Version>2.0.7</Version>
+		<Version>2.0.8</Version>
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Phema.RabbitMq\Phema.RabbitMq.csproj" />
+	  <ProjectReference Include="..\Phema.RabbitMQ\Phema.RabbitMQ.csproj" />
 	</ItemGroup>
 
 </Project>

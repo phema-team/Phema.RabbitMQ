@@ -1,5 +1,5 @@
 using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("Phema.RabbitMq.Consumers")]
-[assembly: InternalsVisibleTo("Phema.RabbitMq.Producers")]
-[assembly: InternalsVisibleTo("Phema.RabbitMq.Queues.Tests")]
+[assembly: InternalsVisibleTo("Phema.RabbitMQ.Consumers")]
+[assembly: InternalsVisibleTo("Phema.RabbitMQ.Producers")]
+[assembly: InternalsVisibleTo("Phema.RabbitMQ.Queues.Tests")]

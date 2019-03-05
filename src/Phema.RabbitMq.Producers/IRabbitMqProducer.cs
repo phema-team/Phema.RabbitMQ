@@ -1,33 +1,72 @@
 using System;
 using System.Threading.Tasks;
 
-namespace Phema.RabbitMq
+using Phema.Serialization;
+
+using RabbitMQ.Client;
+
+namespace Phema.RabbitMQ
 {
-	public interface IRabbitMqProducer<TPayload>
+	public interface IRabbitMQProducer<TPayload>
 	{
-		ValueTask Produce(TPayload payload);
+		Task Produce(TPayload payload);
+
+		Task BatchProduce(params TPayload[] payloads);
 	}
 
-	internal sealed class RabbitMqProducer<TPayload> : IRabbitMqProducer<TPayload>
+	internal sealed class RabbitMQProducer<TPayload> : IRabbitMQProducer<TPayload>
 	{
-		// Each generic type have unique lock object
+		// Each generic type have unique lock object, because unique channel
 		private static readonly object @lock = new object();
+		
+		private readonly RabbitMQProducer producer;
+		private readonly IModel channel;
+		private readonly ISerializer serializer;
+		private readonly IBasicProperties properties;
 
-		private readonly Action<TPayload> producer;
-
-		public RabbitMqProducer(Action<TPayload> producer)
+		public RabbitMQProducer(IModel channel, ISerializer serializer, RabbitMQProducer producer, IBasicProperties properties)
 		{
 			this.producer = producer;
+			this.channel = channel;
+			this.serializer = serializer;
+			this.properties = properties;
 		}
 
-		public ValueTask Produce(TPayload payload)
+		public Task Produce(TPayload payload)
 		{
 			lock (@lock)
 			{
-				producer(payload);
+				channel.BasicPublish(
+					producer.ExchangeName,
+					producer.RoutingKey ?? producer.QueueName,
+					producer.Mandatory,
+					properties,
+					serializer.Serialize(payload));
 			}
 
-			return new ValueTask();
+			return Task.CompletedTask;
+		}
+
+		public Task BatchProduce(params TPayload[] payloads)
+		{
+			var batch = channel.CreateBasicPublishBatch();
+
+			foreach (var payload in payloads)
+			{
+				batch.Add(
+					producer.ExchangeName,
+					producer.RoutingKey ?? producer.QueueName,
+					producer.Mandatory,
+					properties,
+					serializer.Serialize(payload));
+			}
+
+			lock (@lock)
+			{
+				batch.Publish();
+			}
+
+			return Task.CompletedTask;
 		}
 	}
 }

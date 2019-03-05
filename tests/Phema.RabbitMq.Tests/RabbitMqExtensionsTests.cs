@@ -2,7 +2,7 @@ using System.Linq;
 
 using Microsoft.Extensions.DependencyInjection;
 
-using Phema.RabbitMq;
+using Phema.RabbitMQ;
 
 using RabbitMQ.Client;
 
@@ -10,14 +10,14 @@ using Xunit;
 
 namespace TestProject1
 {
-	public class RabbitMqExtensionsTests
+	public class RabbitMQExtensionsTests
 	{
 		[Fact]
 		public void ByDefaultConnectionFactoryDispatchAsyncConsumers()
 		{
 			var services = new ServiceCollection();
 
-			services.AddPhemaRabbitMq("instance", options => Assert.True(options.DispatchConsumersAsync));
+			services.AddPhemaRabbitMQ("instance", options => Assert.True(options.DispatchConsumersAsync));
 		}
 
 		[Fact]
@@ -25,7 +25,7 @@ namespace TestProject1
 		{
 			var services = new ServiceCollection();
 
-			services.AddPhemaRabbitMq("instance", options => options.HostName = "hostname");
+			services.AddPhemaRabbitMQ("instance", options => options.HostName = "hostname");
 
 			var connection = Assert.Single(services.Where(s => s.ServiceType == typeof(IConnection)));
 			Assert.Equal(ServiceLifetime.Singleton, connection.Lifetime);

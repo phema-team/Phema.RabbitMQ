@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 
-namespace Phema.RabbitMq
+namespace Phema.RabbitMQ
 {
-	internal sealed class RabbitMqQueue
+	internal sealed class RabbitMQQueue
 	{
-		public RabbitMqQueue(string name)
+		public RabbitMQQueue(string name)
 		{
 			Name = name;
 			Arguments = new Dictionary<string, object>();

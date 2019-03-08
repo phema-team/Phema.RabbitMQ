@@ -1,9 +1,8 @@
-using System;
 using System.Threading.Tasks;
 
+using RabbitMQ.Client;
 using Phema.Serialization;
 
-using RabbitMQ.Client;
 
 namespace Phema.RabbitMQ
 {
@@ -24,7 +23,11 @@ namespace Phema.RabbitMQ
 		private readonly ISerializer serializer;
 		private readonly IBasicProperties properties;
 
-		public RabbitMQProducer(IModel channel, ISerializer serializer, RabbitMQProducer producer, IBasicProperties properties)
+		public RabbitMQProducer(
+			IModel channel,
+			ISerializer serializer,
+			RabbitMQProducer producer,
+			IBasicProperties properties)
 		{
 			this.producer = producer;
 			this.channel = channel;

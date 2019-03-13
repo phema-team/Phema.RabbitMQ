@@ -26,7 +26,7 @@ namespace Phema.RabbitMQ.Producers.Tests
 						.WithArgument("argument", "value")
 						.WithTimeToLive(2_000)
 						.WithHeader("header", "value")
-						.WithProperties(p => p.Persistent = true));
+						.WithProperty(p => p.Persistent = true));
 		}
 		
 		[Fact]
@@ -38,7 +38,7 @@ namespace Phema.RabbitMQ.Producers.Tests
 				.AddProducers(options =>
 					options.AddProducer<TestPayload>("exchangename", "queuename")
 						.Mandatory()
-						.WithProperties(p => p.Persistent = true));
+						.WithProperty(p => p.Persistent = true));
 
 			Assert.Single(services.Where(s => s.ServiceType == typeof(IRabbitMQProducer<TestPayload>)));
 		}

@@ -14,8 +14,9 @@ namespace Phema.RabbitMQ.Consumers.Tests
 
 	public class TestPayloadConsumer : IRabbitMQConsumer<TestPayload>
 	{
-		public async Task Consume(TestPayload payload)
+		public Task Consume(TestPayload payload)
 		{
+			return Task.CompletedTask;
 		}
 	}
 
@@ -31,7 +32,7 @@ namespace Phema.RabbitMQ.Consumers.Tests
 					options.AddConsumer<TestPayload, TestPayloadConsumer>("queuename")
 						.WithTag("consumertag")
 						.WithPrefetch(0)
-						.WithConsumers(1)
+						.WithCount(1)
 						.Exclusive()
 						.NoLocal()
 						.AutoAck()
@@ -50,7 +51,7 @@ namespace Phema.RabbitMQ.Consumers.Tests
 					options.AddConsumer<TestPayload, TestPayloadConsumer>("queuename")
 						.WithTag("consumertag")
 						.WithPrefetch(0)
-						.WithConsumers(1)
+						.WithCount(1)
 						.Exclusive()
 						.NoLocal()
 						.AutoAck()

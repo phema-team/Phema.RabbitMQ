@@ -1,8 +1,6 @@
-using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-
 using Phema.Serialization;
-
 using RabbitMQ.Client;
 
 namespace Phema.RabbitMQ
@@ -11,20 +9,24 @@ namespace Phema.RabbitMQ
 	{
 		Task Produce(TPayload payload);
 
-		Task BatchProduce(params TPayload[] payloads);
+		Task BatchProduce(IEnumerable<TPayload> payloads);
 	}
 
 	internal sealed class RabbitMQProducer<TPayload> : IRabbitMQProducer<TPayload>
 	{
 		// Each generic type have unique lock object, because unique channel
-		private static readonly object @lock = new object();
-		
-		private readonly RabbitMQProducer producer;
+		private static readonly object Lock = new object();
+
+		private readonly RabbitMQProducerMetadata producer;
 		private readonly IModel channel;
 		private readonly ISerializer serializer;
 		private readonly IBasicProperties properties;
 
-		public RabbitMQProducer(IModel channel, ISerializer serializer, RabbitMQProducer producer, IBasicProperties properties)
+		public RabbitMQProducer(
+			IModel channel,
+			ISerializer serializer,
+			RabbitMQProducerMetadata producer,
+			IBasicProperties properties)
 		{
 			this.producer = producer;
 			this.channel = channel;
@@ -34,7 +36,7 @@ namespace Phema.RabbitMQ
 
 		public Task Produce(TPayload payload)
 		{
-			lock (@lock)
+			lock (Lock)
 			{
 				channel.BasicPublish(
 					producer.ExchangeName,
@@ -47,7 +49,7 @@ namespace Phema.RabbitMQ
 			return Task.CompletedTask;
 		}
 
-		public Task BatchProduce(params TPayload[] payloads)
+		public Task BatchProduce(IEnumerable<TPayload> payloads)
 		{
 			var batch = channel.CreateBasicPublishBatch();
 
@@ -61,7 +63,7 @@ namespace Phema.RabbitMQ
 					serializer.Serialize(payload));
 			}
 
-			lock (@lock)
+			lock (Lock)
 			{
 				batch.Publish();
 			}

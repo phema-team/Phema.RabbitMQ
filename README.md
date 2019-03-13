@@ -1,4 +1,4 @@
-# Phema.Rabbit
+# Phema.RabbitMQ
 
 ```csharp
 services.AddPhema...Serializer();

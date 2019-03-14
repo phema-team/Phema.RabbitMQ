@@ -18,12 +18,6 @@ namespace Phema.RabbitMQ
 
 		public string InstanceName { get; set; }
 		public ConnectionFactory ConnectionFactory { get; }
-
-		internal void Deconstruct(out string instanceName, out ConnectionFactory connectionFactory)
-		{
-			instanceName = InstanceName;
-			connectionFactory = ConnectionFactory;
-		}
 	}
 
 	public static class RabbitMQExtensions
@@ -36,8 +30,9 @@ namespace Phema.RabbitMQ
 
 			services.TryAddSingleton(provider =>
 			{
-				var (instanceName, connectionFactory) = provider.GetRequiredService<IOptions<RabbitMQOptions>>().Value;
-				return connectionFactory.CreateConnection(instanceName);
+				var rabbitMQ = provider.GetRequiredService<IOptions<RabbitMQOptions>>().Value;
+				
+				return rabbitMQ.ConnectionFactory.CreateConnection(rabbitMQ.InstanceName);
 			});
 
 			return new RabbitMQBuilder(services);

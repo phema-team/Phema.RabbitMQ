@@ -47,7 +47,7 @@ services.AddPhemaRabbitMQ("instance_name", factory => ...)
       .WithTag("consumer_tag"));
 ```
 
-- Assemblies
+- Packages
   - `Phema.RabbitMQ.Core` - Core builders and extensions
   - `Phema.RabbitMQ.Producers` - Producers and exchanges
   - `Phema.RabbitMQ.Consumers` - Consumers and queues

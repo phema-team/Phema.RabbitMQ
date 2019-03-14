@@ -22,6 +22,7 @@ services.AddPhemaRabbitMQ("instance_name", factory => ...)
     options.AddDirectExchange("exchange_name")
       .Durable()
       .AutoDelete()
+      .WithAlternateExchange("alternate_exchange_name")
       .WithBoundExchange("bound_exchange", builder =>
         builder.WithRoutingKey("bound_exchange_routing_key")
           .WithArgument("x-custom-argument", "some-value")))

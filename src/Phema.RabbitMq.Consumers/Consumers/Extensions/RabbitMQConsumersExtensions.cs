@@ -14,9 +14,9 @@ namespace Phema.RabbitMQ
 				throw new ArgumentNullException(nameof(options));
 
 			var services = builder.Services;
-			
+
 			options.Invoke(new RabbitMQConsumersBuilder(services));
-			
+
 			services.AddHostedService<RabbitMQConsumersHostedService>();
 			services.TryAddScoped<IRabbitMQConsumerFactory, RabbitMQConsumerFactory>();
 

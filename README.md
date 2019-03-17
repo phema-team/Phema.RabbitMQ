@@ -3,6 +3,7 @@
 ```csharp
 services.AddPhema...Serializer();
 
+// Consumers
 services.AddPhemaRabbitMQ("instance_name", factory => ...)
   .AddQueues(options =>
     options.AddQueue("queue_name")
@@ -18,6 +19,19 @@ services.AddPhemaRabbitMQ("instance_name", factory => ...)
       .WithDeadLetterExchange("dead_letter_exchange")
       .WithDeadLetterRoutingKey("dead_letter_routing_key")
       .WithRejectPublishOnOverflow())
+  .AddConsumers(options =>
+    options.AddConsumer<Payload, PayloadConsumer>("queue_name")
+      .Exclusive()
+      .Requeue()
+      .AutoAck()
+      .NoLocal()
+      .WithCount(2)
+      .WithPriority(5)
+      .WithPrefetch(10)
+      .WithTag("consumer_tag"));
+
+// Producers
+services.AddPhemaRabbitMQ("instance_name", factory => ...)
   .AddExchanges(options =>
     options.AddDirectExchange("exchange_name")
       .Durable()
@@ -31,20 +45,10 @@ services.AddPhemaRabbitMQ("instance_name", factory => ...)
       .Mandatory()
       .Persistent()
       .WithPriority(10)
-      .WithTimeToLive(10_000)
+      .WithMessageTimeToLive(10_000)
       .WithHeader("header", "value")
       .WithRoutingKey("routing_key")
-      .WithArgument("x-custom-argument", "some-value"))
-  .AddConsumers(options =>
-    options.AddConsumer<Payload, PayloadConsumer>("queue_name")
-      .Exclusive()
-      .Requeue()
-      .AutoAck()
-      .NoLocal()
-      .WithCount(2)
-      .WithPriority(5)
-      .WithPrefetch(10)
-      .WithTag("consumer_tag"));
+      .WithArgument("x-custom-argument", "some-value"));
 ```
 
 - Packages
@@ -62,9 +66,17 @@ services.AddPhemaRabbitMQ("instance_name", factory => ...)
 - Consumers
   - Use `IRabbitMqConsumer<TPayload>`
   - All consumers start in `IHostedService`
+  - Use `IRabbitMQConsumerFactory` for custom message handling
+
+- Supported
+  - Consumers and producers priority
+  - Queue and message time to live
+  - Max message count and size limitations
+  - Dead letter exchanges
+  - Reject-publish when queue is full
 
 - Tips
-  - `IConnection` - singleton dependency in `IServiceProvider` per instance
+  - `IConnection` - singleton dependency in `IServiceProvider` per instance for custom use cases
   - Used `ISerializer` from `Phema.Serialization...` search for nuget package to add
   - `RoutingKey` is `Queue.Name` by default
   - Do not remove `DispatchConsumersAsync`

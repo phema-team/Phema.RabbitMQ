@@ -1,6 +1,5 @@
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
-
 using Xunit;
 
 namespace Phema.RabbitMQ.Producers.Tests
@@ -11,24 +10,6 @@ namespace Phema.RabbitMQ.Producers.Tests
 
 	public class RabbitMQProducersExtensionsTests
 	{
-		[Fact]
-		public void UXTest()
-		{
-			var services = new ServiceCollection();
-			
-			services.AddPhemaRabbitMQ("instance")
-				.AddProducers(options =>
-					options.AddProducer<TestPayload>("exchangename", "queuename")
-						.Mandatory()
-						.Persistent()
-						.WithPriority(10)
-						.WithRoutingKey("routingkey")
-						.WithArgument("argument", "value")
-						.WithMessageTimeToLive(2_000)
-						.WithHeader("header", "value")
-						.WithProperty(p => p.Persistent = true));
-		}
-		
 		[Fact]
 		public void ProducersRegistered()
 		{
@@ -41,6 +22,24 @@ namespace Phema.RabbitMQ.Producers.Tests
 						.WithProperty(p => p.Persistent = true));
 
 			Assert.Single(services.Where(s => s.ServiceType == typeof(IRabbitMQProducer<TestPayload>)));
+		}
+
+		[Fact]
+		public void UXTest()
+		{
+			var services = new ServiceCollection();
+
+			services.AddPhemaRabbitMQ("instance")
+				.AddProducers(options =>
+					options.AddProducer<TestPayload>("exchangename", "queuename")
+						.Mandatory()
+						.Persistent()
+						.WithPriority(10)
+						.WithRoutingKey("routingkey")
+						.WithArgument("argument", "value")
+						.WithMessageTimeToLive(2_000)
+						.WithHeader("header", "value")
+						.WithProperty(p => p.Persistent = true));
 		}
 	}
 }

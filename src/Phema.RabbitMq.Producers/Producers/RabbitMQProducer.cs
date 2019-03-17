@@ -16,11 +16,11 @@ namespace Phema.RabbitMQ
 	{
 		// Each generic type has unique lock object, because unique channel
 		private static readonly object Lock = new object();
-
-		private readonly IRabbitMQProducerMetadata metadata;
+		
 		private readonly IModel channel;
 		private readonly ISerializer serializer;
 		private readonly IBasicProperties properties;
+		private readonly IRabbitMQProducerMetadata metadata;
 
 		public RabbitMQProducer(
 			IModel channel,
@@ -28,8 +28,8 @@ namespace Phema.RabbitMQ
 			IRabbitMQProducerMetadata metadata,
 			IBasicProperties properties)
 		{
-			this.metadata = metadata;
 			this.channel = channel;
+			this.metadata = metadata;
 			this.serializer = serializer;
 			this.properties = properties;
 		}
@@ -54,19 +54,15 @@ namespace Phema.RabbitMQ
 			var batch = channel.CreateBasicPublishBatch();
 
 			foreach (var payload in payloads)
-			{
 				batch.Add(
 					metadata.ExchangeName,
 					metadata.RoutingKey ?? metadata.QueueName,
 					metadata.Mandatory,
 					properties,
 					serializer.Serialize(payload));
-			}
 
 			lock (Lock)
-			{
 				batch.Publish();
-			}
 
 			return Task.CompletedTask;
 		}

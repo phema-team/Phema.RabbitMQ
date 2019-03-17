@@ -20,7 +20,7 @@ namespace Phema.RabbitMQ
 			this.provider = provider;
 			this.serializer = serializer;
 		}
-		
+
 		public IBasicConsumer CreateConsumer<TPayload, TPayloadConsumer>(IModel channel, IRabbitMQConsumerMetadata metadata)
 			where TPayloadConsumer : IRabbitMQConsumer<TPayload>
 		{

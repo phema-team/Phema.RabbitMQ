@@ -11,7 +11,7 @@ namespace Phema.RabbitMQ
 	public interface IRabbitMQProducersBuilder
 	{
 		/// <summary>
-		/// Add new producer
+		///   Add new producer
 		/// </summary>
 		IRabbitMQProducerBuilder AddProducer<TPayload>(string exchangeName, string queueName = null);
 	}
@@ -54,13 +54,11 @@ namespace Phema.RabbitMQ
 						exchange.Arguments);
 
 					foreach (var binding in exchange.ExchangeBindings)
-					{
 						channel.ExchangeBindNoWait(
 							binding.ExchangeName,
 							exchange.Name,
 							binding.RoutingKey ?? binding.ExchangeName,
 							binding.Arguments);
-					}
 				}
 
 				channel.QueueBindNoWait(

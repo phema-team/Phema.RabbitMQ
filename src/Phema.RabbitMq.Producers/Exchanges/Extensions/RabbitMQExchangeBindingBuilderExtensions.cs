@@ -3,7 +3,7 @@ namespace Phema.RabbitMQ
 	public static class RabbitMQExchangeBindingBuilderExtensions
 	{
 		/// <summary>
-		/// Sets exchange to exchange routing key
+		///   Sets exchange to exchange routing key
 		/// </summary>
 		public static IRabbitMQExchangeBindingBuilder WithRoutingKey(
 			this IRabbitMQExchangeBindingBuilder builder,
@@ -15,7 +15,7 @@ namespace Phema.RabbitMQ
 		}
 
 		/// <summary>
-		/// Sets RabbitMQ arguments. Allow multiple
+		///   Sets RabbitMQ arguments. Allow multiple
 		/// </summary>
 		public static IRabbitMQExchangeBindingBuilder WithArgument<TValue>(
 			this IRabbitMQExchangeBindingBuilder builder,

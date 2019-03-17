@@ -1,11 +1,7 @@
 using System.Linq;
-
 using Microsoft.Extensions.DependencyInjection;
-
 using Phema.RabbitMQ;
-
 using RabbitMQ.Client;
-
 using Xunit;
 
 namespace TestProject1

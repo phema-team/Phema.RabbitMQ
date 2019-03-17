@@ -6,7 +6,7 @@ namespace Phema.RabbitMQ
 	public static class RabbitMQExchangesBuilderExtensions
 	{
 		/// <summary>
-		/// Sets exchange type to direct
+		///   Sets exchange type to direct
 		/// </summary>
 		public static IRabbitMQExchangeBuilder AddDirectExchange(
 			this IRabbitMQExchangesBuilder configuration,
@@ -19,7 +19,7 @@ namespace Phema.RabbitMQ
 		}
 
 		/// <summary>
-		/// Sets exchange type to fanout
+		///   Sets exchange type to fanout
 		/// </summary>
 		public static IRabbitMQExchangeBuilder AddFanoutExchange(
 			this IRabbitMQExchangesBuilder configuration,
@@ -32,7 +32,7 @@ namespace Phema.RabbitMQ
 		}
 
 		/// <summary>
-		/// Sets exchange type to topic
+		///   Sets exchange type to topic
 		/// </summary>
 		public static IRabbitMQExchangeBuilder AddTopicExchange(
 			this IRabbitMQExchangesBuilder configuration,
@@ -45,7 +45,7 @@ namespace Phema.RabbitMQ
 		}
 
 		/// <summary>
-		/// Sets exchange type to headers
+		///   Sets exchange type to headers
 		/// </summary>
 		public static IRabbitMQExchangeBuilder AddHeadersExchange(
 			this IRabbitMQExchangesBuilder configuration,

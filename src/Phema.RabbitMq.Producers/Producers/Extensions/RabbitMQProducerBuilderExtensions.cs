@@ -6,7 +6,7 @@ namespace Phema.RabbitMQ
 	public static class RabbitMQProducerBuilderExtensions
 	{
 		/// <summary>
-		/// Sets message routing key
+		///   Sets message routing key
 		/// </summary>
 		public static IRabbitMQProducerBuilder WithRoutingKey(
 			this IRabbitMQProducerBuilder builder,
@@ -17,7 +17,7 @@ namespace Phema.RabbitMQ
 		}
 
 		/// <summary>
-		/// Sets RabbitMQ arguments. Allow multiple
+		///   Sets RabbitMQ arguments. Allow multiple
 		/// </summary>
 		public static IRabbitMQProducerBuilder WithArgument<TValue>(
 			this IRabbitMQProducerBuilder builder,
@@ -29,7 +29,7 @@ namespace Phema.RabbitMQ
 		}
 
 		/// <summary>
-		/// Sets messages as 'must be routed'
+		///   Sets messages as 'must be routed'
 		/// </summary>
 		public static IRabbitMQProducerBuilder Mandatory(this IRabbitMQProducerBuilder builder)
 		{
@@ -38,7 +38,7 @@ namespace Phema.RabbitMQ
 		}
 
 		/// <summary>
-		/// Sets producer property
+		///   Sets producer property
 		/// </summary>
 		public static IRabbitMQProducerBuilder WithProperty(
 			this IRabbitMQProducerBuilder builder,
@@ -49,7 +49,7 @@ namespace Phema.RabbitMQ
 		}
 
 		/// <summary>
-		/// Sets message persistence
+		///   Sets message persistence
 		/// </summary>
 		public static IRabbitMQProducerBuilder Persistent(this IRabbitMQProducerBuilder builder)
 		{
@@ -57,7 +57,7 @@ namespace Phema.RabbitMQ
 		}
 
 		/// <summary>
-		/// Sets message priority. Means clamp(message-priority, 0, queue-max-priority)
+		///   Sets message priority. Means clamp(message-priority, 0, queue-max-priority)
 		/// </summary>
 		public static IRabbitMQProducerBuilder WithPriority(
 			this IRabbitMQProducerBuilder builder,
@@ -67,7 +67,7 @@ namespace Phema.RabbitMQ
 		}
 
 		/// <summary>
-		/// Sets message time to live
+		///   Sets message time to live
 		/// </summary>
 		public static IRabbitMQProducerBuilder WithMessageTimeToLive(
 			this IRabbitMQProducerBuilder builder,
@@ -77,7 +77,7 @@ namespace Phema.RabbitMQ
 		}
 
 		/// <summary>
-		/// Sets message header
+		///   Sets message header
 		/// </summary>
 		public static IRabbitMQProducerBuilder WithHeader<TValue>(
 			this IRabbitMQProducerBuilder builder,

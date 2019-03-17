@@ -5,7 +5,7 @@ namespace Phema.RabbitMQ
 	public static class RabbitMQConsumerBuilderExtensions
 	{
 		/// <summary>
-		/// Sets consumer tag used in queue consumers
+		///   Sets consumer tag used in queue consumers
 		/// </summary>
 		public static IRabbitMQConsumerBuilder WithTag(
 			this IRabbitMQConsumerBuilder builder,
@@ -18,9 +18,9 @@ namespace Phema.RabbitMQ
 
 			return builder;
 		}
-		
+
 		/// <summary>
-		/// Sets message count prefetch
+		///   Sets message count prefetch
 		/// </summary>
 		public static IRabbitMQConsumerBuilder WithPrefetch(
 			this IRabbitMQConsumerBuilder builder,
@@ -32,7 +32,7 @@ namespace Phema.RabbitMQ
 		}
 
 		/// <summary>
-		/// Sets count parallel consumers
+		///   Sets count parallel consumers
 		/// </summary>
 		public static IRabbitMQConsumerBuilder WithCount(
 			this IRabbitMQConsumerBuilder builder,
@@ -44,7 +44,7 @@ namespace Phema.RabbitMQ
 		}
 
 		/// <summary>
-		/// Sets exclusive consumer for queue
+		///   Sets exclusive consumer for queue
 		/// </summary>
 		public static IRabbitMQConsumerBuilder Exclusive(this IRabbitMQConsumerBuilder builder)
 		{
@@ -53,17 +53,17 @@ namespace Phema.RabbitMQ
 		}
 
 		/// <summary>
-		/// Sets no-local flag. If true, rabbitmq will not send messages to the connection that published them
+		///   Sets no-local flag. If true, rabbitmq will not send messages to the connection that published them
 		/// </summary>
 		public static IRabbitMQConsumerBuilder NoLocal(this IRabbitMQConsumerBuilder builder)
 		{
 			builder.Metadata.NoLocal = true;
-			
+
 			return builder;
 		}
 
 		/// <summary>
-		/// Sets auto-ack flag. If true, consumer will ack messages when received
+		///   Sets auto-ack flag. If true, consumer will ack messages when received
 		/// </summary>
 		public static IRabbitMQConsumerBuilder AutoAck(this IRabbitMQConsumerBuilder builder)
 		{
@@ -73,7 +73,7 @@ namespace Phema.RabbitMQ
 		}
 
 		/// <summary>
-		/// Requeue message when fail to consume.
+		///   Requeue message when fail to consume.
 		/// </summary>
 		public static IRabbitMQConsumerBuilder Requeue(
 			this IRabbitMQConsumerBuilder builder,
@@ -86,7 +86,7 @@ namespace Phema.RabbitMQ
 		}
 
 		/// <summary>
-		/// Sets RabbitMQ arguments. Allow multiple
+		///   Sets RabbitMQ arguments. Allow multiple
 		/// </summary>
 		public static IRabbitMQConsumerBuilder WithArgument<TValue>(
 			this IRabbitMQConsumerBuilder builder,
@@ -100,10 +100,10 @@ namespace Phema.RabbitMQ
 				throw new ArgumentException($"Argument {argument} already registered", nameof(argument));
 
 			builder.Metadata.Arguments.Add(argument, value);
-			
+
 			return builder;
 		}
-		
+
 		public static IRabbitMQConsumerBuilder WithPriority(
 			this IRabbitMQConsumerBuilder configuration,
 			byte priority)

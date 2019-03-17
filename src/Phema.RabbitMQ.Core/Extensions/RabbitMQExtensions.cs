@@ -31,7 +31,7 @@ namespace Phema.RabbitMQ
 			services.TryAddSingleton(provider =>
 			{
 				var rabbitMQ = provider.GetRequiredService<IOptions<RabbitMQOptions>>().Value;
-				
+
 				return rabbitMQ.ConnectionFactory.CreateConnection(rabbitMQ.InstanceName);
 			});
 

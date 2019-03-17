@@ -7,7 +7,7 @@ namespace Phema.RabbitMQ
 	public interface IRabbitMQExchangesBuilder
 	{
 		/// <summary>
-		/// Register new exchange
+		///   Register new exchange
 		/// </summary>
 		IRabbitMQExchangeBuilder AddExchange(string exchangeType, string exchangeName);
 	}

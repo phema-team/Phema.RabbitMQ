@@ -5,7 +5,7 @@ namespace Phema.RabbitMQ
 	public static class RabbitMQQueueBuilderExtensions
 	{
 		/// <summary>
-		/// Sets queue durability 
+		///   Sets queue durability
 		/// </summary>
 		public static IRabbitMQQueueBuilder Durable(this IRabbitMQQueueBuilder builder)
 		{
@@ -15,7 +15,7 @@ namespace Phema.RabbitMQ
 		}
 
 		/// <summary>
-		/// Sets queue as exclusive for consumers
+		///   Sets queue as exclusive for consumers
 		/// </summary>
 		public static IRabbitMQQueueBuilder Exclusive(this IRabbitMQQueueBuilder builder)
 		{
@@ -25,7 +25,7 @@ namespace Phema.RabbitMQ
 		}
 
 		/// <summary>
-		/// Sets auto-delete flag to queue
+		///   Sets auto-delete flag to queue
 		/// </summary>
 		public static IRabbitMQQueueBuilder AutoDelete(this IRabbitMQQueueBuilder builder)
 		{
@@ -35,7 +35,7 @@ namespace Phema.RabbitMQ
 		}
 
 		/// <summary>
-		/// Sets RabbitMQ arguments. Allow multiple
+		///   Sets RabbitMQ arguments. Allow multiple
 		/// </summary>
 		public static IRabbitMQQueueBuilder WithArgument<TValue>(
 			this IRabbitMQQueueBuilder builder,
@@ -48,7 +48,8 @@ namespace Phema.RabbitMQ
 		}
 
 		/// <summary>
-		/// Sets x-max-length argument. When queue message limit reached, see <see cref="RabbitMQQueueBuilderExtensions.WithRejectPublishOnOverflow"/>
+		///   Sets x-max-length argument. When queue message limit reached, see
+		///   <see cref="RabbitMQQueueBuilderExtensions.WithRejectPublishOnOverflow" />
 		/// </summary>
 		public static IRabbitMQQueueBuilder WithMaxMessageCount(
 			this IRabbitMQQueueBuilder configuration,
@@ -58,7 +59,7 @@ namespace Phema.RabbitMQ
 		}
 
 		/// <summary>
-		/// Sets x-max-length-bytes argument. When size limit reached, message will be marked as dead
+		///   Sets x-max-length-bytes argument. When size limit reached, message will be marked as dead
 		/// </summary>
 		public static IRabbitMQQueueBuilder WithMaxMessageSize(
 			this IRabbitMQQueueBuilder configuration,
@@ -68,7 +69,7 @@ namespace Phema.RabbitMQ
 		}
 
 		/// <summary>
-		/// Sets x-dead-letter-exchange argument. When message is dead, send to x-dead-letter-exchange
+		///   Sets x-dead-letter-exchange argument. When message is dead, send to x-dead-letter-exchange
 		/// </summary>
 		public static IRabbitMQQueueBuilder WithDeadLetterExchange(
 			this IRabbitMQQueueBuilder configuration,
@@ -82,7 +83,7 @@ namespace Phema.RabbitMQ
 
 
 		/// <summary>
-		/// Sets x-dead-letter-routing-key argument. When message is dead, send to x-dead-letter-exchange with routing key
+		///   Sets x-dead-letter-routing-key argument. When message is dead, send to x-dead-letter-exchange with routing key
 		/// </summary>
 		public static IRabbitMQQueueBuilder WithDeadLetterRoutingKey(
 			this IRabbitMQQueueBuilder configuration,
@@ -95,7 +96,7 @@ namespace Phema.RabbitMQ
 		}
 
 		/// <summary>
-		/// Sets x-message-ttl argument. When expires message will be marked as dead
+		///   Sets x-message-ttl argument. When expires message will be marked as dead
 		/// </summary>
 		public static IRabbitMQQueueBuilder WithMessageTimeToLive(
 			this IRabbitMQQueueBuilder configuration,
@@ -105,7 +106,7 @@ namespace Phema.RabbitMQ
 		}
 
 		/// <summary>
-		/// Sets x-expires argument for queue. When expires queue will be deleted
+		///   Sets x-expires argument for queue. When expires queue will be deleted
 		/// </summary>
 		public static IRabbitMQQueueBuilder WithTimeToLive(
 			this IRabbitMQQueueBuilder configuration,
@@ -115,7 +116,7 @@ namespace Phema.RabbitMQ
 		}
 
 		/// <summary>
-		/// Sets x-max-priority argument for queue (default 0)
+		///   Sets x-max-priority argument for queue (default 0)
 		/// </summary>
 		public static IRabbitMQQueueBuilder WithMaxPriority(
 			this IRabbitMQQueueBuilder configuration,
@@ -125,7 +126,7 @@ namespace Phema.RabbitMQ
 		}
 
 		/// <summary>
-		/// Sets x-overflow argument to reject-publish (default drop-head)
+		///   Sets x-overflow argument to reject-publish (default drop-head)
 		/// </summary>
 		public static IRabbitMQQueueBuilder WithRejectPublishOnOverflow(
 			this IRabbitMQQueueBuilder configuration)

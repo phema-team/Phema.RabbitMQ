@@ -10,7 +10,7 @@ namespace Phema.RabbitMQ
 	public interface IRabbitMQConsumersBuilder
 	{
 		/// <summary>
-		/// Register new consumer
+		///   Register new consumer
 		/// </summary>
 		IRabbitMQConsumerBuilder AddConsumer<TPayload, TPayloadConsumer>(string queueName)
 			where TPayloadConsumer : class, IRabbitMQConsumer<TPayload>;

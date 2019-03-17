@@ -1,34 +1,11 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-
 using Xunit;
 
 namespace Phema.RabbitMQ.Queues.Tests
 {
 	public class RabbitMQQueueExtensionsTests
 	{
-		[Fact]
-		public void UXTest()
-		{
-			var services = new ServiceCollection();
-			
-			services.AddPhemaRabbitMQ("instance")
-				.AddQueues(options =>
-					options.AddQueue("queuename")
-						.Durable()
-						.Exclusive()
-						.AutoDelete()
-						.WithArgument("x-argument", "somevalue")
-						.WithMaxMessageCount(10)
-						.WithMaxMessageSize(10000)
-						.WithDeadLetterExchange("exchangename")
-						.WithDeadLetterRoutingKey("routingkey")
-						.WithMessageTimeToLive(10_000)
-						.WithTimeToLive(1_000_000)
-						.WithMaxPriority(12)
-						.WithRejectPublishOnOverflow());
-		}
-		
 		[Fact]
 		public void QueuesRegistered()
 		{
@@ -79,6 +56,28 @@ namespace Phema.RabbitMQ.Queues.Tests
 			Assert.False(queue.AutoDelete);
 
 			Assert.Empty(queue.Arguments);
+		}
+
+		[Fact]
+		public void UXTest()
+		{
+			var services = new ServiceCollection();
+
+			services.AddPhemaRabbitMQ("instance")
+				.AddQueues(options =>
+					options.AddQueue("queuename")
+						.Durable()
+						.Exclusive()
+						.AutoDelete()
+						.WithArgument("x-argument", "somevalue")
+						.WithMaxMessageCount(10)
+						.WithMaxMessageSize(10000)
+						.WithDeadLetterExchange("exchangename")
+						.WithDeadLetterRoutingKey("routingkey")
+						.WithMessageTimeToLive(10_000)
+						.WithTimeToLive(1_000_000)
+						.WithMaxPriority(12)
+						.WithRejectPublishOnOverflow());
 		}
 	}
 }

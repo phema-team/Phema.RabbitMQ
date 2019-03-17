@@ -1,31 +1,12 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-
 using RabbitMQ.Client;
-
 using Xunit;
 
 namespace Phema.RabbitMQ.Exchanges.Tests
 {
 	public class RabbitMQExchangesExtensionsTests
 	{
-		[Fact]
-		public void UXTest()
-		{
-			var services = new ServiceCollection();
-			
-			services.AddPhemaRabbitMQ("instance")
-				.AddExchanges(options =>
-					options.AddDirectExchange("amq.direct")
-						.Durable()
-						.AutoDelete()
-						.WithArgument("x-argument", "value")
-						.WithBoundExchange("exchangename", exchange =>
-							exchange.WithRoutingKey("routingkey")
-								.WithArgument("argument", "value"))
-						.WithAlternateExchange("alternameexchangename"));
-		}
-		
 		[Fact]
 		public void ExchangesRegistered()
 		{
@@ -75,6 +56,23 @@ namespace Phema.RabbitMQ.Exchanges.Tests
 			Assert.False(exchange.AutoDelete);
 
 			Assert.Empty(exchange.Arguments);
+		}
+
+		[Fact]
+		public void UXTest()
+		{
+			var services = new ServiceCollection();
+
+			services.AddPhemaRabbitMQ("instance")
+				.AddExchanges(options =>
+					options.AddDirectExchange("amq.direct")
+						.Durable()
+						.AutoDelete()
+						.WithArgument("x-argument", "value")
+						.WithBoundExchange("exchangename", exchange =>
+							exchange.WithRoutingKey("routingkey")
+								.WithArgument("argument", "value"))
+						.WithAlternateExchange("alternameexchangename"));
 		}
 	}
 }

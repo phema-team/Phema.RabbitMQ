@@ -4,7 +4,7 @@
 		<TargetFramework>netcoreapp3.0</TargetFramework>
 		<RootNamespace>Phema.RabbitMQ</RootNamespace>
 		<LangVersion>8</LangVersion>
-		<Version>3.0.0-preview3</Version>
+		<Version>3.0.0-preview3.0.1</Version>
 	</PropertyGroup>
 
 	<ItemGroup>

@@ -1,30 +1,17 @@
 namespace Phema.RabbitMQ
 {
 	public interface IRabbitMQExchangeBindingBuilder
-		: IRabbitMQRoutingKeyBuilder<IRabbitMQExchangeBindingBuilder>,
-			IRabbitMQWithArgumentBuilder<IRabbitMQExchangeBindingBuilder>
+		: IRabbitMQMetadataBuilder<IRabbitMQExchangeBindingMetadata>
 	{
 	}
 
 	internal sealed class RabbitMQExchangeBindingBuilder : IRabbitMQExchangeBindingBuilder
 	{
-		private readonly RabbitMQExchangeBinding binding;
-
-		public RabbitMQExchangeBindingBuilder(RabbitMQExchangeBinding binding)
+		public RabbitMQExchangeBindingBuilder(IRabbitMQExchangeBindingMetadata metadata)
 		{
-			this.binding = binding;
+			Metadata = metadata;
 		}
 
-		public IRabbitMQExchangeBindingBuilder WithRoutingKey(string routingKey)
-		{
-			binding.RoutingKey = routingKey;
-			return this;
-		}
-
-		public IRabbitMQExchangeBindingBuilder WithArgument<TValue>(string argument, TValue value)
-		{
-			binding.Arguments.Add(argument, value);
-			return this;
-		}
+		public IRabbitMQExchangeBindingMetadata Metadata { get; }
 	}
 }

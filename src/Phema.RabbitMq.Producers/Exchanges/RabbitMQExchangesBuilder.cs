@@ -7,7 +7,7 @@ namespace Phema.RabbitMQ
 	public interface IRabbitMQExchangesBuilder
 	{
 		/// <summary>
-		/// Add new exchange
+		/// Register new exchange
 		/// </summary>
 		IRabbitMQExchangeBuilder AddExchange(string exchangeType, string exchangeName);
 	}
@@ -29,18 +29,17 @@ namespace Phema.RabbitMQ
 			if (exchangeName is null)
 				throw new ArgumentNullException(nameof(exchangeName));
 
-			var exchange = new RabbitMQExchangeMetadata(exchangeType, exchangeName);
-
+			var metadata = new RabbitMQExchangeMetadata(exchangeType, exchangeName);
 
 			services.Configure<RabbitMQExchangesOptions>(options =>
 			{
 				if (options.Exchanges.Any(e => e.Name == exchangeName))
 					throw new ArgumentException($"Exchange {exchangeName} already registered", nameof(exchangeName));
 
-				options.Exchanges.Add(exchange);
+				options.Exchanges.Add(metadata);
 			});
 
-			return new RabbitMQExchangeBuilder(exchange);
+			return new RabbitMQExchangeBuilder(metadata);
 		}
 	}
 }

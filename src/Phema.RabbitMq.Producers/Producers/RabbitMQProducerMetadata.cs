@@ -4,7 +4,17 @@ using RabbitMQ.Client;
 
 namespace Phema.RabbitMQ
 {
-	internal sealed class RabbitMQProducerMetadata
+	public interface IRabbitMQProducerMetadata
+	{
+		string ExchangeName { get; }
+		string QueueName { get; }
+		string RoutingKey { get; set; }
+		bool Mandatory { get; set; }
+		IDictionary<string, object> Arguments { get; }
+		IList<Action<IBasicProperties>> Properties { get; }
+	}
+
+	internal sealed class RabbitMQProducerMetadata : IRabbitMQProducerMetadata
 	{
 		public RabbitMQProducerMetadata(string exchangeName, string queueName)
 		{

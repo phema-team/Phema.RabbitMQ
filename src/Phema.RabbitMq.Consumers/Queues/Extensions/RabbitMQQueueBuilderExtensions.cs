@@ -5,6 +5,49 @@ namespace Phema.RabbitMQ
 	public static class RabbitMQQueueBuilderExtensions
 	{
 		/// <summary>
+		/// Sets queue durability 
+		/// </summary>
+		public static IRabbitMQQueueBuilder Durable(this IRabbitMQQueueBuilder builder)
+		{
+			builder.Metadata.Durable = true;
+
+			return builder;
+		}
+
+		/// <summary>
+		/// Sets queue as exclusive for consumers
+		/// </summary>
+		public static IRabbitMQQueueBuilder Exclusive(this IRabbitMQQueueBuilder builder)
+		{
+			builder.Metadata.Exclusive = true;
+
+			return builder;
+		}
+
+		/// <summary>
+		/// Sets auto-delete flag to queue
+		/// </summary>
+		public static IRabbitMQQueueBuilder AutoDelete(this IRabbitMQQueueBuilder builder)
+		{
+			builder.Metadata.AutoDelete = true;
+
+			return builder;
+		}
+
+		/// <summary>
+		/// Sets RabbitMQ arguments. Allow multiple
+		/// </summary>
+		public static IRabbitMQQueueBuilder WithArgument<TValue>(
+			this IRabbitMQQueueBuilder builder,
+			string argument,
+			TValue value)
+		{
+			builder.Metadata.Arguments.Add(argument, value);
+
+			return builder;
+		}
+
+		/// <summary>
 		/// Sets x-max-length argument. When queue message limit reached, see <see cref="RabbitMQQueueBuilderExtensions.WithRejectPublishOnOverflow"/>
 		/// </summary>
 		public static IRabbitMQQueueBuilder WithMaxMessageCount(

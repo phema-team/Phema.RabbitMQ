@@ -7,7 +7,7 @@ namespace Phema.RabbitMQ
 	public interface IRabbitMQQueuesBuilder
 	{
 		/// <summary>
-		/// Add new queue
+		/// Register new queue
 		/// </summary>
 		IRabbitMQQueueBuilder AddQueue(string queueName);
 	}

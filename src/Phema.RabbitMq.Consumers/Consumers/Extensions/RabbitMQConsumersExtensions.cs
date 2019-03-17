@@ -1,5 +1,6 @@
 using System;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Phema.RabbitMQ
 {
@@ -12,9 +13,12 @@ namespace Phema.RabbitMQ
 			if (options is null)
 				throw new ArgumentNullException(nameof(options));
 
-			options.Invoke(new RabbitMQConsumersBuilder(builder.Services));
-
-			builder.Services.AddHostedService<RabbitMQConsumersHostedService>();
+			var services = builder.Services;
+			
+			options.Invoke(new RabbitMQConsumersBuilder(services));
+			
+			services.AddHostedService<RabbitMQConsumersHostedService>();
+			services.TryAddScoped<IRabbitMQConsumerFactory, RabbitMQConsumerFactory>();
 
 			return builder;
 		}

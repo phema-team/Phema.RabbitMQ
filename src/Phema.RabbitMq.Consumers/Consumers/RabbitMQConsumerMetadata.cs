@@ -2,7 +2,21 @@ using System.Collections.Generic;
 
 namespace Phema.RabbitMQ
 {
-	internal sealed class RabbitMQConsumerMetadata
+	public interface IRabbitMQConsumerMetadata
+	{
+		string QueueName { get; }
+		string Tag { get; set; }
+		ushort Prefetch { get; set; }
+		int Count { get; set; }
+		bool Exclusive { get; set; }
+		bool NoLocal { get; set; }
+		bool AutoAck { get; set; }
+		bool Requeue { get; set; }
+		bool Multiple { get; set; }
+		IDictionary<string, object> Arguments { get; }
+	}
+
+	internal sealed class RabbitMQConsumerMetadata : IRabbitMQConsumerMetadata
 	{
 		public RabbitMQConsumerMetadata(string queueName)
 		{

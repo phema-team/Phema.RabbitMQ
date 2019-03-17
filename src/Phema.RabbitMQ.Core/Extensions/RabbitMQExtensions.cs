@@ -37,7 +37,7 @@ namespace Phema.RabbitMQ
 
 			return new RabbitMQBuilder(services);
 		}
-		
+
 		public static IRabbitMQBuilder AddPhemaRabbitMQ(
 			this IServiceCollection services,
 			string instanceName,

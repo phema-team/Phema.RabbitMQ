@@ -1,5 +1,10 @@
 namespace Phema.RabbitMQ
 {
+	public interface IRabbitMQMetadataBuilder<TMetadata>
+	{
+		TMetadata Metadata { get; }
+	}
+	
 	public interface IRabbitMQDurableBuilder<TBuilder>
 	{
 		/// <summary>
@@ -18,9 +23,7 @@ namespace Phema.RabbitMQ
 
 	public interface IRabbitMQExclusiveBuilder<TBuilder>
 	{
-		/// <summary>
-		/// Sets exclusive 
-		/// </summary>
+		
 		TBuilder Exclusive();
 	}
 

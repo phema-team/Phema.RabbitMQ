@@ -10,7 +10,7 @@ namespace Phema.RabbitMQ
 	public interface IRabbitMQConsumersBuilder
 	{
 		/// <summary>
-		/// Add new consumer
+		/// Register new consumer
 		/// </summary>
 		IRabbitMQConsumerBuilder AddConsumer<TPayload, TPayloadConsumer>(string queueName)
 			where TPayloadConsumer : class, IRabbitMQConsumer<TPayload>;
@@ -56,6 +56,7 @@ namespace Phema.RabbitMQ
 
 					channel.BasicQos(0, consumer.Prefetch, false);
 
+					var factory = provider.GetRequiredService<IRabbitMQConsumerFactory>();
 					for (var index = 0; index < consumer.Count; index++)
 						channel.BasicConsume(
 							consumer.QueueName,
@@ -64,7 +65,7 @@ namespace Phema.RabbitMQ
 							consumer.NoLocal,
 							consumer.Exclusive,
 							consumer.Arguments,
-							new RabbitMQBasicConsumer<TPayload, TPayloadConsumer>(provider, channel, consumer));
+							factory.CreateConsumer<TPayload, TPayloadConsumer>(channel, consumer));
 				});
 			});
 

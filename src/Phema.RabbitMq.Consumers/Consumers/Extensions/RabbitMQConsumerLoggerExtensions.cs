@@ -8,7 +8,7 @@ namespace Phema.RabbitMQ
 	{
 		public static void LogConsumerException<TPayload>(
 			this ILogger logger,
-			RabbitMQConsumerMetadata consumer,
+			IRabbitMQConsumerMetadata consumer,
 			Exception exception,
 			byte[] body,
 			bool redelivered)

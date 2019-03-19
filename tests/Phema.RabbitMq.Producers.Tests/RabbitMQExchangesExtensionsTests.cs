@@ -68,7 +68,6 @@ namespace Phema.RabbitMQ.Exchanges.Tests
 					options.AddDirectExchange("amq.direct")
 						.Durable()
 						.NoWait()
-						.Passive()
 						.Internal()
 						.AutoDelete()
 						.WithArgument("x-argument", "value")

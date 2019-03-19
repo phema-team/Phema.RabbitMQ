@@ -57,12 +57,14 @@ namespace Phema.RabbitMQ
 			var batch = channel.CreateBasicPublishBatch();
 
 			foreach (var payload in payloads)
+			{
 				batch.Add(
 					metadata.ExchangeName,
 					metadata.RoutingKey ?? metadata.QueueName,
 					metadata.Mandatory,
 					properties,
 					serializer.Serialize(payload));
+			}
 
 			return Task.Run(() =>
 			{

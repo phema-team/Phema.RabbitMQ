@@ -20,17 +20,14 @@ namespace Phema.RabbitMQ
 	internal sealed class RabbitMQConsumersBuilder : IRabbitMQConsumersBuilder
 	{
 		private readonly IConnection connection;
-		private readonly string groupName;
 		private readonly IServiceCollection services;
 
 		public RabbitMQConsumersBuilder(
 			IServiceCollection services,
-			IConnection connection,
-			string groupName)
+			IConnection connection)
 		{
 			this.services = services;
 			this.connection = connection;
-			this.groupName = groupName;
 		}
 
 		public IRabbitMQConsumerBuilder AddConsumer<TPayload, TPayloadConsumer>(string queueName)
@@ -41,7 +38,7 @@ namespace Phema.RabbitMQ
 
 			services.TryAddScoped<TPayloadConsumer>();
 
-			var consumer = new RabbitMQConsumerMetadata(queueName) as IRabbitMQConsumerMetadata;
+			var metadata = new RabbitMQConsumerMetadata(queueName) as IRabbitMQConsumerMetadata;
 
 			services.Configure<RabbitMQConsumersOptions>(options =>
 			{
@@ -52,42 +49,51 @@ namespace Phema.RabbitMQ
 					var queue = provider.GetRequiredService<IOptions<RabbitMQQueuesOptions>>()
 						.Value
 						.Queues
-						.FirstOrDefault(q => q.Name == consumer.QueueName);
-
+						.FirstOrDefault(q => q.Name == metadata.QueueName);
+					
 					// It can be already declared somewhere
 					if (queue != null)
 					{
-						channel._Private_QueueDeclare(
-							queue: queue.Name,
-							passive: queue.Passive,
-							durable: queue.Durable,
-							exclusive: queue.Exclusive,
-							autoDelete: queue.AutoDelete,
-							nowait: queue.NoWait,
-							arguments: queue.Arguments);
+						if (queue.NoWait)
+						{
+							channel.QueueDeclareNoWait(
+								queue: metadata.QueueName,
+								durable: queue.Durable,
+								exclusive: queue.Exclusive,
+								autoDelete: queue.AutoDelete,
+								arguments: queue.Arguments);
+						}
+						else
+						{
+							channel.QueueDeclare(
+								queue: metadata.QueueName,
+								durable: queue.Durable,
+								exclusive: queue.Exclusive,
+								autoDelete: queue.AutoDelete,
+								arguments: queue.Arguments);
+						}
 					}
 
-					channel.BasicQos(consumer.PrefetchSize, consumer.PrefetchCount, consumer.Global);
+					// PrefetchSize != 0 not implemented
+					channel.BasicQos(0, metadata.PrefetchCount, metadata.Global);
 
 					var factory = provider.GetRequiredService<IRabbitMQConsumerFactory>();
 
-					for (var index = 0; index < consumer.Count; index++)
+					for (var index = 0; index < metadata.Count; index++)
 					{
 						channel.BasicConsume(
-							queue: groupName == null
-								? consumer.QueueName
-								: $"{groupName}_{consumer.QueueName}",
-							consumer.AutoAck,
-							$"{consumer.Tag}_{index}",
-							consumer.NoLocal,
-							consumer.Exclusive,
-							consumer.Arguments,
-							factory.CreateConsumer<TPayload, TPayloadConsumer>(channel, consumer));
+							queue: metadata.QueueName,
+							metadata.AutoAck,
+							$"{metadata.Tag}_{index}",
+							metadata.NoLocal,
+							metadata.Exclusive,
+							metadata.Arguments,
+							factory.CreateConsumer<TPayload, TPayloadConsumer>(channel, metadata));
 					}
 				});
 			});
 
-			return new RabbitMQConsumerBuilder(consumer);
+			return new RabbitMQConsumerBuilder(metadata);
 		}
 	}
 }

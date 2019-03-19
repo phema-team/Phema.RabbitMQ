@@ -9,7 +9,6 @@ namespace Phema.RabbitMQ
 		bool Durable { get; set; }
 		bool Internal { get; set; }
 		bool NoWait { get; set; }
-		bool Passive { get; set; }
 		bool AutoDelete { get; set; }
 		IDictionary<string, object> Arguments { get; }
 		IList<IRabbitMQExchangeBindingMetadata> ExchangeBindings { get; }
@@ -30,7 +29,6 @@ namespace Phema.RabbitMQ
 		public bool Durable { get; set; }
 		public bool Internal { get; set; }
 		public bool NoWait { get; set; }
-		public bool Passive { get; set; }
 		public bool AutoDelete { get; set; }
 		public IDictionary<string, object> Arguments { get; }
 		public IList<IRabbitMQExchangeBindingMetadata> ExchangeBindings { get; }

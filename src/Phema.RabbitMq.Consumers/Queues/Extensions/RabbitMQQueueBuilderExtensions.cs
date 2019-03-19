@@ -34,15 +34,6 @@ namespace Phema.RabbitMQ
 		}
 
 		/// <summary>
-		///   Sets passive for queue declaration
-		/// </summary>
-		public static IRabbitMQQueueBuilder Passive(this IRabbitMQQueueBuilder builder)
-		{
-			builder.Metadata.Passive = true;
-			return builder;
-		}
-
-		/// <summary>
 		///   Sets auto-delete flag to queue
 		/// </summary>
 		public static IRabbitMQQueueBuilder AutoDelete(this IRabbitMQQueueBuilder builder)

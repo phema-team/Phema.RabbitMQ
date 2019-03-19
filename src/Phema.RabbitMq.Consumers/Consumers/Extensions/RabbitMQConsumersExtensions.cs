@@ -21,7 +21,7 @@ namespace Phema.RabbitMQ
 
 			var connection = builder.ConnectionFactory.CreateConnection(groupName);
 			
-			options.Invoke(new RabbitMQConsumersBuilder(services, connection, groupName));
+			options.Invoke(new RabbitMQConsumersBuilder(services, connection));
 
 			services.AddHostedService<RabbitMQConsumersHostedService>();
 			services.TryAddScoped<IRabbitMQConsumerFactory, RabbitMQConsumerFactory>();

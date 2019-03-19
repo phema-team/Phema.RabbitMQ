@@ -25,16 +25,6 @@ namespace Phema.RabbitMQ
 		}
 
 		/// <summary>
-		///   Sets passive for exchange declaration
-		/// </summary>
-		public static IRabbitMQExchangeBuilder Passive(this IRabbitMQExchangeBuilder builder)
-		{
-			builder.Metadata.Passive = true;
-
-			return builder;
-		}
-
-		/// <summary>
 		///   Sets internal for exchange declaration.
 		///   Exchange can't be accessed from producers directly, only by exchange to exchange bindings
 		/// </summary>

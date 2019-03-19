@@ -36,7 +36,7 @@ namespace Phema.RabbitMQ
 			if (queueName is null)
 				throw new ArgumentNullException(nameof(queueName));
 
-			var producer = new RabbitMQProducerMetadata(exchangeName, queueName);
+			var metadata = new RabbitMQProducerMetadata(exchangeName, queueName);
 
 			services.TryAddSingleton<IRabbitMQProducer<TPayload>>(provider =>
 			{
@@ -45,7 +45,7 @@ namespace Phema.RabbitMQ
 				var exchange = provider.GetRequiredService<IOptions<RabbitMQExchangesOptions>>()
 					.Value
 					.Exchanges
-					.FirstOrDefault(ex => ex.Name == producer.ExchangeName);
+					.FirstOrDefault(ex => ex.Name == metadata.ExchangeName);
 
 				// It can be default exchange or already declared
 				// So no reason to write configuration for it
@@ -54,7 +54,7 @@ namespace Phema.RabbitMQ
 					channel._Private_ExchangeDeclare(
 						exchange: exchange.Name,
 						type: exchange.Type,
-						passive: exchange.Passive,
+						passive: false,
 						durable: exchange.Durable,
 						autoDelete: exchange.AutoDelete,
 						@internal: exchange.Internal,
@@ -62,33 +62,40 @@ namespace Phema.RabbitMQ
 						arguments: exchange.Arguments);
 
 					foreach (var binding in exchange.ExchangeBindings)
+					{
 						channel._Private_ExchangeBind(
 							destination: binding.ExchangeName,
 							source: exchange.Name,
 							routingKey: binding.RoutingKey ?? binding.ExchangeName,
 							nowait: binding.NoWait,
 							arguments: binding.Arguments);
+					}
 				}
 
 				// Should bind queue with exchange, even if not declared,
 				// because of default or already declared
 				channel._Private_QueueBind(
-					queue: producer.QueueName,
-					exchange: producer.ExchangeName,
-					routingKey: producer.RoutingKey ?? producer.QueueName,
+					queue: metadata.QueueName,
+					exchange: metadata.ExchangeName,
+					routingKey: metadata.RoutingKey ?? metadata.QueueName,
 					nowait: exchange?.NoWait ?? false,
-					arguments: producer.Arguments);
+					arguments: metadata.Arguments);
 
 				var serializer = provider.GetRequiredService<ISerializer>();
 
 				var properties = channel.CreateBasicProperties();
-				foreach (var property in producer.Properties)
+				foreach (var property in metadata.Properties)
 					property(properties);
 
-				return new RabbitMQProducer<TPayload>(channel, serializer, producer, properties);
+				if (metadata.WaitForConfirms)
+				{
+					channel.ConfirmSelect();
+				}
+
+				return new RabbitMQProducer<TPayload>(channel, serializer, metadata, properties);
 			});
 
-			return new RabbitMQProducerBuilder(producer);
+			return new RabbitMQProducerBuilder(metadata);
 		}
 	}
 }

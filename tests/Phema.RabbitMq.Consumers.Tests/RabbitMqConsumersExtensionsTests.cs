@@ -30,7 +30,6 @@ namespace Phema.RabbitMQ.Consumers.Tests
 					options.AddConsumer<TestPayload, TestPayloadConsumer>("queuename")
 						.WithTag("consumertag")
 						.WithPrefetchCount(0)
-						.WithPrefetchSize(0)
 						.WithCount(1)
 						.Exclusive()
 						.NoLocal()

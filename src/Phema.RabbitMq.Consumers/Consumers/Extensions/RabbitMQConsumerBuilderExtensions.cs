@@ -33,17 +33,6 @@ namespace Phema.RabbitMQ
 			return builder;
 		}
 		
-		/// <summary>
-		///   Sets message prefetch size
-		/// </summary>
-		public static IRabbitMQConsumerBuilder WithPrefetchSize(
-			this IRabbitMQConsumerBuilder builder,
-			uint size)
-		{
-			builder.Metadata.PrefetchSize = size;
-
-			return builder;
-		}
 
 		/// <summary>
 		///   Sets count parallel consumers

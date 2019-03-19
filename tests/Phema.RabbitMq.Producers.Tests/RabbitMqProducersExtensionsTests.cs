@@ -33,6 +33,7 @@ namespace Phema.RabbitMQ.Producers.Tests
 				.AddProducers(options =>
 					options.AddProducer<TestPayload>("exchangename", "queuename")
 						.Mandatory()
+						.WaitForConfirms()
 						.Persistent()
 						.WithPriority(10)
 						.WithRoutingKey("routingkey")

@@ -20,13 +20,27 @@ namespace Phema.RabbitMQ
 		}
 
 		/// <summary>
-		///   Sets message count prefetch
+		///   Sets message prefetch count
 		/// </summary>
-		public static IRabbitMQConsumerBuilder WithPrefetch(
+		public static IRabbitMQConsumerBuilder WithPrefetchCount(
 			this IRabbitMQConsumerBuilder builder,
-			ushort prefetch)
+			ushort prefetch,
+			bool global = true)
 		{
-			builder.Metadata.Prefetch = prefetch;
+			builder.Metadata.PrefetchCount = prefetch;
+			builder.Metadata.Global = global;
+
+			return builder;
+		}
+		
+		/// <summary>
+		///   Sets message prefetch size
+		/// </summary>
+		public static IRabbitMQConsumerBuilder WithPrefetchSize(
+			this IRabbitMQConsumerBuilder builder,
+			uint size)
+		{
+			builder.Metadata.PrefetchSize = size;
 
 			return builder;
 		}

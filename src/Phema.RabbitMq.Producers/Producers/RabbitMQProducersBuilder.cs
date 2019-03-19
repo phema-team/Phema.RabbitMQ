@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using Phema.Serialization;
 using RabbitMQ.Client;
+using RabbitMQ.Client.Impl;
 
 namespace Phema.RabbitMQ
 {
@@ -13,16 +14,18 @@ namespace Phema.RabbitMQ
 		/// <summary>
 		///   Add new producer
 		/// </summary>
-		IRabbitMQProducerBuilder AddProducer<TPayload>(string exchangeName, string queueName = null);
+		IRabbitMQProducerBuilder AddProducer<TPayload>(string exchangeName, string queueName);
 	}
 
 	internal sealed class RabbitMQProducersBuilder : IRabbitMQProducersBuilder
 	{
+		private readonly IConnection connection;
 		private readonly IServiceCollection services;
 
-		public RabbitMQProducersBuilder(IServiceCollection services)
+		public RabbitMQProducersBuilder(IServiceCollection services, IConnection connection)
 		{
 			this.services = services;
+			this.connection = connection;
 		}
 
 		public IRabbitMQProducerBuilder AddProducer<TPayload>(string exchangeName, string queueName)
@@ -37,36 +40,44 @@ namespace Phema.RabbitMQ
 
 			services.TryAddSingleton<IRabbitMQProducer<TPayload>>(provider =>
 			{
-				var channel = provider.GetRequiredService<IConnection>().CreateModel();
+				var channel = (IFullModel) connection.CreateModel();
 
 				var exchange = provider.GetRequiredService<IOptions<RabbitMQExchangesOptions>>()
 					.Value
 					.Exchanges
 					.FirstOrDefault(ex => ex.Name == producer.ExchangeName);
 
+				// It can be default exchange or already declared
+				// So no reason to write configuration for it
 				if (exchange != null)
 				{
-					channel.ExchangeDeclareNoWait(
-						exchange.Name,
-						exchange.Type,
-						exchange.Durable,
-						exchange.AutoDelete,
-						exchange.Arguments);
+					channel._Private_ExchangeDeclare(
+						exchange: exchange.Name,
+						type: exchange.Type,
+						passive: exchange.Passive,
+						durable: exchange.Durable,
+						autoDelete: exchange.AutoDelete,
+						@internal: exchange.Internal,
+						nowait: exchange.NoWait,
+						arguments: exchange.Arguments);
 
 					foreach (var binding in exchange.ExchangeBindings)
-						channel.ExchangeBindNoWait(
-							binding.ExchangeName,
-							exchange.Name,
-							binding.RoutingKey ?? binding.ExchangeName,
-							binding.Arguments);
+						channel._Private_ExchangeBind(
+							destination: binding.ExchangeName,
+							source: exchange.Name,
+							routingKey: binding.RoutingKey ?? binding.ExchangeName,
+							nowait: binding.NoWait,
+							arguments: binding.Arguments);
 				}
 
-				channel.QueueBindNoWait(
-					producer.QueueName,
-					producer.ExchangeName,
-					producer.RoutingKey ?? producer.QueueName,
-					// Queue arguments for topic exchange
-					producer.Arguments);
+				// Should bind queue with exchange, even if not declared,
+				// because of default or already declared
+				channel._Private_QueueBind(
+					queue: producer.QueueName,
+					exchange: producer.ExchangeName,
+					routingKey: producer.RoutingKey ?? producer.QueueName,
+					nowait: exchange?.NoWait ?? false,
+					arguments: producer.Arguments);
 
 				var serializer = provider.GetRequiredService<ISerializer>();
 

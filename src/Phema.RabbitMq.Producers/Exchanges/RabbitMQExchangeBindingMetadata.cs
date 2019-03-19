@@ -6,6 +6,7 @@ namespace Phema.RabbitMQ
 	{
 		string ExchangeName { get; }
 		string RoutingKey { get; set; }
+		bool NoWait { get; set; }
 		IDictionary<string, object> Arguments { get; }
 	}
 
@@ -19,6 +20,7 @@ namespace Phema.RabbitMQ
 
 		public string ExchangeName { get; }
 		public string RoutingKey { get; set; }
+		public bool NoWait { get; set; }
 		public IDictionary<string, object> Arguments { get; }
 	}
 }

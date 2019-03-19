@@ -5,11 +5,42 @@ namespace Phema.RabbitMQ
 	public static class RabbitMQExchangeBuilderExtensions
 	{
 		/// <summary>
-		///   Sets exchange durability
+		///   Marks exchange as durable
 		/// </summary>
 		public static IRabbitMQExchangeBuilder Durable(this IRabbitMQExchangeBuilder builder)
 		{
 			builder.Metadata.Durable = true;
+
+			return builder;
+		}
+
+		/// <summary>
+		///   Sets nowait for exchange declaration
+		/// </summary>
+		public static IRabbitMQExchangeBuilder NoWait(this IRabbitMQExchangeBuilder builder)
+		{
+			builder.Metadata.NoWait = true;
+
+			return builder;
+		}
+
+		/// <summary>
+		///   Sets passive for exchange declaration
+		/// </summary>
+		public static IRabbitMQExchangeBuilder Passive(this IRabbitMQExchangeBuilder builder)
+		{
+			builder.Metadata.Passive = true;
+
+			return builder;
+		}
+
+		/// <summary>
+		///   Sets internal for exchange declaration.
+		///   Exchange can't be accessed from producers directly, only by exchange to exchange bindings
+		/// </summary>
+		public static IRabbitMQExchangeBuilder Internal(this IRabbitMQExchangeBuilder builder)
+		{
+			builder.Metadata.Internal = true;
 
 			return builder;
 		}

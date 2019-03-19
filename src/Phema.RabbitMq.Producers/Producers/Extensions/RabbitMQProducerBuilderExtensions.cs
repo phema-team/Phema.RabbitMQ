@@ -17,7 +17,7 @@ namespace Phema.RabbitMQ
 		}
 
 		/// <summary>
-		///   Sets RabbitMQ arguments. Allow multiple
+		///   Sets RabbitMQ arguments. Used for topic exchange
 		/// </summary>
 		public static IRabbitMQProducerBuilder WithArgument<TValue>(
 			this IRabbitMQProducerBuilder builder,
@@ -29,11 +29,24 @@ namespace Phema.RabbitMQ
 		}
 
 		/// <summary>
-		///   Sets messages as 'must be routed'
+		///   Sets messages as 'must be routed or return back'
 		/// </summary>
 		public static IRabbitMQProducerBuilder Mandatory(this IRabbitMQProducerBuilder builder)
 		{
 			builder.Metadata.Mandatory = true;
+			return builder;
+		}
+
+		/// <summary>
+		///   Sets producers wait for delivery confirms
+		/// </summary>
+		public static IRabbitMQProducerBuilder WaitForConfirms(this IRabbitMQProducerBuilder builder,
+			TimeSpan? timeout = null,
+			bool die = true)
+		{
+			builder.Metadata.WaitForConfirms = true;
+			builder.Metadata.Timeout = timeout;
+			builder.Metadata.Die = die;
 			return builder;
 		}
 

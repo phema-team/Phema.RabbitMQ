@@ -10,6 +10,9 @@ namespace Phema.RabbitMQ
 		string QueueName { get; }
 		string RoutingKey { get; set; }
 		bool Mandatory { get; set; }
+		bool WaitForConfirms { get; set; }
+		bool Die { get; set; }
+		TimeSpan? Timeout { get; set; }
 		IDictionary<string, object> Arguments { get; }
 		IList<Action<IBasicProperties>> Properties { get; }
 	}
@@ -28,6 +31,9 @@ namespace Phema.RabbitMQ
 		public string QueueName { get; }
 		public string RoutingKey { get; set; }
 		public bool Mandatory { get; set; }
+		public bool WaitForConfirms { get; set; }
+		public bool Die { get; set; }
+		public TimeSpan? Timeout { get; set; }
 		public IDictionary<string, object> Arguments { get; }
 		public IList<Action<IBasicProperties>> Properties { get; }
 	}

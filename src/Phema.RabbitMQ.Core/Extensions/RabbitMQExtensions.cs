@@ -1,53 +1,42 @@
 using System;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 
 namespace Phema.RabbitMQ
 {
-	public sealed class RabbitMQOptions
-	{
-		public RabbitMQOptions()
-		{
-			ConnectionFactory = new ConnectionFactory
-			{
-				DispatchConsumersAsync = true
-			};
-		}
-
-		public string InstanceName { get; set; }
-		public ConnectionFactory ConnectionFactory { get; }
-	}
-
 	public static class RabbitMQExtensions
 	{
 		public static IRabbitMQBuilder AddPhemaRabbitMQ(
 			this IServiceCollection services,
-			Action<RabbitMQOptions> options = null)
+			string instanceName,
+			Action<IConnectionFactory> options = null)
 		{
-			services.Configure(options ?? (o => { }));
-
-			services.TryAddSingleton(provider =>
+			var factory = new ConnectionFactory
 			{
-				var rabbitMQ = provider.GetRequiredService<IOptions<RabbitMQOptions>>().Value;
+				DispatchConsumersAsync = true
+			};
+			
+			options?.Invoke(factory);
 
-				return rabbitMQ.ConnectionFactory.CreateConnection(rabbitMQ.InstanceName);
-			});
-
-			return new RabbitMQBuilder(services);
+			var connectionFactory = new RabbitMQConnectionFactory(instanceName, factory);
+			
+			services.TryAddSingleton<IRabbitMQConnectionFactory>(connectionFactory);
+			
+			return new RabbitMQBuilder(services, connectionFactory);
 		}
 
 		public static IRabbitMQBuilder AddPhemaRabbitMQ(
 			this IServiceCollection services,
 			string instanceName,
-			Action<ConnectionFactory> factory = null)
+			string connectionString)
 		{
-			return services.AddPhemaRabbitMQ(options =>
-			{
-				options.InstanceName = instanceName;
-				factory?.Invoke(options.ConnectionFactory);
-			});
+			if (connectionString is null)
+				throw new ArgumentNullException(nameof(connectionString));
+
+			return services.AddPhemaRabbitMQ(
+				instanceName,
+				factory => factory.Uri = new Uri(connectionString));
 		}
 	}
 }

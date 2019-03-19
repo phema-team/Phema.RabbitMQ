@@ -6,7 +6,9 @@ namespace Phema.RabbitMQ
 	{
 		string QueueName { get; }
 		string Tag { get; set; }
-		ushort Prefetch { get; set; }
+		ushort PrefetchCount { get; set; }
+		uint PrefetchSize { get; set; }
+		bool Global { get; set; }
 		int Count { get; set; }
 		bool Exclusive { get; set; }
 		bool NoLocal { get; set; }
@@ -27,7 +29,9 @@ namespace Phema.RabbitMQ
 
 		public string QueueName { get; }
 		public string Tag { get; set; }
-		public ushort Prefetch { get; set; }
+		public ushort PrefetchCount { get; set; }
+		public uint PrefetchSize { get; set; }
+		public bool Global { get; set; }
 		public int Count { get; set; }
 		public bool Exclusive { get; set; }
 		public bool NoLocal { get; set; }

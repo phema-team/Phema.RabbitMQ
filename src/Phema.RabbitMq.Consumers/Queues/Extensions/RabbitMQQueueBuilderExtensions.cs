@@ -5,7 +5,7 @@ namespace Phema.RabbitMQ
 	public static class RabbitMQQueueBuilderExtensions
 	{
 		/// <summary>
-		///   Sets queue durability
+		///   Marks queue as durable
 		/// </summary>
 		public static IRabbitMQQueueBuilder Durable(this IRabbitMQQueueBuilder builder)
 		{
@@ -21,6 +21,24 @@ namespace Phema.RabbitMQ
 		{
 			builder.Metadata.Exclusive = true;
 
+			return builder;
+		}
+
+		/// <summary>
+		///   Sets nowait for queue declaration
+		/// </summary>
+		public static IRabbitMQQueueBuilder NoWait(this IRabbitMQQueueBuilder builder)
+		{
+			builder.Metadata.NoWait = true;
+			return builder;
+		}
+
+		/// <summary>
+		///   Sets passive for queue declaration
+		/// </summary>
+		public static IRabbitMQQueueBuilder Passive(this IRabbitMQQueueBuilder builder)
+		{
+			builder.Metadata.Passive = true;
 			return builder;
 		}
 
@@ -45,6 +63,14 @@ namespace Phema.RabbitMQ
 			builder.Metadata.Arguments.Add(argument, value);
 
 			return builder;
+		}
+
+		/// <summary>
+		///   Sets x-queue-mode argument to lazy (default "default")
+		/// </summary>
+		public static IRabbitMQQueueBuilder Lazy(this IRabbitMQQueueBuilder configuration)
+		{
+			return configuration.WithArgument("x-queue-mode", "lazy");
 		}
 
 		/// <summary>

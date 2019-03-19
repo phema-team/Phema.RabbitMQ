@@ -50,7 +50,9 @@ namespace Phema.RabbitMQ
 				catch (Exception exception)
 				{
 					if (!metadata.AutoAck)
+					{
 						Model.BasicNack(deliveryTag, metadata.Multiple, !redelivered && metadata.Requeue);
+					}
 
 					scope.ServiceProvider
 						.GetService<ILogger<RabbitMQBasicConsumer<TPayload, TPayloadConsumer>>>()
@@ -60,7 +62,9 @@ namespace Phema.RabbitMQ
 				}
 
 				if (!metadata.AutoAck)
+				{
 					Model.BasicAck(deliveryTag, metadata.Multiple);
+				}
 			}
 		}
 	}

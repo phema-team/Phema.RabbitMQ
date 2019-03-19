@@ -16,6 +16,9 @@ namespace Phema.RabbitMQ.Queues.Tests
 					options.AddQueue("queuename")
 						.Durable()
 						.Exclusive()
+						.Lazy()
+						.NoWait()
+						.Passive()
 						.AutoDelete()
 						.WithArgument("x-argument", "somevalue"));
 

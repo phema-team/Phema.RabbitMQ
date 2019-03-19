@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Phema.RabbitMQ.Core", "src\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Phema.RabbitMQ.Producers", "src\Phema.RabbitMQ.Producers\Phema.RabbitMQ.Producers.csproj", "{7EBDF774-138D-4F9F-9FBB-3ABA84180296}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{AA447E02-D16C-4C9B-B852-CA2260E035CF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -118,6 +120,18 @@ Global
 		{7EBDF774-138D-4F9F-9FBB-3ABA84180296}.Release|x64.Build.0 = Release|Any CPU
 		{7EBDF774-138D-4F9F-9FBB-3ABA84180296}.Release|x86.ActiveCfg = Release|Any CPU
 		{7EBDF774-138D-4F9F-9FBB-3ABA84180296}.Release|x86.Build.0 = Release|Any CPU
+		{AA447E02-D16C-4C9B-B852-CA2260E035CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA447E02-D16C-4C9B-B852-CA2260E035CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA447E02-D16C-4C9B-B852-CA2260E035CF}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{AA447E02-D16C-4C9B-B852-CA2260E035CF}.Debug|x64.Build.0 = Debug|Any CPU
+		{AA447E02-D16C-4C9B-B852-CA2260E035CF}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{AA447E02-D16C-4C9B-B852-CA2260E035CF}.Debug|x86.Build.0 = Debug|Any CPU
+		{AA447E02-D16C-4C9B-B852-CA2260E035CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA447E02-D16C-4C9B-B852-CA2260E035CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA447E02-D16C-4C9B-B852-CA2260E035CF}.Release|x64.ActiveCfg = Release|Any CPU
+		{AA447E02-D16C-4C9B-B852-CA2260E035CF}.Release|x64.Build.0 = Release|Any CPU
+		{AA447E02-D16C-4C9B-B852-CA2260E035CF}.Release|x86.ActiveCfg = Release|Any CPU
+		{AA447E02-D16C-4C9B-B852-CA2260E035CF}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{8F4C888F-F2BB-430D-8623-C27D789A9677} = {1AA4529B-7C8D-4A3D-9FCF-03E7AE564587}

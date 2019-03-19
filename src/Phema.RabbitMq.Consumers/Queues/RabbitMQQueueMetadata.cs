@@ -8,6 +8,8 @@ namespace Phema.RabbitMQ
 		bool Durable { get; set; }
 		bool Exclusive { get; set; }
 		bool AutoDelete { get; set; }
+		bool NoWait { get; set; }
+		bool Passive { get; set; }
 		IDictionary<string, object> Arguments { get; }
 	}
 
@@ -23,6 +25,8 @@ namespace Phema.RabbitMQ
 		public bool Durable { get; set; }
 		public bool Exclusive { get; set; }
 		public bool AutoDelete { get; set; }
+		public bool NoWait { get; set; }
+		public bool Passive { get; set; }
 		public IDictionary<string, object> Arguments { get; }
 	}
 }

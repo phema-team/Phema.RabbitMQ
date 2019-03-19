@@ -13,6 +13,17 @@ namespace Phema.RabbitMQ
 
 			return builder;
 		}
+		
+		/// <summary>
+		///   Sets nowait for exchange to exchange declaration
+		/// </summary>
+		public static IRabbitMQExchangeBindingBuilder NoWait(
+			this IRabbitMQExchangeBindingBuilder builder)
+		{
+			builder.Metadata.NoWait = true;
+
+			return builder;
+		}
 
 		/// <summary>
 		///   Sets RabbitMQ arguments. Allow multiple

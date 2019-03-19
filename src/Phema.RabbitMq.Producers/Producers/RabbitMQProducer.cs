@@ -7,9 +7,9 @@ namespace Phema.RabbitMQ
 {
 	public interface IRabbitMQProducer<TPayload>
 	{
-		Task Produce(TPayload payload);
+		Task<bool> Produce(TPayload payload);
 
-		Task BatchProduce(IEnumerable<TPayload> payloads);
+		Task<bool> BatchProduce(IEnumerable<TPayload> payloads);
 	}
 
 	internal sealed class RabbitMQProducer<TPayload> : IRabbitMQProducer<TPayload>
@@ -34,22 +34,25 @@ namespace Phema.RabbitMQ
 			this.properties = properties;
 		}
 
-		public Task Produce(TPayload payload)
+		public Task<bool> Produce(TPayload payload)
 		{
-			lock (Lock)
+			return Task.Run(() =>
 			{
-				channel.BasicPublish(
-					metadata.ExchangeName,
-					metadata.RoutingKey ?? metadata.QueueName,
-					metadata.Mandatory,
-					properties,
-					serializer.Serialize(payload));
-			}
+				lock (Lock)
+				{
+					channel.BasicPublish(
+						metadata.ExchangeName,
+						metadata.RoutingKey ?? metadata.QueueName,
+						metadata.Mandatory,
+						properties,
+						serializer.Serialize(payload));
 
-			return Task.CompletedTask;
+					return !metadata.WaitForConfirms || WaitForConfirms();
+				}
+			});
 		}
 
-		public Task BatchProduce(IEnumerable<TPayload> payloads)
+		public Task<bool> BatchProduce(IEnumerable<TPayload> payloads)
 		{
 			var batch = channel.CreateBasicPublishBatch();
 
@@ -61,10 +64,36 @@ namespace Phema.RabbitMQ
 					properties,
 					serializer.Serialize(payload));
 
-			lock (Lock)
-				batch.Publish();
+			return Task.Run(() =>
+			{
+				lock (Lock)
+				{
+					batch.Publish();
+					
+					return !metadata.WaitForConfirms || WaitForConfirms();
+				}
+			});
+		}
 
-			return Task.CompletedTask;
+		private bool WaitForConfirms()
+		{
+			if (metadata.Die)
+			{
+				if (metadata.Timeout is null)
+				{
+					channel.WaitForConfirmsOrDie();
+				}
+				else
+				{
+					channel.WaitForConfirmsOrDie(metadata.Timeout.Value);
+				}
+
+				return true;
+			}
+
+			return metadata.Timeout is null 
+				? channel.WaitForConfirms() 
+				: channel.WaitForConfirms(metadata.Timeout.Value);
 		}
 	}
 }

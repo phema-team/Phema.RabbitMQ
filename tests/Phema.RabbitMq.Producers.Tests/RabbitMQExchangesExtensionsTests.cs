@@ -67,10 +67,14 @@ namespace Phema.RabbitMQ.Exchanges.Tests
 				.AddExchanges(options =>
 					options.AddDirectExchange("amq.direct")
 						.Durable()
+						.NoWait()
+						.Passive()
+						.Internal()
 						.AutoDelete()
 						.WithArgument("x-argument", "value")
 						.WithBoundExchange("exchangename", exchange =>
 							exchange.WithRoutingKey("routingkey")
+								.NoWait()
 								.WithArgument("argument", "value"))
 						.WithAlternateExchange("alternameexchangename"));
 		}

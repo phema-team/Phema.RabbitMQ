@@ -111,7 +111,8 @@ namespace Phema.RabbitMQ
 			this IRabbitMQConsumerBuilder configuration,
 			byte priority)
 		{
-			return configuration.WithArgument("x-priority", priority);
+			// Hack, because RabbitMQ.Client has no conversion to byte
+			return configuration.WithArgument("x-priority", (int)priority);
 		}
 	}
 }

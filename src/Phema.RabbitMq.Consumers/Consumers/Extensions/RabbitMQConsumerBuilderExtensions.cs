@@ -39,7 +39,7 @@ namespace Phema.RabbitMQ
 		/// </summary>
 		public static IRabbitMQConsumerBuilder WithCount(
 			this IRabbitMQConsumerBuilder builder,
-			int count)
+			uint count)
 		{
 			builder.Metadata.Count = count;
 

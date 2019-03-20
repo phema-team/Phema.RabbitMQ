@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Phema.Serialization;
 using RabbitMQ.Client;
@@ -14,13 +15,15 @@ namespace Phema.RabbitMQ
 
 	internal sealed class RabbitMQProducer<TPayload> : IRabbitMQProducer<TPayload>
 	{
-		// Each generic type has unique lock object, because unique channel
-		private static readonly object Lock = new object();
-		
+		// Each generic type has unique semaphore, because unique channel
+		private static readonly SemaphoreSlim Semaphore = new SemaphoreSlim(1);
+
 		private readonly IModel channel;
 		private readonly ISerializer serializer;
 		private readonly IBasicProperties properties;
 		private readonly IRabbitMQProducerMetadata metadata;
+
+		private readonly string routingKey;
 
 		public RabbitMQProducer(
 			IModel channel,
@@ -32,27 +35,35 @@ namespace Phema.RabbitMQ
 			this.metadata = metadata;
 			this.serializer = serializer;
 			this.properties = properties;
+
+			routingKey = metadata.RoutingKey
+				?? metadata.QueueName
+				?? throw new RabbitMQProducerException(
+					$"'{nameof(metadata.RoutingKey)}' or '{nameof(metadata.QueueName)}' for producer should be specified");
 		}
 
-		public Task<bool> Produce(TPayload payload)
+		public async Task<bool> Produce(TPayload payload)
 		{
-			return Task.Run(() =>
-			{
-				lock (Lock)
-				{
-					channel.BasicPublish(
-						metadata.ExchangeName,
-						metadata.RoutingKey ?? metadata.QueueName,
-						metadata.Mandatory,
-						properties,
-						serializer.Serialize(payload));
+			await Semaphore.WaitAsync();
 
-					return !metadata.WaitForConfirms || WaitForConfirms();
-				}
-			});
+			try
+			{
+				channel.BasicPublish(
+					metadata.ExchangeName,
+					routingKey,
+					metadata.Mandatory,
+					properties,
+					serializer.Serialize(payload));
+
+				return !metadata.WaitForConfirms || WaitForConfirms();
+			}
+			finally
+			{
+				Semaphore.Release();
+			}
 		}
 
-		public Task<bool> BatchProduce(IEnumerable<TPayload> payloads)
+		public async Task<bool> BatchProduce(IEnumerable<TPayload> payloads)
 		{
 			var batch = channel.CreateBasicPublishBatch();
 
@@ -60,21 +71,24 @@ namespace Phema.RabbitMQ
 			{
 				batch.Add(
 					metadata.ExchangeName,
-					metadata.RoutingKey ?? metadata.QueueName,
+					routingKey,
 					metadata.Mandatory,
 					properties,
 					serializer.Serialize(payload));
 			}
 
-			return Task.Run(() =>
+			await Semaphore.WaitAsync();
+
+			try
 			{
-				lock (Lock)
-				{
-					batch.Publish();
-					
-					return !metadata.WaitForConfirms || WaitForConfirms();
-				}
-			});
+				batch.Publish();
+
+				return !metadata.WaitForConfirms || WaitForConfirms();
+			}
+			finally
+			{
+				Semaphore.Release();
+			}
 		}
 
 		private bool WaitForConfirms()
@@ -93,8 +107,8 @@ namespace Phema.RabbitMQ
 				return true;
 			}
 
-			return metadata.Timeout is null 
-				? channel.WaitForConfirms() 
+			return metadata.Timeout is null
+				? channel.WaitForConfirms()
 				: channel.WaitForConfirms(metadata.Timeout.Value);
 		}
 	}

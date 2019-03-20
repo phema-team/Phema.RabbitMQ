@@ -54,6 +54,7 @@ namespace Phema.RabbitMQ
 						Model.BasicNack(deliveryTag, metadata.Multiple, !redelivered && metadata.Requeue);
 					}
 
+					// Remove logging reference, add .WhenConsumerExceptionHappened(...)
 					scope.ServiceProvider
 						.GetService<ILogger<RabbitMQBasicConsumer<TPayload, TPayloadConsumer>>>()
 						?.LogConsumerException<TPayload>(metadata, exception, body, redelivered);

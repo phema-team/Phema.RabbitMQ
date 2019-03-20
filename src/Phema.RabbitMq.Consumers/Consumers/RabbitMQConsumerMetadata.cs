@@ -8,7 +8,7 @@ namespace Phema.RabbitMQ
 		string Tag { get; set; }
 		ushort PrefetchCount { get; set; }
 		bool Global { get; set; }
-		int Count { get; set; }
+		uint Count { get; set; }
 		bool Exclusive { get; set; }
 		bool NoLocal { get; set; }
 		bool AutoAck { get; set; }
@@ -30,7 +30,7 @@ namespace Phema.RabbitMQ
 		public string Tag { get; set; }
 		public ushort PrefetchCount { get; set; }
 		public bool Global { get; set; }
-		public int Count { get; set; }
+		public uint Count { get; set; }
 		public bool Exclusive { get; set; }
 		public bool NoLocal { get; set; }
 		public bool AutoAck { get; set; }

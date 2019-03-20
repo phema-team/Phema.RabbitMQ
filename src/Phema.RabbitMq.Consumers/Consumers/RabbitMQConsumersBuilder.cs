@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
+using RabbitMQ.Client.Exceptions;
 using RabbitMQ.Client.Impl;
 
 namespace Phema.RabbitMQ
@@ -50,9 +51,22 @@ namespace Phema.RabbitMQ
 						.Value
 						.Queues
 						.FirstOrDefault(q => q.Name == metadata.QueueName);
-					
-					// It can be already declared somewhere
-					if (queue != null)
+
+					if (queue == null)
+					{
+						// Ensure it declared in broker
+						try
+						{
+							channel.QueueDeclarePassive(metadata.QueueName);
+						}
+						catch (OperationInterruptedException exception)
+						{
+							throw new RabbitMQConsumerException(
+								$"Queue '{metadata.QueueName}' does not declared in broker",
+								exception);
+						}
+					}
+					else
 					{
 						if (queue.NoWait)
 						{
@@ -74,7 +88,7 @@ namespace Phema.RabbitMQ
 						}
 					}
 
-					// PrefetchSize != 0 not implemented
+					// PrefetchSize != 0 is not implemented for now
 					channel.BasicQos(0, metadata.PrefetchCount, metadata.Global);
 
 					var factory = provider.GetRequiredService<IRabbitMQConsumerFactory>();

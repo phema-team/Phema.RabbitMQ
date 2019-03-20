@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using Phema.Serialization;
 using RabbitMQ.Client;
+using RabbitMQ.Client.Exceptions;
 using RabbitMQ.Client.Impl;
 
 namespace Phema.RabbitMQ
@@ -14,7 +15,7 @@ namespace Phema.RabbitMQ
 		/// <summary>
 		///   Add new producer
 		/// </summary>
-		IRabbitMQProducerBuilder AddProducer<TPayload>(string exchangeName, string queueName);
+		IRabbitMQProducerBuilder AddProducer<TPayload>(string exchangeName, string queueName = null);
 	}
 
 	internal sealed class RabbitMQProducersBuilder : IRabbitMQProducersBuilder
@@ -28,13 +29,10 @@ namespace Phema.RabbitMQ
 			this.connection = connection;
 		}
 
-		public IRabbitMQProducerBuilder AddProducer<TPayload>(string exchangeName, string queueName)
+		public IRabbitMQProducerBuilder AddProducer<TPayload>(string exchangeName, string queueName = null)
 		{
 			if (exchangeName is null)
 				throw new ArgumentNullException(nameof(exchangeName));
-
-			if (queueName is null)
-				throw new ArgumentNullException(nameof(queueName));
 
 			var metadata = new RabbitMQProducerMetadata(exchangeName, queueName);
 
@@ -72,20 +70,52 @@ namespace Phema.RabbitMQ
 					}
 				}
 
-				// Should bind queue with exchange, even if not declared,
-				// because of default or already declared
-				channel._Private_QueueBind(
-					queue: metadata.QueueName,
-					exchange: metadata.ExchangeName,
-					routingKey: metadata.RoutingKey ?? metadata.QueueName,
-					nowait: exchange?.NoWait ?? false,
-					arguments: metadata.Arguments);
+				if (metadata.QueueName != null)
+				{
+					// Ensure queue declared in broker
+					if (metadata.Mandatory)
+					{
+						try
+						{
+							channel.QueueDeclarePassive(metadata.QueueName);
+						}
+						catch (OperationInterruptedException exception)
+						{
+							throw new RabbitMQProducerException(
+								$"Producer from '{metadata.ExchangeName}' exchange has specified '{nameof(metadata.QueueName)}' and " +
+								$"'{nameof(metadata.Mandatory)}' flag, but queue '{metadata.QueueName}' does not declared in broker",
+								exception);
+						}
+						
+					}
+
+					// Should bind queue with exchange when not declared,
+					// because of default or already declared
+					try
+					{
+						channel._Private_QueueBind(
+							queue: metadata.QueueName,
+							exchange: metadata.ExchangeName,
+							routingKey: metadata.RoutingKey ?? metadata.QueueName,
+							nowait: exchange?.NoWait ?? false,
+							arguments: metadata.Arguments);
+					}
+					catch (OperationInterruptedException exception)
+					{
+						throw new RabbitMQProducerException(
+							$"Producer from '{metadata.ExchangeName}' exchange has specified '{nameof(metadata.QueueName)}', " +
+							$"but queue '{metadata.QueueName}' does not declared in broker",
+							exception);
+					}
+				}
 
 				var serializer = provider.GetRequiredService<ISerializer>();
 
 				var properties = channel.CreateBasicProperties();
 				foreach (var property in metadata.Properties)
+				{
 					property(properties);
+				}
 
 				if (metadata.WaitForConfirms)
 				{

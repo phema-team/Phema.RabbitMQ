@@ -23,8 +23,6 @@ namespace Phema.RabbitMQ
 		private readonly IBasicProperties properties;
 		private readonly IRabbitMQProducerMetadata metadata;
 
-		private readonly string routingKey;
-
 		public RabbitMQProducer(
 			IModel channel,
 			ISerializer serializer,
@@ -35,11 +33,6 @@ namespace Phema.RabbitMQ
 			this.metadata = metadata;
 			this.serializer = serializer;
 			this.properties = properties;
-
-			routingKey = metadata.RoutingKey
-				?? metadata.QueueName
-				?? throw new RabbitMQProducerException(
-					$"'{nameof(metadata.RoutingKey)}' or '{nameof(metadata.QueueName)}' for producer should be specified");
 		}
 
 		public async Task<bool> Produce(TPayload payload)
@@ -50,7 +43,7 @@ namespace Phema.RabbitMQ
 			{
 				channel.BasicPublish(
 					metadata.ExchangeName,
-					routingKey,
+					metadata.RoutingKey ?? metadata.QueueName,
 					metadata.Mandatory,
 					properties,
 					serializer.Serialize(payload));
@@ -71,7 +64,7 @@ namespace Phema.RabbitMQ
 			{
 				batch.Add(
 					metadata.ExchangeName,
-					routingKey,
+					metadata.RoutingKey ?? metadata.QueueName,
 					metadata.Mandatory,
 					properties,
 					serializer.Serialize(payload));

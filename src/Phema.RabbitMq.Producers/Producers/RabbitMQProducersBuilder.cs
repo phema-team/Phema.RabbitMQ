@@ -109,6 +109,12 @@ namespace Phema.RabbitMQ
 					}
 				}
 
+				if ((metadata.RoutingKey ?? metadata.QueueName) is null)
+				{
+					throw new RabbitMQProducerException(
+						$"'{nameof(metadata.RoutingKey)}' or '{nameof(metadata.QueueName)}' for producer should be specified");
+				}
+
 				var serializer = provider.GetRequiredService<ISerializer>();
 
 				var properties = channel.CreateBasicProperties();

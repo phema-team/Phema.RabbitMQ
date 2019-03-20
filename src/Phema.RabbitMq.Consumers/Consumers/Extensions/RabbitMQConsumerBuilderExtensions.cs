@@ -32,7 +32,7 @@ namespace Phema.RabbitMQ
 
 			return builder;
 		}
-		
+
 
 		/// <summary>
 		///   Sets count parallel consumers
@@ -112,7 +112,7 @@ namespace Phema.RabbitMQ
 			byte priority)
 		{
 			// Hack, because RabbitMQ.Client has no conversion to byte
-			return configuration.WithArgument("x-priority", (int)priority);
+			return configuration.WithArgument("x-priority", (int) priority);
 		}
 	}
 }

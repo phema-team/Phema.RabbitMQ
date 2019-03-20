@@ -7,7 +7,6 @@ namespace Phema.RabbitMQ
 		public RabbitMQProducerException(string message, Exception exception = null)
 			: base(message, exception)
 		{
-			
 		}
 	}
 }

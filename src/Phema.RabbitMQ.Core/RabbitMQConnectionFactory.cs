@@ -6,11 +6,11 @@ namespace Phema.RabbitMQ
 	{
 		IConnection CreateConnection(string groupName);
 	}
-	
+
 	internal sealed class RabbitMQConnectionFactory : IRabbitMQConnectionFactory
 	{
-		private readonly string instanceName;
 		private readonly IConnectionFactory factory;
+		private readonly string instanceName;
 
 		public RabbitMQConnectionFactory(string instanceName, IConnectionFactory factory)
 		{

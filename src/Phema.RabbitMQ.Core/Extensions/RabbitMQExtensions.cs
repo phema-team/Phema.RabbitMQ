@@ -18,13 +18,13 @@ namespace Phema.RabbitMQ
 				// Hack for now, because StackOverflowException
 				AutomaticRecoveryEnabled = false
 			};
-			
+
 			options?.Invoke(factory);
 
 			var connectionFactory = new RabbitMQConnectionFactory(instanceName, factory);
-			
+
 			services.TryAddSingleton<IRabbitMQConnectionFactory>(connectionFactory);
-			
+
 			return new RabbitMQBuilder(services, connectionFactory);
 		}
 

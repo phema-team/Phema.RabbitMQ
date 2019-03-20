@@ -20,7 +20,7 @@ namespace TestProject1
 				factory.Uri = new Uri("amqp://user:pass@host:10000/vhost");
 
 				var connectionFactory = (ConnectionFactory) factory;
-				
+
 				Assert.Equal("user", connectionFactory.UserName);
 				Assert.Equal("pass", connectionFactory.Password);
 				Assert.Equal("host", connectionFactory.HostName);

@@ -5,7 +5,7 @@ namespace Phema.RabbitMQ
 	public static class RabbitMQProducersExtensions
 	{
 		/// <summary>
-		/// Adds new producers group in separate connection
+		///   Adds new producers group in separate connection
 		/// </summary>
 		public static IRabbitMQBuilder AddProducers(
 			this IRabbitMQBuilder builder,
@@ -16,13 +16,13 @@ namespace Phema.RabbitMQ
 				throw new ArgumentNullException(nameof(options));
 
 			var connection = builder.ConnectionFactory.CreateConnection(groupName);
-			
+
 			options.Invoke(new RabbitMQProducersBuilder(builder.Services, connection));
 			return builder;
 		}
 
 		/// <summary>
-		/// Adds default producers group in separate connection
+		///   Adds default producers group in separate connection
 		/// </summary>
 		public static IRabbitMQBuilder AddProducers(
 			this IRabbitMQBuilder builder,

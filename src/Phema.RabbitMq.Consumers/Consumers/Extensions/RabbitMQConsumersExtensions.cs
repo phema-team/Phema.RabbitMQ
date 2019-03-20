@@ -7,7 +7,7 @@ namespace Phema.RabbitMQ
 	public static class RabbitMQConsumersExtensions
 	{
 		/// <summary>
-		/// Adds new consumers group in separate connection
+		///   Adds new consumers group in separate connection
 		/// </summary>
 		public static IRabbitMQBuilder AddConsumers(
 			this IRabbitMQBuilder builder,
@@ -30,7 +30,7 @@ namespace Phema.RabbitMQ
 		}
 
 		/// <summary>
-		/// Adds default consumers group in separate connection
+		///   Adds default consumers group in separate connection
 		/// </summary>
 		public static IRabbitMQBuilder AddConsumers(
 			this IRabbitMQBuilder builder,

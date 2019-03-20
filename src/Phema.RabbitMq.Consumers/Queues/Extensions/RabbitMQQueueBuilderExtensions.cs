@@ -140,7 +140,7 @@ namespace Phema.RabbitMQ
 			byte priority)
 		{
 			// Hack, because RabbitMQ.Client has no conversion to byte
-			return configuration.WithArgument("x-max-priority", (int)priority);
+			return configuration.WithArgument("x-max-priority", (int) priority);
 		}
 
 		/// <summary>

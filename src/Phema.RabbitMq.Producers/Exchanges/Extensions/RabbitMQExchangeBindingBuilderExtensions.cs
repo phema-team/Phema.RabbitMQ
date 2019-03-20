@@ -13,7 +13,7 @@ namespace Phema.RabbitMQ
 
 			return builder;
 		}
-		
+
 		/// <summary>
 		///   Sets nowait for exchange to exchange declaration
 		/// </summary>

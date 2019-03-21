@@ -17,6 +17,7 @@ namespace Phema.RabbitMQ.Exchanges.Tests
 					options.AddDirectExchange("amq.direct")
 						.Durable()
 						.AutoDelete()
+						.Deleted()
 						.WithArgument("x-argument", "value"));
 
 			var provider = services.BuildServiceProvider();

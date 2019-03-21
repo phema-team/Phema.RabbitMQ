@@ -66,11 +66,6 @@ namespace Phema.RabbitMQ
 
 				if (producer.QueueName != null)
 				{
-					if (producer.Mandatory)
-					{
-						EnsureQueueDeclared(channel, producer);
-					}
-
 					// Should bind queue with exchange when not declared,
 					// because of default or already declared
 					BindQueue(channel, producer);
@@ -122,21 +117,6 @@ namespace Phema.RabbitMQ
 				routingKey: binding.RoutingKey ?? binding.ExchangeName,
 				nowait: binding.NoWait,
 				arguments: binding.Arguments);
-		}
-
-		private static void EnsureQueueDeclared(IModel channel, IRabbitMQProducerMetadata producer)
-		{
-			try
-			{
-				channel.QueueDeclarePassive(producer.QueueName);
-			}
-			catch (OperationInterruptedException exception)
-			{
-				throw new RabbitMQProducerException(
-					$"Producer is mandatory, but exchange '{producer.ExchangeName}' " +
-					$"or queue '{producer.QueueName}' does not declared in broker",
-					exception);
-			}
 		}
 
 		private static void BindQueue(IModel channel, IRabbitMQProducerMetadata producer)

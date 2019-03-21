@@ -15,10 +15,12 @@ namespace Phema.RabbitMQ
 	internal sealed class RabbitMQQueuesBuilder : IRabbitMQQueuesBuilder
 	{
 		private readonly IServiceCollection services;
+		private readonly string groupName;
 
-		public RabbitMQQueuesBuilder(IServiceCollection services)
+		public RabbitMQQueuesBuilder(IServiceCollection services, string groupName)
 		{
 			this.services = services;
+			this.groupName = groupName;
 		}
 
 		public IRabbitMQQueueBuilder AddQueue(string queueName)
@@ -26,6 +28,10 @@ namespace Phema.RabbitMQ
 			if (queueName is null)
 				throw new ArgumentNullException(nameof(queueName));
 
+			queueName = groupName == RabbitMQDefaults.DefaultGroupName
+				? queueName
+				: $"{groupName}.{queueName}";
+			
 			var metadata = new RabbitMQQueueMetadata(queueName);
 
 			services.Configure<RabbitMQQueuesOptions>(options =>

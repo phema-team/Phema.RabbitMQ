@@ -12,12 +12,14 @@ namespace Phema.RabbitMQ.Queues.Tests
 			var services = new ServiceCollection();
 
 			services.AddPhemaRabbitMQ("instance")
-				.AddQueues(options =>
+				.AddQueueGroup(options =>
 					options.AddQueue("queuename")
 						.Durable()
 						.Exclusive()
 						.Lazy()
 						.NoWait()
+						.Deleted()
+						.Purged()
 						.AutoDelete()
 						.WithArgument("x-argument", "somevalue"));
 
@@ -44,7 +46,7 @@ namespace Phema.RabbitMQ.Queues.Tests
 			var services = new ServiceCollection();
 
 			services.AddPhemaRabbitMQ("instance")
-				.AddQueues(options => options.AddQueue("queuename"));
+				.AddQueueGroup(options => options.AddQueue("queuename"));
 
 			var provider = services.BuildServiceProvider();
 
@@ -66,7 +68,7 @@ namespace Phema.RabbitMQ.Queues.Tests
 			var services = new ServiceCollection();
 
 			services.AddPhemaRabbitMQ("instance")
-				.AddQueues(options =>
+				.AddQueueGroup(options =>
 					options.AddQueue("queuename")
 						.Durable()
 						.Exclusive()

@@ -34,6 +34,30 @@ namespace Phema.RabbitMQ
 		}
 
 		/// <summary>
+		///   Sets purged for queue declaration. Queue will be purged before use
+		/// </summary>
+		public static IRabbitMQQueueBuilder Purged(this IRabbitMQQueueBuilder builder)
+		{
+			builder.Metadata.Purged = true;
+			return builder;
+		}
+
+		/// <summary>
+		///   Sets deleted for queue declaration. Queue will be deleted before use
+		/// </summary>
+		public static IRabbitMQQueueBuilder Deleted(
+			this IRabbitMQQueueBuilder builder,
+			bool ifUnused = false,
+			bool ifEmpty = false)
+		{
+			builder.Metadata.Deleted = true;
+			builder.Metadata.IfUnused = ifUnused;
+			builder.Metadata.IfEmpty = ifEmpty;
+
+			return builder;
+		}
+
+		/// <summary>
 		///   Sets auto-delete flag to queue
 		/// </summary>
 		public static IRabbitMQQueueBuilder AutoDelete(this IRabbitMQQueueBuilder builder)
@@ -70,9 +94,10 @@ namespace Phema.RabbitMQ
 		/// </summary>
 		public static IRabbitMQQueueBuilder WithMaxMessageCount(
 			this IRabbitMQQueueBuilder configuration,
-			int length)
+			uint count)
 		{
-			return configuration.WithArgument("x-max-length", length);
+			// Hack, because does not uint table value support yet
+			return configuration.WithArgument("x-max-length", (long)count);
 		}
 
 		/// <summary>
@@ -80,9 +105,10 @@ namespace Phema.RabbitMQ
 		/// </summary>
 		public static IRabbitMQQueueBuilder WithMaxMessageSize(
 			this IRabbitMQQueueBuilder configuration,
-			int bytes)
+			uint bytes)
 		{
-			return configuration.WithArgument("x-max-length-bytes", bytes);
+			// Hack, because does not uint table value support yet
+			return configuration.WithArgument("x-max-length-bytes", (long)bytes);
 		}
 
 		/// <summary>

@@ -4,24 +4,27 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Phema.RabbitMQ
 {
-	public static class RabbitMQConsumersExtensions
+	public static class RabbitMQConsumerGroupExtensions
 	{
 		/// <summary>
 		///   Adds new consumers group in separate connection
 		/// </summary>
-		public static IRabbitMQBuilder AddConsumers(
+		public static IRabbitMQBuilder AddConsumerGroup(
 			this IRabbitMQBuilder builder,
 			string groupName,
-			Action<IRabbitMQConsumersBuilder> options)
+			Action<IRabbitMQConsumerGroupBuilder> group)
 		{
-			if (options is null)
-				throw new ArgumentNullException(nameof(options));
+			if (group is null)
+				throw new ArgumentNullException(nameof(group));
+			
+			if (groupName is null)
+				throw new ArgumentNullException(nameof(groupName));
 
 			var services = builder.Services;
 
 			var connection = builder.ConnectionFactory.CreateConnection(groupName);
 
-			options.Invoke(new RabbitMQConsumersBuilder(services, connection));
+			group.Invoke(new RabbitMQConsumerGroupBuilder(services, connection));
 
 			services.AddHostedService<RabbitMQConsumersHostedService>();
 			services.TryAddScoped<IRabbitMQConsumerFactory, RabbitMQConsumerFactory>();
@@ -32,11 +35,11 @@ namespace Phema.RabbitMQ
 		/// <summary>
 		///   Adds default consumers group in separate connection
 		/// </summary>
-		public static IRabbitMQBuilder AddConsumers(
+		public static IRabbitMQBuilder AddConsumerGroup(
 			this IRabbitMQBuilder builder,
-			Action<IRabbitMQConsumersBuilder> options)
+			Action<IRabbitMQConsumerGroupBuilder> options)
 		{
-			return builder.AddConsumers(null, options);
+			return builder.AddConsumerGroup("", options);
 		}
 	}
 }

@@ -38,7 +38,16 @@ namespace Phema.RabbitMQ
 		}
 
 		/// <summary>
-		///   Sets producers wait for delivery confirms
+		///   Sets channel mode to 'transactional'. Producer will commit or rollback messages
+		/// </summary>
+		public static IRabbitMQProducerBuilder Transactional(this IRabbitMQProducerBuilder builder)
+		{
+			builder.Metadata.Transactional = true;
+			return builder;
+		}
+		
+		/// <summary>
+		///   Sets channel mode to 'confirm'. Producer will wait for delivery confirms
 		/// </summary>
 		public static IRabbitMQProducerBuilder WaitForConfirms(this IRabbitMQProducerBuilder builder,
 			TimeSpan? timeout = null,

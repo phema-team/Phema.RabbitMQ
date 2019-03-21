@@ -10,6 +10,10 @@ namespace Phema.RabbitMQ
 		bool Internal { get; set; }
 		bool NoWait { get; set; }
 		bool AutoDelete { get; set; }
+
+		bool Deleted { get; set; }
+		bool IfUnused { get; set; }
+
 		IDictionary<string, object> Arguments { get; }
 		IList<IRabbitMQExchangeBindingMetadata> ExchangeBindings { get; }
 	}
@@ -30,6 +34,10 @@ namespace Phema.RabbitMQ
 		public bool Internal { get; set; }
 		public bool NoWait { get; set; }
 		public bool AutoDelete { get; set; }
+
+		public bool Deleted { get; set; }
+		public bool IfUnused { get; set; }
+
 		public IDictionary<string, object> Arguments { get; }
 		public IList<IRabbitMQExchangeBindingMetadata> ExchangeBindings { get; }
 	}

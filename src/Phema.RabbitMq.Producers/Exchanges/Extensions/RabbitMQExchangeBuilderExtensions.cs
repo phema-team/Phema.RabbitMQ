@@ -44,6 +44,19 @@ namespace Phema.RabbitMQ
 
 			return builder;
 		}
+		
+		/// <summary>
+		///   Sets auto-delete flag to exchange
+		/// </summary>
+		public static IRabbitMQExchangeBuilder Deleted(
+			this IRabbitMQExchangeBuilder builder,
+			bool ifUnused = false)
+		{
+			builder.Metadata.Deleted = true;
+			builder.Metadata.IfUnused = ifUnused;
+
+			return builder;
+		}
 
 		/// <summary>
 		///   Sets RabbitMQ arguments. Allow multiple

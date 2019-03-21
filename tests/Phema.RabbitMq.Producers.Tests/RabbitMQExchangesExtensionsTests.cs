@@ -13,7 +13,7 @@ namespace Phema.RabbitMQ.Exchanges.Tests
 			var services = new ServiceCollection();
 
 			services.AddPhemaRabbitMQ("instance")
-				.AddExchanges(options =>
+				.AddExchangeGroup(options =>
 					options.AddDirectExchange("amq.direct")
 						.Durable()
 						.AutoDelete()
@@ -42,7 +42,7 @@ namespace Phema.RabbitMQ.Exchanges.Tests
 			var services = new ServiceCollection();
 
 			services.AddPhemaRabbitMQ("instance")
-				.AddExchanges(options => options.AddFanoutExchange("amq.direct"));
+				.AddExchangeGroup(options => options.AddFanoutExchange("amq.direct"));
 
 			var provider = services.BuildServiceProvider();
 
@@ -64,7 +64,7 @@ namespace Phema.RabbitMQ.Exchanges.Tests
 			var services = new ServiceCollection();
 
 			services.AddPhemaRabbitMQ("instance")
-				.AddExchanges(options =>
+				.AddExchangeGroup(options =>
 					options.AddDirectExchange("amq.direct")
 						.Durable()
 						.NoWait()

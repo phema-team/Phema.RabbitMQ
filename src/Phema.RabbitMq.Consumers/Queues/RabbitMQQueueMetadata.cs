@@ -9,14 +9,21 @@ namespace Phema.RabbitMQ
 		bool Exclusive { get; set; }
 		bool AutoDelete { get; set; }
 		bool NoWait { get; set; }
+		
+		bool Purged { get; set; }
+		
+		bool Deleted { get; set; }
+		bool IfUnused { get; set; }
+		bool IfEmpty { get; set; }
+		
 		IDictionary<string, object> Arguments { get; }
 	}
 
 	internal sealed class RabbitMQQueueMetadata : IRabbitMQQueueMetadata
 	{
-		public RabbitMQQueueMetadata(string name)
+		public RabbitMQQueueMetadata(string queueName)
 		{
-			Name = name;
+			Name = queueName;
 			Arguments = new Dictionary<string, object>();
 		}
 
@@ -25,6 +32,13 @@ namespace Phema.RabbitMQ
 		public bool Exclusive { get; set; }
 		public bool AutoDelete { get; set; }
 		public bool NoWait { get; set; }
+		
+		public bool Purged { get; set; }
+		
+		public bool Deleted { get; set; }
+		public bool IfUnused { get; set; }
+		public bool IfEmpty { get; set; }
+		
 		public IDictionary<string, object> Arguments { get; }
 	}
 }

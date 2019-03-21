@@ -37,10 +37,15 @@ namespace Phema.RabbitMQ
 
 		public async Task<bool> Produce(TPayload payload)
 		{
-			await Semaphore.WaitAsync();
+			await Semaphore.WaitAsync().ConfigureAwait(false);
 
 			try
 			{
+				if (metadata.Transactional)
+				{
+					channel.TxSelect();
+				}
+
 				channel.BasicPublish(
 					metadata.ExchangeName,
 					metadata.RoutingKey ?? metadata.QueueName,
@@ -50,8 +55,22 @@ namespace Phema.RabbitMQ
 
 				return !metadata.WaitForConfirms || WaitForConfirms();
 			}
+			catch
+			{
+				if (metadata.Transactional)
+				{
+					channel.TxRollback();
+				}
+
+				throw;
+			}
 			finally
 			{
+				if (metadata.Transactional)
+				{
+					channel.TxCommit();
+				}
+
 				Semaphore.Release();
 			}
 		}
@@ -70,16 +89,35 @@ namespace Phema.RabbitMQ
 					serializer.Serialize(payload));
 			}
 
-			await Semaphore.WaitAsync();
+			await Semaphore.WaitAsync().ConfigureAwait(false);
 
 			try
 			{
+				if (metadata.Transactional)
+				{
+					channel.TxSelect();
+				}
+
 				batch.Publish();
 
 				return !metadata.WaitForConfirms || WaitForConfirms();
 			}
+			catch
+			{
+				if (metadata.Transactional)
+				{
+					channel.TxRollback();
+				}
+
+				throw;
+			}
 			finally
 			{
+				if (metadata.Transactional)
+				{
+					channel.TxCommit();
+				}
+
 				Semaphore.Release();
 			}
 		}

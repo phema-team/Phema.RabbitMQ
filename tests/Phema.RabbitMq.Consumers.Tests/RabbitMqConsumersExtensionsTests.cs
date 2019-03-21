@@ -26,7 +26,7 @@ namespace Phema.RabbitMQ.Consumers.Tests
 			var services = new ServiceCollection();
 
 			services.AddPhemaRabbitMQ("instance")
-				.AddConsumers(options =>
+				.AddConsumerGroup(options =>
 					options.AddConsumer<TestPayload, TestPayloadConsumer>("queuename")
 						.WithTag("consumertag")
 						.WithPrefetchCount(0)
@@ -52,7 +52,7 @@ namespace Phema.RabbitMQ.Consumers.Tests
 			var services = new ServiceCollection();
 
 			services.AddPhemaRabbitMQ("instance")
-				.AddConsumers(options =>
+				.AddConsumerGroup(options =>
 					options.AddConsumer<TestPayload, TestPayloadConsumer>("queuename")
 						.WithTag("consumertag")
 						.WithPrefetchCount(0)

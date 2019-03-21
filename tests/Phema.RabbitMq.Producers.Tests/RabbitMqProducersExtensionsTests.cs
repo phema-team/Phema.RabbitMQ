@@ -16,7 +16,7 @@ namespace Phema.RabbitMQ.Producers.Tests
 			var services = new ServiceCollection();
 
 			services.AddPhemaRabbitMQ("instance")
-				.AddProducers(options =>
+				.AddProducerGroup(options =>
 					options.AddProducer<TestPayload>("exchangename", "queuename")
 						.Mandatory()
 						.WithProperty(p => p.Persistent = true));
@@ -30,9 +30,10 @@ namespace Phema.RabbitMQ.Producers.Tests
 			var services = new ServiceCollection();
 
 			services.AddPhemaRabbitMQ("instance")
-				.AddProducers(options =>
+				.AddProducerGroup(options =>
 					options.AddProducer<TestPayload>("exchangename", "queuename")
 						.Mandatory()
+						.Transactional()
 						.WaitForConfirms()
 						.Persistent()
 						.WithPriority(10)

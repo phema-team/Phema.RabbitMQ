@@ -64,7 +64,7 @@ services.AddPhemaRabbitMQ("InstanceName", factory => ...)
   - Use `IRabbitMQConsumerFactory` for custom message handling
 
 - Producers
-  - Inject `IRabbitMQProdicer<TPayload>`
+  - Inject `IRabbitMQProdicer<TPayload>` and use `Produce` or `BatchProduce`
   - Set routing key `WithRoutingKey` extension
   - Set mandatory with `Mandatory` extension
   - Set message priority with `WithPriority` extension
@@ -80,6 +80,7 @@ services.AddPhemaRabbitMQ("InstanceName", factory => ...)
   - Queue and message time to live
   - Max message count and size limitations
   - Lazy, durable and exclusive queues
+  - Batch produce
   - Durable, internal, dead letter, bound and alternate exchanges
   - Reject-publish when queue is full
   - Purge and delete declarative operations

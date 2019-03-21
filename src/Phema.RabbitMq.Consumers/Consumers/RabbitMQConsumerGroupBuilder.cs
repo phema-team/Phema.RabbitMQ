@@ -58,18 +58,19 @@ namespace Phema.RabbitMQ
 					}
 					else
 					{
+						if (queue.Purged)
+						{
+							EnsureQueuePurged(channel, queue);
+						}
+
 						if (queue.Deleted)
 						{
 							EnsureQueueDeleted(channel, queue);
 						}
+
 						else
 						{
 							DeclareQueue(channel, queue);
-
-							if (queue.Purged)
-							{
-								EnsureQueuePurged(channel, queue);
-							}
 						}
 					}
 
@@ -145,7 +146,14 @@ namespace Phema.RabbitMQ
 
 		private static void EnsureQueuePurged(IFullModel channel, IRabbitMQQueueMetadata queue)
 		{
-			channel._Private_QueuePurge(queue.Name, queue.NoWait);
+			try
+			{
+				channel._Private_QueuePurge(queue.Name, queue.NoWait);
+			}
+			catch (OperationInterruptedException)
+			{
+				// Means that queue does not declared, so just ignore exception
+			}
 		}
 
 		private static void EnsurePrefetchCount(IModel channel, IRabbitMQConsumerMetadata consumer)

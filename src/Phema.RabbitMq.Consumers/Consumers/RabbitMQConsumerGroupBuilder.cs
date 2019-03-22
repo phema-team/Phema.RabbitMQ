@@ -67,7 +67,6 @@ namespace Phema.RabbitMQ
 						{
 							EnsureQueueDeleted(channel, queue);
 						}
-
 						else
 						{
 							DeclareQueue(channel, queue);

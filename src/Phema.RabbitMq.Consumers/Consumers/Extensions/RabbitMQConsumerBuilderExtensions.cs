@@ -14,7 +14,7 @@ namespace Phema.RabbitMQ
 			if (consumerTag is null)
 				throw new ArgumentNullException(nameof(consumerTag));
 
-			builder.Metadata.Tag = consumerTag;
+			builder.Declaration.Tag = consumerTag;
 
 			return builder;
 		}
@@ -27,8 +27,8 @@ namespace Phema.RabbitMQ
 			ushort prefetch,
 			bool global = true)
 		{
-			builder.Metadata.PrefetchCount = prefetch;
-			builder.Metadata.Global = global;
+			builder.Declaration.PrefetchCount = prefetch;
+			builder.Declaration.Global = global;
 
 			return builder;
 		}
@@ -41,7 +41,7 @@ namespace Phema.RabbitMQ
 			this IRabbitMQConsumerBuilder builder,
 			uint count)
 		{
-			builder.Metadata.Count = count;
+			builder.Declaration.Count = count;
 
 			return builder;
 		}
@@ -51,7 +51,7 @@ namespace Phema.RabbitMQ
 		/// </summary>
 		public static IRabbitMQConsumerBuilder Exclusive(this IRabbitMQConsumerBuilder builder)
 		{
-			builder.Metadata.Exclusive = true;
+			builder.Declaration.Exclusive = true;
 			return builder;
 		}
 
@@ -60,7 +60,7 @@ namespace Phema.RabbitMQ
 		/// </summary>
 		public static IRabbitMQConsumerBuilder NoLocal(this IRabbitMQConsumerBuilder builder)
 		{
-			builder.Metadata.NoLocal = true;
+			builder.Declaration.NoLocal = true;
 
 			return builder;
 		}
@@ -70,7 +70,7 @@ namespace Phema.RabbitMQ
 		/// </summary>
 		public static IRabbitMQConsumerBuilder AutoAck(this IRabbitMQConsumerBuilder builder)
 		{
-			builder.Metadata.AutoAck = true;
+			builder.Declaration.AutoAck = true;
 
 			return builder;
 		}
@@ -82,8 +82,8 @@ namespace Phema.RabbitMQ
 			this IRabbitMQConsumerBuilder builder,
 			bool multiple = false)
 		{
-			builder.Metadata.Requeue = true;
-			builder.Metadata.Multiple = multiple;
+			builder.Declaration.Requeue = true;
+			builder.Declaration.Multiple = multiple;
 
 			return builder;
 		}
@@ -99,10 +99,10 @@ namespace Phema.RabbitMQ
 			if (argument is null)
 				throw new ArgumentNullException(nameof(argument));
 
-			if (builder.Metadata.Arguments.ContainsKey(argument))
+			if (builder.Declaration.Arguments.ContainsKey(argument))
 				throw new ArgumentException($"Argument {argument} already registered", nameof(argument));
 
-			builder.Metadata.Arguments.Add(argument, value);
+			builder.Declaration.Arguments.Add(argument, value);
 
 			return builder;
 		}

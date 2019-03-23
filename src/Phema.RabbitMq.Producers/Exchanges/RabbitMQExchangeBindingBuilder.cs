@@ -1,17 +1,17 @@
 namespace Phema.RabbitMQ
 {
 	public interface IRabbitMQExchangeBindingBuilder
-		: IRabbitMQMetadataBuilder<IRabbitMQExchangeBindingMetadata>
+		: IRabbitMQDeclarationBuilder<IRabbitMQExchangeBindingDeclaration>
 	{
 	}
 
 	internal sealed class RabbitMQExchangeBindingBuilder : IRabbitMQExchangeBindingBuilder
 	{
-		public RabbitMQExchangeBindingBuilder(IRabbitMQExchangeBindingMetadata metadata)
+		public RabbitMQExchangeBindingBuilder(IRabbitMQExchangeBindingDeclaration declaration)
 		{
-			Metadata = metadata;
+			Declaration = declaration;
 		}
 
-		public IRabbitMQExchangeBindingMetadata Metadata { get; }
+		public IRabbitMQExchangeBindingDeclaration Declaration { get; }
 	}
 }

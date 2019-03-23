@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Phema.RabbitMQ
 {
-	public interface IRabbitMQExchangeMetadata
+	public interface IRabbitMQExchangeDeclaration
 	{
 		string Type { get; }
 		string Name { get; }
@@ -15,17 +15,17 @@ namespace Phema.RabbitMQ
 		bool IfUnused { get; set; }
 
 		IDictionary<string, object> Arguments { get; }
-		IList<IRabbitMQExchangeBindingMetadata> ExchangeBindings { get; }
+		IList<IRabbitMQExchangeBindingDeclaration> ExchangeBindings { get; }
 	}
 
-	internal sealed class RabbitMQExchangeMetadata : IRabbitMQExchangeMetadata
+	internal sealed class RabbitMQExchangeDeclaration : IRabbitMQExchangeDeclaration
 	{
-		public RabbitMQExchangeMetadata(string type, string name)
+		public RabbitMQExchangeDeclaration(string type, string name)
 		{
 			Type = type;
 			Name = name;
 			Arguments = new Dictionary<string, object>();
-			ExchangeBindings = new List<IRabbitMQExchangeBindingMetadata>();
+			ExchangeBindings = new List<IRabbitMQExchangeBindingDeclaration>();
 		}
 
 		public string Type { get; }
@@ -39,6 +39,6 @@ namespace Phema.RabbitMQ
 		public bool IfUnused { get; set; }
 
 		public IDictionary<string, object> Arguments { get; }
-		public IList<IRabbitMQExchangeBindingMetadata> ExchangeBindings { get; }
+		public IList<IRabbitMQExchangeBindingDeclaration> ExchangeBindings { get; }
 	}
 }

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Phema.RabbitMQ
 {
-	public interface IRabbitMQExchangeBindingMetadata
+	public interface IRabbitMQExchangeBindingDeclaration
 	{
 		string ExchangeName { get; }
 		string RoutingKey { get; set; }
@@ -10,9 +10,9 @@ namespace Phema.RabbitMQ
 		IDictionary<string, object> Arguments { get; }
 	}
 
-	internal sealed class RabbitMQExchangeBindingMetadata : IRabbitMQExchangeBindingMetadata
+	internal sealed class RabbitMQExchangeBindingDeclaration : IRabbitMQExchangeBindingDeclaration
 	{
-		public RabbitMQExchangeBindingMetadata(string exchangeName)
+		public RabbitMQExchangeBindingDeclaration(string exchangeName)
 		{
 			ExchangeName = exchangeName;
 			Arguments = new Dictionary<string, object>();

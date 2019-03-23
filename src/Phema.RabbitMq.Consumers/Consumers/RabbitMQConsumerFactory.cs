@@ -6,7 +6,7 @@ namespace Phema.RabbitMQ
 {
 	public interface IRabbitMQConsumerFactory
 	{
-		IBasicConsumer CreateConsumer<TPayload, TPayloadConsumer>(IModel channel, IRabbitMQConsumerMetadata metadata)
+		IBasicConsumer CreateConsumer<TPayload, TPayloadConsumer>(IModel channel, IRabbitMQConsumerDeclaration declaration)
 			where TPayloadConsumer : IRabbitMQConsumer<TPayload>;
 	}
 
@@ -21,10 +21,10 @@ namespace Phema.RabbitMQ
 			this.serializer = serializer;
 		}
 
-		public IBasicConsumer CreateConsumer<TPayload, TPayloadConsumer>(IModel channel, IRabbitMQConsumerMetadata metadata)
+		public IBasicConsumer CreateConsumer<TPayload, TPayloadConsumer>(IModel channel, IRabbitMQConsumerDeclaration declaration)
 			where TPayloadConsumer : IRabbitMQConsumer<TPayload>
 		{
-			return new RabbitMQBasicConsumer<TPayload, TPayloadConsumer>(provider, channel, metadata, serializer);
+			return new RabbitMQBasicConsumer<TPayload, TPayloadConsumer>(provider, channel, declaration, serializer);
 		}
 	}
 }

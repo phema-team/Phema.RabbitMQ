@@ -4,7 +4,7 @@ using RabbitMQ.Client;
 
 namespace Phema.RabbitMQ
 {
-	public interface IRabbitMQProducerMetadata
+	public interface IRabbitMQProducerDeclaration
 	{
 		string ExchangeName { get; }
 		string QueueName { get; }
@@ -18,9 +18,9 @@ namespace Phema.RabbitMQ
 		IList<Action<IBasicProperties>> Properties { get; }
 	}
 
-	internal sealed class RabbitMQProducerMetadata : IRabbitMQProducerMetadata
+	internal sealed class RabbitMQProducerDeclaration : IRabbitMQProducerDeclaration
 	{
-		public RabbitMQProducerMetadata(string exchangeName, string queueName)
+		public RabbitMQProducerDeclaration(string exchangeName, string queueName)
 		{
 			ExchangeName = exchangeName;
 			QueueName = queueName;

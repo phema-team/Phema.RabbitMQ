@@ -9,7 +9,7 @@ namespace Phema.RabbitMQ
 		/// </summary>
 		public static IRabbitMQExchangeBuilder Durable(this IRabbitMQExchangeBuilder builder)
 		{
-			builder.Metadata.Durable = true;
+			builder.Declaration.Durable = true;
 
 			return builder;
 		}
@@ -19,7 +19,7 @@ namespace Phema.RabbitMQ
 		/// </summary>
 		public static IRabbitMQExchangeBuilder NoWait(this IRabbitMQExchangeBuilder builder)
 		{
-			builder.Metadata.NoWait = true;
+			builder.Declaration.NoWait = true;
 
 			return builder;
 		}
@@ -30,7 +30,7 @@ namespace Phema.RabbitMQ
 		/// </summary>
 		public static IRabbitMQExchangeBuilder Internal(this IRabbitMQExchangeBuilder builder)
 		{
-			builder.Metadata.Internal = true;
+			builder.Declaration.Internal = true;
 
 			return builder;
 		}
@@ -40,7 +40,7 @@ namespace Phema.RabbitMQ
 		/// </summary>
 		public static IRabbitMQExchangeBuilder AutoDelete(this IRabbitMQExchangeBuilder builder)
 		{
-			builder.Metadata.AutoDelete = true;
+			builder.Declaration.AutoDelete = true;
 
 			return builder;
 		}
@@ -52,8 +52,8 @@ namespace Phema.RabbitMQ
 			this IRabbitMQExchangeBuilder builder,
 			bool ifUnused = false)
 		{
-			builder.Metadata.Deleted = true;
-			builder.Metadata.IfUnused = ifUnused;
+			builder.Declaration.Deleted = true;
+			builder.Declaration.IfUnused = ifUnused;
 
 			return builder;
 		}
@@ -66,7 +66,7 @@ namespace Phema.RabbitMQ
 			string argument,
 			TValue value)
 		{
-			builder.Metadata.Arguments.Add(argument, value);
+			builder.Declaration.Arguments.Add(argument, value);
 
 			return builder;
 		}
@@ -82,11 +82,11 @@ namespace Phema.RabbitMQ
 			if (exchangeName is null)
 				throw new ArgumentNullException(nameof(exchangeName));
 
-			var metadata = new RabbitMQExchangeBindingMetadata(exchangeName);
+			var declaration = new RabbitMQExchangeBindingDeclaration(exchangeName);
 
-			binding?.Invoke(new RabbitMQExchangeBindingBuilder(metadata));
+			binding?.Invoke(new RabbitMQExchangeBindingBuilder(declaration));
 
-			builder.Metadata.ExchangeBindings.Add(metadata);
+			builder.Declaration.ExchangeBindings.Add(declaration);
 
 			return builder;
 		}

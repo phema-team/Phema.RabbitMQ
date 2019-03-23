@@ -12,7 +12,7 @@ namespace Phema.RabbitMQ
 			this IRabbitMQProducerBuilder builder,
 			string routingKey)
 		{
-			builder.Metadata.RoutingKey = routingKey;
+			builder.Declaration.RoutingKey = routingKey;
 			return builder;
 		}
 
@@ -24,7 +24,7 @@ namespace Phema.RabbitMQ
 			string argument,
 			TValue value)
 		{
-			builder.Metadata.Arguments.Add(argument, value);
+			builder.Declaration.Arguments.Add(argument, value);
 			return builder;
 		}
 
@@ -33,7 +33,7 @@ namespace Phema.RabbitMQ
 		/// </summary>
 		public static IRabbitMQProducerBuilder Mandatory(this IRabbitMQProducerBuilder builder)
 		{
-			builder.Metadata.Mandatory = true;
+			builder.Declaration.Mandatory = true;
 			return builder;
 		}
 
@@ -42,7 +42,7 @@ namespace Phema.RabbitMQ
 		/// </summary>
 		public static IRabbitMQProducerBuilder Transactional(this IRabbitMQProducerBuilder builder)
 		{
-			builder.Metadata.Transactional = true;
+			builder.Declaration.Transactional = true;
 			return builder;
 		}
 		
@@ -53,9 +53,9 @@ namespace Phema.RabbitMQ
 			TimeSpan? timeout = null,
 			bool die = true)
 		{
-			builder.Metadata.WaitForConfirms = true;
-			builder.Metadata.Timeout = timeout;
-			builder.Metadata.Die = die;
+			builder.Declaration.WaitForConfirms = true;
+			builder.Declaration.Timeout = timeout;
+			builder.Declaration.Die = die;
 			return builder;
 		}
 
@@ -66,7 +66,7 @@ namespace Phema.RabbitMQ
 			this IRabbitMQProducerBuilder builder,
 			Action<IBasicProperties> property)
 		{
-			builder.Metadata.Properties.Add(property);
+			builder.Declaration.Properties.Add(property);
 			return builder;
 		}
 

@@ -9,7 +9,7 @@ namespace Phema.RabbitMQ
 		/// </summary>
 		public static IRabbitMQQueueBuilder Durable(this IRabbitMQQueueBuilder builder)
 		{
-			builder.Metadata.Durable = true;
+			builder.Declaration.Durable = true;
 
 			return builder;
 		}
@@ -19,7 +19,7 @@ namespace Phema.RabbitMQ
 		/// </summary>
 		public static IRabbitMQQueueBuilder Exclusive(this IRabbitMQQueueBuilder builder)
 		{
-			builder.Metadata.Exclusive = true;
+			builder.Declaration.Exclusive = true;
 
 			return builder;
 		}
@@ -29,7 +29,7 @@ namespace Phema.RabbitMQ
 		/// </summary>
 		public static IRabbitMQQueueBuilder NoWait(this IRabbitMQQueueBuilder builder)
 		{
-			builder.Metadata.NoWait = true;
+			builder.Declaration.NoWait = true;
 			return builder;
 		}
 
@@ -38,7 +38,7 @@ namespace Phema.RabbitMQ
 		/// </summary>
 		public static IRabbitMQQueueBuilder Purged(this IRabbitMQQueueBuilder builder)
 		{
-			builder.Metadata.Purged = true;
+			builder.Declaration.Purged = true;
 			return builder;
 		}
 
@@ -50,9 +50,9 @@ namespace Phema.RabbitMQ
 			bool ifUnused = false,
 			bool ifEmpty = false)
 		{
-			builder.Metadata.Deleted = true;
-			builder.Metadata.IfUnused = ifUnused;
-			builder.Metadata.IfEmpty = ifEmpty;
+			builder.Declaration.Deleted = true;
+			builder.Declaration.IfUnused = ifUnused;
+			builder.Declaration.IfEmpty = ifEmpty;
 
 			return builder;
 		}
@@ -62,7 +62,7 @@ namespace Phema.RabbitMQ
 		/// </summary>
 		public static IRabbitMQQueueBuilder AutoDelete(this IRabbitMQQueueBuilder builder)
 		{
-			builder.Metadata.AutoDelete = true;
+			builder.Declaration.AutoDelete = true;
 
 			return builder;
 		}
@@ -75,7 +75,7 @@ namespace Phema.RabbitMQ
 			string argument,
 			TValue value)
 		{
-			builder.Metadata.Arguments.Add(argument, value);
+			builder.Declaration.Arguments.Add(argument, value);
 
 			return builder;
 		}

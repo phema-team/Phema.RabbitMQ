@@ -34,7 +34,7 @@ namespace Phema.RabbitMQ
 			if (exchangeName is null)
 				throw new ArgumentNullException(nameof(exchangeName));
 
-			var producer = new RabbitMQProducerMetadata(exchangeName, queueName);
+			var declaration = new RabbitMQProducerDeclaration(exchangeName, queueName);
 
 			services.TryAddSingleton<IRabbitMQProducer<TPayload>>(provider =>
 			{
@@ -43,7 +43,7 @@ namespace Phema.RabbitMQ
 				var exchange = provider.GetRequiredService<IOptions<RabbitMQExchangesOptions>>()
 					.Value
 					.Exchanges
-					.FirstOrDefault(ex => ex.Name == producer.ExchangeName);
+					.FirstOrDefault(ex => ex.Name == declaration.ExchangeName);
 
 				// It can be default exchange or already declared
 				// So no reason to write configuration for it
@@ -64,36 +64,41 @@ namespace Phema.RabbitMQ
 					}
 				}
 
-				if (producer.QueueName != null)
+				if (declaration.QueueName != null)
 				{
 					// Should bind queue with exchange when not declared,
 					// because of default or already declared
-					BindQueue(channel, producer);
+					BindQueue(channel,declaration);
 				}
 
-				EnsureRoutingKeyOrQueueName(producer);
+				EnsureRoutingKeyOrQueueName(declaration);
 
 				var serializer = provider.GetRequiredService<ISerializer>();
 
-				var properties = CreateBasicProperties(channel, producer);
+				var properties = CreateBasicProperties(channel, declaration);
 
-				if (producer.WaitForConfirms)
+				if (declaration.WaitForConfirms)
 				{
 					channel.ConfirmSelect();
 				}
+				
+				if (declaration.Transactional)
+				{
+					channel.TxSelect();
+				}
 
-				return new RabbitMQProducer<TPayload>(channel, serializer, producer, properties);
+				return new RabbitMQProducer<TPayload>(channel, serializer, declaration, properties);
 			});
 
-			return new RabbitMQProducerBuilder(producer);
+			return new RabbitMQProducerBuilder(declaration);
 		}
 
-		private static void EnsureExchangeDeleted(IFullModel channel, IRabbitMQExchangeMetadata exchange)
+		private static void EnsureExchangeDeleted(IFullModel channel, IRabbitMQExchangeDeclaration exchange)
 		{
 			channel._Private_ExchangeDelete(exchange.Name, exchange.IfUnused, exchange.NoWait);
 		}
 		
-		private static void DeclareExchange(IFullModel channel, IRabbitMQExchangeMetadata exchange)
+		private static void DeclareExchange(IFullModel channel, IRabbitMQExchangeDeclaration exchange)
 		{
 			channel._Private_ExchangeDeclare(
 				exchange: exchange.Name,
@@ -108,8 +113,8 @@ namespace Phema.RabbitMQ
 
 		private static void DeclareExchangeBinding(
 			IFullModel channel,
-			IRabbitMQExchangeMetadata exchange,
-			IRabbitMQExchangeBindingMetadata binding)
+			IRabbitMQExchangeDeclaration exchange,
+			IRabbitMQExchangeBindingDeclaration binding)
 		{
 			channel._Private_ExchangeBind(
 				destination: binding.ExchangeName,
@@ -119,7 +124,7 @@ namespace Phema.RabbitMQ
 				arguments: binding.Arguments);
 		}
 
-		private static void BindQueue(IModel channel, IRabbitMQProducerMetadata producer)
+		private static void BindQueue(IModel channel, IRabbitMQProducerDeclaration producer)
 		{
 			try
 			{
@@ -137,7 +142,7 @@ namespace Phema.RabbitMQ
 			}
 		}
 
-		private static void EnsureRoutingKeyOrQueueName(IRabbitMQProducerMetadata producer)
+		private static void EnsureRoutingKeyOrQueueName(IRabbitMQProducerDeclaration producer)
 		{
 			if ((producer.RoutingKey ?? producer.QueueName) is null)
 			{
@@ -146,7 +151,7 @@ namespace Phema.RabbitMQ
 			}
 		}
 
-		private static IBasicProperties CreateBasicProperties(IModel channel, IRabbitMQProducerMetadata producer)
+		private static IBasicProperties CreateBasicProperties(IModel channel, IRabbitMQProducerDeclaration producer)
 		{
 			var properties = channel.CreateBasicProperties();
 			

@@ -11,19 +11,19 @@ namespace Phema.RabbitMQ
 	internal sealed class RabbitMQBasicConsumer<TPayload, TPayloadConsumer> : AsyncEventingBasicConsumer
 		where TPayloadConsumer : IRabbitMQConsumer<TPayload>
 	{
-		private readonly IRabbitMQConsumerMetadata metadata;
+		private readonly IRabbitMQConsumerDeclaration declaration;
 		private readonly IServiceProvider provider;
 		private readonly ISerializer serializer;
 
 		public RabbitMQBasicConsumer(
 			IServiceProvider provider,
 			IModel channel,
-			IRabbitMQConsumerMetadata metadata,
+			IRabbitMQConsumerDeclaration declaration,
 			ISerializer serializer)
 			: base(channel)
 		{
 			this.provider = provider;
-			this.metadata = metadata;
+			this.declaration = declaration;
 			this.serializer = serializer;
 		}
 
@@ -49,22 +49,22 @@ namespace Phema.RabbitMQ
 				}
 				catch (Exception exception)
 				{
-					if (!metadata.AutoAck)
+					if (!declaration.AutoAck)
 					{
-						Model.BasicNack(deliveryTag, metadata.Multiple, !redelivered && metadata.Requeue);
+						Model.BasicNack(deliveryTag, declaration.Multiple, !redelivered && declaration.Requeue);
 					}
 
 					// Remove logging reference, add .WhenConsumerExceptionHappened(...)
 					scope.ServiceProvider
 						.GetService<ILogger<RabbitMQBasicConsumer<TPayload, TPayloadConsumer>>>()
-						?.LogConsumerException<TPayload>(metadata, exception, body, redelivered);
+						?.LogConsumerException<TPayload>(declaration, exception, body, redelivered);
 
 					throw;
 				}
 
-				if (!metadata.AutoAck)
+				if (!declaration.AutoAck)
 				{
-					Model.BasicAck(deliveryTag, metadata.Multiple);
+					Model.BasicAck(deliveryTag, declaration.Multiple);
 				}
 			}
 		}

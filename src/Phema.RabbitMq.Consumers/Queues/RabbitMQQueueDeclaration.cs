@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Phema.RabbitMQ
 {
-	public interface IRabbitMQQueueMetadata
+	public interface IRabbitMQQueueDeclaration
 	{
 		string Name { get; }
 		bool Durable { get; set; }
@@ -19,9 +19,9 @@ namespace Phema.RabbitMQ
 		IDictionary<string, object> Arguments { get; }
 	}
 
-	internal sealed class RabbitMQQueueMetadata : IRabbitMQQueueMetadata
+	internal sealed class RabbitMQQueueDeclaration : IRabbitMQQueueDeclaration
 	{
-		public RabbitMQQueueMetadata(string queueName)
+		public RabbitMQQueueDeclaration(string queueName)
 		{
 			Name = queueName;
 			Arguments = new Dictionary<string, object>();

@@ -1,17 +1,17 @@
 namespace Phema.RabbitMQ
 {
 	public interface IRabbitMQQueueBuilder
-		: IRabbitMQMetadataBuilder<IRabbitMQQueueMetadata>
+		: IRabbitMQDeclarationBuilder<IRabbitMQQueueDeclaration>
 	{
 	}
 
 	internal sealed class RabbitMQQueueBuilder : IRabbitMQQueueBuilder
 	{
-		public RabbitMQQueueBuilder(IRabbitMQQueueMetadata metadata)
+		public RabbitMQQueueBuilder(IRabbitMQQueueDeclaration declaration)
 		{
-			Metadata = metadata;
+			Declaration = declaration;
 		}
 
-		public IRabbitMQQueueMetadata Metadata { get; }
+		public IRabbitMQQueueDeclaration Declaration { get; }
 	}
 }

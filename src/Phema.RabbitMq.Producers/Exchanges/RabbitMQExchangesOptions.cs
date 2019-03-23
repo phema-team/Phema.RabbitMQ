@@ -6,9 +6,9 @@ namespace Phema.RabbitMQ
 	{
 		public RabbitMQExchangesOptions()
 		{
-			Exchanges = new List<RabbitMQExchangeMetadata>();
+			Exchanges = new List<RabbitMQExchangeDeclaration>();
 		}
 
-		public IList<RabbitMQExchangeMetadata> Exchanges { get; }
+		public IList<RabbitMQExchangeDeclaration> Exchanges { get; }
 	}
 }

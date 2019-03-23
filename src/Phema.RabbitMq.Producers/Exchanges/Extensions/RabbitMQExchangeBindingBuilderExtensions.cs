@@ -9,7 +9,7 @@ namespace Phema.RabbitMQ
 			this IRabbitMQExchangeBindingBuilder builder,
 			string routingKey)
 		{
-			builder.Metadata.RoutingKey = routingKey;
+			builder.Declaration.RoutingKey = routingKey;
 
 			return builder;
 		}
@@ -20,7 +20,7 @@ namespace Phema.RabbitMQ
 		public static IRabbitMQExchangeBindingBuilder NoWait(
 			this IRabbitMQExchangeBindingBuilder builder)
 		{
-			builder.Metadata.NoWait = true;
+			builder.Declaration.NoWait = true;
 
 			return builder;
 		}
@@ -33,7 +33,7 @@ namespace Phema.RabbitMQ
 			string argument,
 			TValue value)
 		{
-			builder.Metadata.Arguments.Add(argument, value);
+			builder.Declaration.Arguments.Add(argument, value);
 
 			return builder;
 		}

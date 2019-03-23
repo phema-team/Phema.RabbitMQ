@@ -6,9 +6,9 @@ namespace Phema.RabbitMQ
 	{
 		public RabbitMQQueuesOptions()
 		{
-			Queues = new List<IRabbitMQQueueMetadata>();
+			Queues = new List<IRabbitMQQueueDeclaration>();
 		}
 
-		public IList<IRabbitMQQueueMetadata> Queues { get; }
+		public IList<IRabbitMQQueueDeclaration> Queues { get; }
 	}
 }

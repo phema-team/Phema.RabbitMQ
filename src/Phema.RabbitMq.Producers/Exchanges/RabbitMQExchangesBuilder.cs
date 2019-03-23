@@ -35,17 +35,17 @@ namespace Phema.RabbitMQ
 				? exchangeName
 				: $"{groupName}.{exchangeName}";
 
-			var metadata = new RabbitMQExchangeMetadata(exchangeType, exchangeName);
+			var declaration = new RabbitMQExchangeDeclaration(exchangeType, exchangeName);
 
 			services.Configure<RabbitMQExchangesOptions>(options =>
 			{
 				if (options.Exchanges.Any(e => e.Name == exchangeName))
 					throw new ArgumentException($"Exchange {exchangeName} already registered", nameof(exchangeName));
 
-				options.Exchanges.Add(metadata);
+				options.Exchanges.Add(declaration);
 			});
 
-			return new RabbitMQExchangeBuilder(metadata);
+			return new RabbitMQExchangeBuilder(declaration);
 		}
 	}
 }

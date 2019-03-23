@@ -32,17 +32,17 @@ namespace Phema.RabbitMQ
 				? queueName
 				: $"{groupName}.{queueName}";
 			
-			var metadata = new RabbitMQQueueMetadata(queueName);
+			var declaration = new RabbitMQQueueDeclaration(queueName);
 
 			services.Configure<RabbitMQQueuesOptions>(options =>
 			{
 				if (options.Queues.Any(q => q.Name == queueName))
 					throw new ArgumentException($"Queue {queueName} already registered", nameof(queueName));
 
-				options.Queues.Add(metadata);
+				options.Queues.Add(declaration);
 			});
 
-			return new RabbitMQQueueBuilder(metadata);
+			return new RabbitMQQueueBuilder(declaration);
 		}
 	}
 }

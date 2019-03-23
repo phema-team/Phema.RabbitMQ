@@ -21,16 +21,16 @@ namespace Phema.RabbitMQ
 		private readonly IModel channel;
 		private readonly ISerializer serializer;
 		private readonly IBasicProperties properties;
-		private readonly IRabbitMQProducerMetadata metadata;
+		private readonly IRabbitMQProducerDeclaration declaration;
 
 		public RabbitMQProducer(
 			IModel channel,
 			ISerializer serializer,
-			IRabbitMQProducerMetadata metadata,
+			IRabbitMQProducerDeclaration declaration,
 			IBasicProperties properties)
 		{
 			this.channel = channel;
-			this.metadata = metadata;
+			this.declaration = declaration;
 			this.serializer = serializer;
 			this.properties = properties;
 		}
@@ -41,23 +41,18 @@ namespace Phema.RabbitMQ
 
 			try
 			{
-				if (metadata.Transactional)
-				{
-					channel.TxSelect();
-				}
-
 				channel.BasicPublish(
-					metadata.ExchangeName,
-					metadata.RoutingKey ?? metadata.QueueName,
-					metadata.Mandatory,
+					declaration.ExchangeName,
+					declaration.RoutingKey ?? declaration.QueueName,
+					declaration.Mandatory,
 					properties,
 					serializer.Serialize(payload));
 
-				return !metadata.WaitForConfirms || WaitForConfirms();
+				return !declaration.WaitForConfirms || WaitForConfirms();
 			}
 			catch
 			{
-				if (metadata.Transactional)
+				if (declaration.Transactional)
 				{
 					channel.TxRollback();
 				}
@@ -66,7 +61,7 @@ namespace Phema.RabbitMQ
 			}
 			finally
 			{
-				if (metadata.Transactional)
+				if (declaration.Transactional)
 				{
 					channel.TxCommit();
 				}
@@ -82,9 +77,9 @@ namespace Phema.RabbitMQ
 			foreach (var payload in payloads)
 			{
 				batch.Add(
-					metadata.ExchangeName,
-					metadata.RoutingKey ?? metadata.QueueName,
-					metadata.Mandatory,
+					declaration.ExchangeName,
+					declaration.RoutingKey ?? declaration.QueueName,
+					declaration.Mandatory,
 					properties,
 					serializer.Serialize(payload));
 			}
@@ -93,18 +88,18 @@ namespace Phema.RabbitMQ
 
 			try
 			{
-				if (metadata.Transactional)
+				if (declaration.Transactional)
 				{
 					channel.TxSelect();
 				}
 
 				batch.Publish();
 
-				return !metadata.WaitForConfirms || WaitForConfirms();
+				return !declaration.WaitForConfirms || WaitForConfirms();
 			}
 			catch
 			{
-				if (metadata.Transactional)
+				if (declaration.Transactional)
 				{
 					channel.TxRollback();
 				}
@@ -113,7 +108,7 @@ namespace Phema.RabbitMQ
 			}
 			finally
 			{
-				if (metadata.Transactional)
+				if (declaration.Transactional)
 				{
 					channel.TxCommit();
 				}
@@ -124,23 +119,23 @@ namespace Phema.RabbitMQ
 
 		private bool WaitForConfirms()
 		{
-			if (metadata.Die)
+			if (declaration.Die)
 			{
-				if (metadata.Timeout is null)
+				if (declaration.Timeout is null)
 				{
 					channel.WaitForConfirmsOrDie();
 				}
 				else
 				{
-					channel.WaitForConfirmsOrDie(metadata.Timeout.Value);
+					channel.WaitForConfirmsOrDie(declaration.Timeout.Value);
 				}
 
 				return true;
 			}
 
-			return metadata.Timeout is null
+			return declaration.Timeout is null
 				? channel.WaitForConfirms()
-				: channel.WaitForConfirms(metadata.Timeout.Value);
+				: channel.WaitForConfirms(declaration.Timeout.Value);
 		}
 	}
 }

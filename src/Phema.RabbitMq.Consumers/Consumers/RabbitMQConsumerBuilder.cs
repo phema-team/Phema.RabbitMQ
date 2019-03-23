@@ -1,17 +1,17 @@
 namespace Phema.RabbitMQ
 {
 	public interface IRabbitMQConsumerBuilder
-		: IRabbitMQMetadataBuilder<IRabbitMQConsumerMetadata>
+		: IRabbitMQDeclarationBuilder<IRabbitMQConsumerDeclaration>
 	{
 	}
 
 	internal sealed class RabbitMQConsumerBuilder : IRabbitMQConsumerBuilder
 	{
-		public RabbitMQConsumerBuilder(IRabbitMQConsumerMetadata metadata)
+		public RabbitMQConsumerBuilder(IRabbitMQConsumerDeclaration declaration)
 		{
-			Metadata = metadata;
+			Declaration = declaration;
 		}
 
-		public IRabbitMQConsumerMetadata Metadata { get; }
+		public IRabbitMQConsumerDeclaration Declaration { get; }
 	}
 }

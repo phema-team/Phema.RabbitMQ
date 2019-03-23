@@ -39,7 +39,7 @@ namespace Phema.RabbitMQ
 
 			services.TryAddScoped<TPayloadConsumer>();
 
-			var consumer = new RabbitMQConsumerMetadata(queueName) as IRabbitMQConsumerMetadata;
+			var declaration = new RabbitMQConsumerDeclaration(queueName) as IRabbitMQConsumerDeclaration;
 
 			services.Configure<RabbitMQConsumersOptions>(options =>
 			{
@@ -50,11 +50,11 @@ namespace Phema.RabbitMQ
 					var queue = provider.GetRequiredService<IOptions<RabbitMQQueuesOptions>>()
 						.Value
 						.Queues
-						.FirstOrDefault(q => q.Name == consumer.QueueName);
+						.FirstOrDefault(q => q.Name == declaration.QueueName);
 
 					if (queue is null)
 					{
-						EnsureQueueDeclared(channel, consumer.QueueName);
+						EnsureQueueDeclared(channel, declaration.QueueName);
 					}
 					else
 					{
@@ -74,25 +74,25 @@ namespace Phema.RabbitMQ
 						}
 					}
 
-					EnsurePrefetchCount(channel, consumer);
+					EnsurePrefetchCount(channel, declaration);
 
 					var factory = provider.GetRequiredService<IRabbitMQConsumerFactory>();
 
-					for (var index = 0; index < consumer.Count; index++)
+					for (var index = 0; index < declaration.Count; index++)
 					{
 						channel.BasicConsume(
-							queue: consumer.QueueName,
-							autoAck: consumer.AutoAck,
-							consumerTag: $"{consumer.Tag}_{index}",
-							noLocal: consumer.NoLocal,
-							exclusive: consumer.Exclusive,
-							arguments: consumer.Arguments,
-							consumer: factory.CreateConsumer<TPayload, TPayloadConsumer>(channel, consumer));
+							queue: declaration.QueueName,
+							autoAck: declaration.AutoAck,
+							consumerTag: $"{declaration.Tag}_{index}",
+							noLocal: declaration.NoLocal,
+							exclusive: declaration.Exclusive,
+							arguments: declaration.Arguments,
+							consumer: factory.CreateConsumer<TPayload, TPayloadConsumer>(channel, declaration));
 					}
 				});
 			});
 
-			return new RabbitMQConsumerBuilder(consumer);
+			return new RabbitMQConsumerBuilder(declaration);
 		}
 
 		private static void EnsureQueueDeclared(IModel channel, string queueName)
@@ -109,7 +109,7 @@ namespace Phema.RabbitMQ
 			}
 		}
 
-		private static void EnsureQueueDeleted(IFullModel channel, IRabbitMQQueueMetadata queue)
+		private static void EnsureQueueDeleted(IFullModel channel, IRabbitMQQueueDeclaration queue)
 		{
 			try
 			{
@@ -122,7 +122,7 @@ namespace Phema.RabbitMQ
 			}
 		}
 
-		private static void DeclareQueue(IModel channel, IRabbitMQQueueMetadata queue)
+		private static void DeclareQueue(IModel channel, IRabbitMQQueueDeclaration queue)
 		{
 			if (queue.NoWait)
 			{
@@ -144,7 +144,7 @@ namespace Phema.RabbitMQ
 			}
 		}
 
-		private static void EnsureQueuePurged(IFullModel channel, IRabbitMQQueueMetadata queue)
+		private static void EnsureQueuePurged(IFullModel channel, IRabbitMQQueueDeclaration queue)
 		{
 			try
 			{
@@ -156,7 +156,7 @@ namespace Phema.RabbitMQ
 			}
 		}
 
-		private static void EnsurePrefetchCount(IModel channel, IRabbitMQConsumerMetadata consumer)
+		private static void EnsurePrefetchCount(IModel channel, IRabbitMQConsumerDeclaration consumer)
 		{
 			// PrefetchSize != 0 is not implemented for now
 			channel.BasicQos(0, consumer.PrefetchCount, consumer.Global);

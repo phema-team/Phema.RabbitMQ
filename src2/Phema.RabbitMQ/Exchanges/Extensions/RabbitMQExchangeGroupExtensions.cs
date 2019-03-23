@@ -8,8 +8,8 @@ namespace Phema.RabbitMQ
 		/// <summary>
 		///   Sets exchange type to direct
 		/// </summary>
-		public static IRabbitMQExchangeGroupProvider DirectExchange(
-			this IRabbitMQExchangeGroupProvider configuration,
+		public static IRabbitMQProvider DirectExchange(
+			this IRabbitMQProvider configuration,
 			string exchangeName,
 			Action<IRabbitMQExchangeProvider> exchange)
 		{
@@ -22,8 +22,8 @@ namespace Phema.RabbitMQ
 		/// <summary>
 		///   Sets exchange type to fanout
 		/// </summary>
-		public static IRabbitMQExchangeGroupProvider FanoutExchange(
-			this IRabbitMQExchangeGroupProvider configuration,
+		public static IRabbitMQProvider FanoutExchange(
+			this IRabbitMQProvider configuration,
 			string exchangeName,
 			Action<IRabbitMQExchangeProvider> exchange)
 		{
@@ -36,8 +36,8 @@ namespace Phema.RabbitMQ
 		/// <summary>
 		///   Sets exchange type to topic
 		/// </summary>
-		public static IRabbitMQExchangeGroupProvider TopicExchange(
-			this IRabbitMQExchangeGroupProvider configuration,
+		public static IRabbitMQProvider TopicExchange(
+			this IRabbitMQProvider configuration,
 			string exchangeName,
 			Action<IRabbitMQExchangeProvider> exchange)
 		{
@@ -50,8 +50,8 @@ namespace Phema.RabbitMQ
 		/// <summary>
 		///   Sets exchange type to headers
 		/// </summary>
-		public static IRabbitMQExchangeGroupProvider HeadersExchange(
-			this IRabbitMQExchangeGroupProvider configuration,
+		public static IRabbitMQProvider HeadersExchange(
+			this IRabbitMQProvider configuration,
 			string exchangeName,
 			Action<IRabbitMQExchangeProvider> exchange)
 		{

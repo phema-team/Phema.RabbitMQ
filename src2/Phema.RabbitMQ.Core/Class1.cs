@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Phema.Serialization;
@@ -34,58 +35,19 @@ namespace Phema.RabbitMQ
 			
 			var rabbitmq = provider.GetRequiredService<IRabbitMQProvider>();
 
-			rabbitmq.QueueGroup("Queues", group =>
-			{
-				group.Queue("Queue", queue =>
-				{
-					queue.Durable();
-				});
-			});
+			rabbitmq.Queue("Queue", 
+				queue => queue.Durable());
 
-			rabbitmq.ExchangeGroup("Exchanges", group =>
-				group.DirectExchange("Exchange", exchange =>
-					exchange.Durable()));
+			rabbitmq.FanoutExchange("Exchange",
+				exchange => exchange.Durable());
 
-			rabbitmq.ProducerGroup("Producers", group =>
-				group.Producer<Payload>("Exchanges.Exchange", "Queues.Queue", 
-					producer =>
-						producer.Persistent()));
+			rabbitmq.Producer<Payload>("Exchange", "Queue");
 
-			rabbitmq.ConsumerGroup("Consumers", group =>
-				group.Consumer<Payload, PayloadConsumer>("Queues.Queue", 
-					producer =>
-						producer.WithCount(1)));
+			rabbitmq.Consumer<Payload, PayloadConsumer>("Queue",
+				producer => producer.AutoAck().WithCount(10));
 
 			await provider.GetRequiredService<IRabbitMQProducer<Payload>>()
-				.Produce(new Payload { Name = "Test1" });
-
-			using (var scope = provider.CreateScope())
-			{
-				await scope.ServiceProvider.GetRequiredService<IRabbitMQProducer<Payload>>()
-					.Produce(new Payload { Name = "Test2" });
-			}
-			
-			rabbitmq.ProducerGroup("Producers", group =>
-				group.Producer<Payload>("Exchanges.Exchange", "Queues.Queue", 
-					producer =>
-						producer.Persistent()
-							.WaitForConfirms()));
-
-			var p = provider.GetRequiredService<IRabbitMQProducer<Payload>>();
-			
-			for (int i = 0; i < 1_000; i++)
-			{
-				await p.Produce(new Payload { Name = "Test" + i });
-
-				if (i == 500)
-				{
-					rabbitmq.ConsumerGroup("Consumers", group =>
-						group.Consumer<Payload, PayloadConsumer>("Queues.Queue", 
-							producer =>
-								producer
-									.Canceled()));
-				}
-			}
+				.BatchProduce(Enumerable.Range(0, 1_000_000).Select(x => new Payload { Name = "Test" + x }));
 
 			Console.ReadLine();
 		}

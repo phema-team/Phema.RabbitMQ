@@ -14,7 +14,6 @@ namespace Phema.RabbitMQ
 		bool AutoAck { get; set; }
 		bool Requeue { get; set; }
 		bool Multiple { get; set; }
-		bool Canceled { get; set; }
 		IDictionary<string, object> Arguments { get; }
 	}
 
@@ -38,7 +37,6 @@ namespace Phema.RabbitMQ
 		public bool AutoAck { get; set; }
 		public bool Requeue { get; set; }
 		public bool Multiple { get; set; }
-		public bool Canceled { get; set; }
 		public IDictionary<string, object> Arguments { get; }
 	}
 }

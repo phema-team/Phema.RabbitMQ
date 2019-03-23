@@ -89,16 +89,6 @@ namespace Phema.RabbitMQ
 		}
 
 		/// <summary>
-		///   Cancel consumer
-		/// </summary>
-		public static IRabbitMQConsumerProvider Canceled(this IRabbitMQConsumerProvider builder)
-		{
-			builder.Metadata.Canceled = true;
-
-			return builder;
-		}
-
-		/// <summary>
 		///   Sets RabbitMQ arguments. Allow multiple
 		/// </summary>
 		public static IRabbitMQConsumerProvider WithArgument<TValue>(

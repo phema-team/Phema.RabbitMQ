@@ -7,38 +7,37 @@ namespace Phema.RabbitMQ
 {
 	public static class RabbitMQExtensions
 	{
-		public static IRabbitMQBuilder AddPhemaRabbitMQ(
-			this IServiceCollection services,
-			string instanceName,
-			Action<IConnectionFactory> options = null)
+		public static IRabbitMQBuilder AddRabbitMQ(this IServiceCollection services, Action<RabbitMQOptions> options)
 		{
-			var factory = new ConnectionFactory
-			{
-				DispatchConsumersAsync = true,
-				// Hack for now, because StackOverflowException
-				AutomaticRecoveryEnabled = false
-			};
+			services.Configure<RabbitMQOptions>(options.Invoke);
 
-			options?.Invoke(factory);
+			services.TryAddSingleton<IRabbitMQConnectionFactory, RabbitMQConnectionFactory>();
 
-			var connectionFactory = new RabbitMQConnectionFactory(instanceName, factory);
-
-			services.TryAddSingleton<IRabbitMQConnectionFactory>(connectionFactory);
-
-			return new RabbitMQBuilder(services, connectionFactory);
+			return new RabbitMQBuilder(services);
 		}
 
-		public static IRabbitMQBuilder AddPhemaRabbitMQ(
+		public static IRabbitMQBuilder AddRabbitMQ(
+			this IServiceCollection services,
+			string instanceName,
+			Action<ConnectionFactory> factory)
+		{
+			return services.AddRabbitMQ(options =>
+			{
+				options.InstanceName = instanceName;
+				factory.Invoke(options.ConnectionFactory);
+			});
+		}
+		
+		public static IRabbitMQBuilder AddRabbitMQ(
 			this IServiceCollection services,
 			string instanceName,
 			string connectionString)
 		{
-			if (connectionString is null)
-				throw new ArgumentNullException(nameof(connectionString));
-
-			return services.AddPhemaRabbitMQ(
-				instanceName,
-				factory => factory.Uri = new Uri(connectionString));
+			return services.AddRabbitMQ(options =>
+			{
+				options.InstanceName = instanceName;
+				options.ConnectionFactory.Uri = new Uri(connectionString);
+			});
 		}
 	}
 }

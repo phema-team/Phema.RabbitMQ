@@ -1,10 +1,11 @@
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Phema.RabbitMQ;
 
-namespace AspNetCoreProducerConsumer
+namespace ConsoleProducerConsumer
 {
 	public class Payload
 	{
@@ -18,10 +19,12 @@ namespace AspNetCoreProducerConsumer
 		}
 	}
 
-	public class Startup
+	public class Program
 	{
-		public void ConfigureServices(IServiceCollection services)
+		private static async Task Main()
 		{
+			var services = new ServiceCollection();
+
 			services.AddRabbitMQ("test", "amqp://test.test")
 				.AddConsumerGroup("consumers", group =>
 					group.AddConsumer<Payload, PayloadConsumer>("queue")
@@ -37,16 +40,20 @@ namespace AspNetCoreProducerConsumer
 					group.AddProducer<Payload>("exchange")
 						.RoutingKey("queue")
 						.Persistent());
-		}
 
-		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-		{
-			app.Run(async context =>
+			var provider = services.BuildServiceProvider();
+
+			// Start hosted services for declaration and consumers
+			foreach (var hostedService in provider.GetServices<IHostedService>())
 			{
-				var producer = context.RequestServices.GetRequiredService<IRabbitMQProducer<Payload>>();
+				await hostedService.StartAsync(CancellationToken.None);
+			}
 
-				await producer.Produce(new Payload());
-			});
+			var producer = provider.GetRequiredService<IRabbitMQProducer<Payload>>();
+
+			await producer.Produce(new Payload());
+
+			Console.ReadLine();
 		}
 	}
 }

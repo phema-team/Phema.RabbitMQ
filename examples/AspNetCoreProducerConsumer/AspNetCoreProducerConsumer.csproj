@@ -5,11 +5,11 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="Phema.Serialization.Json" Version="2.0.0" />
+	  <ProjectReference Include="..\..\src\Phema.RabbitMQ\Phema.RabbitMQ.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\src\Phema.RabbitMQ\Phema.RabbitMQ.csproj" />
+	  <_ContentIncludedByDefault Remove="Properties\launchSettings.json" />
 	</ItemGroup>
 
 </Project>

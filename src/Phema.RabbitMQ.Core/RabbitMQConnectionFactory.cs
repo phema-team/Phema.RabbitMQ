@@ -1,5 +1,6 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 
 namespace Phema.RabbitMQ
@@ -11,14 +12,12 @@ namespace Phema.RabbitMQ
 
 	internal sealed class RabbitMQConnectionFactory : IRabbitMQConnectionFactory
 	{
-		private readonly string instanceName;
-		private readonly IConnectionFactory factory;
+		private readonly RabbitMQOptions options;
 		private readonly IDictionary<string, IConnection> connections;
 
-		public RabbitMQConnectionFactory(string instanceName, IConnectionFactory factory)
+		public RabbitMQConnectionFactory(IOptions<RabbitMQOptions> options)
 		{
-			this.factory = factory;
-			this.instanceName = instanceName;
+			this.options = options.Value;
 			connections = new ConcurrentDictionary<string, IConnection>();
 		}
 
@@ -26,10 +25,13 @@ namespace Phema.RabbitMQ
 		{
 			if (!connections.TryGetValue(groupName, out var connection))
 			{
+				// TODO: Move to options and defaults
 				connections.Add(groupName, 
 					connection = groupName == RabbitMQDefaults.DefaultGroupName
-						? factory.CreateConnection(instanceName)
-						: factory.CreateConnection($"{instanceName}.{groupName}"));
+						? options.InstanceName == RabbitMQDefaults.DefaultInstanceName
+							? options.ConnectionFactory.CreateConnection()
+							: options.ConnectionFactory.CreateConnection(options.InstanceName)
+						: options.ConnectionFactory.CreateConnection($"{options.InstanceName}.{groupName}"));
 			}
 
 			return connection;

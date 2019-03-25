@@ -2,17 +2,8 @@
 
 	<PropertyGroup>
 		<TargetFramework>netcoreapp3.0</TargetFramework>
-		<RootNamespace>Phema.RabbitMQ</RootNamespace>
-		<LangVersion>8</LangVersion>
-		<Version>3.0.0-preview3.0.2</Version>
 	</PropertyGroup>
 
-	<ItemGroup>
-		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-			<_Parameter1>Phema.RabbitMQ.Producers.Tests</_Parameter1>
-		</AssemblyAttribute>
-	</ItemGroup>
-	
 	<ItemGroup>
 	  <ProjectReference Include="..\Phema.RabbitMQ.Core\Phema.RabbitMQ.Core.csproj" />
 	</ItemGroup>

@@ -4,6 +4,7 @@ namespace Phema.RabbitMQ
 {
 	public interface IRabbitMQConsumerDeclaration
 	{
+		string GroupName { get; }
 		string QueueName { get; }
 		string Tag { get; set; }
 		ushort PrefetchCount { get; set; }

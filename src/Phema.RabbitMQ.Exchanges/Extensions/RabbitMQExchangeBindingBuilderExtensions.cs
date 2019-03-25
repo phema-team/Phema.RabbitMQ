@@ -5,7 +5,7 @@ namespace Phema.RabbitMQ
 		/// <summary>
 		///   Declare exchange to exchange routing key
 		/// </summary>
-		public static IRabbitMQExchangeBindingBuilder WithRoutingKey(
+		public static IRabbitMQExchangeBindingBuilder RoutingKey(
 			this IRabbitMQExchangeBindingBuilder builder,
 			string routingKey)
 		{

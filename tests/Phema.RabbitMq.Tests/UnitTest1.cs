@@ -30,9 +30,9 @@ namespace Phema.RabbitMQ.Tests
 			services.AddRabbitMQ("test", "amqp://test.test")
 				.AddConsumerGroup("consumers", group =>
 					group.AddConsumer<Payload, PayloadConsumer>("queue")
-						.WithTag("tag")
+						.Tag("tag")
 						.Prefetched(1)
-						.WithCount(1)
+						.Count(1)
 						.Exclusive()
 						.NoLocal()
 						.AutoAck()
@@ -54,7 +54,7 @@ namespace Phema.RabbitMQ.Tests
 						.MessageTimeToLive(1000)
 						.RejectPublishOnOverflow()
 						.BoundTo("exchange", binding =>
-							binding.WithRoutingKey("routing_key")
+							binding.RoutingKey("routing_key")
 								.NoWait()
 								.Deleted()
 								.WithArgument("x-argument", "argument"))
@@ -69,7 +69,7 @@ namespace Phema.RabbitMQ.Tests
 						.AutoDelete()
 						.AlternateExchange("exchange")
 						.BoundTo("exchange", binding =>
-							binding.WithRoutingKey("routing_key")
+							binding.RoutingKey("routing_key")
 								.NoWait()
 								.Deleted()
 								.WithArgument("x-argument", "argument"))

@@ -7,7 +7,7 @@ namespace Phema.RabbitMQ
 		/// <summary>
 		///   Declare consumer tag
 		/// </summary>
-		public static IRabbitMQConsumerBuilder WithTag(
+		public static IRabbitMQConsumerBuilder Tag(
 			this IRabbitMQConsumerBuilder builder,
 			string consumerTag)
 		{
@@ -37,7 +37,7 @@ namespace Phema.RabbitMQ
 		/// <summary>
 		///   Declare parallel consumers count
 		/// </summary>
-		public static IRabbitMQConsumerBuilder WithCount(
+		public static IRabbitMQConsumerBuilder Count(
 			this IRabbitMQConsumerBuilder builder,
 			uint count)
 		{

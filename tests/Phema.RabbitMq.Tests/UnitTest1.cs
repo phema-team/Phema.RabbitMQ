@@ -49,8 +49,7 @@ namespace Phema.RabbitMQ.Tests
 						.Lazy()
 						.MaxMessageCount(1000)
 						.MaxMessageSize(1000)
-						.DeadLetterExchange("exchange")
-						.DeadLetterRoutingKey("routing_key")
+						.DeadLetterExchange("exchange", "routing_key")
 						.TimeToLive(10000)
 						.MessageTimeToLive(1000)
 						.MaxPriority(10)
@@ -58,6 +57,7 @@ namespace Phema.RabbitMQ.Tests
 						.BoundTo("exchange", binding =>
 							binding.WithRoutingKey("routing_key")
 								.NoWait()
+								.Deleted()
 								.WithArgument("x-argument", "argument"))
 						.WithArgument("x-argument", "argument"))
 				.AddExchangeGroup("exchanges", group =>
@@ -70,6 +70,7 @@ namespace Phema.RabbitMQ.Tests
 						.BoundTo("exchange", binding =>
 							binding.WithRoutingKey("routing_key")
 								.NoWait()
+								.Deleted()
 								.WithArgument("x-argument", "argument"))
 						.AlternateExchange("exchange")
 						.WithArgument("x-argument", "argument"))

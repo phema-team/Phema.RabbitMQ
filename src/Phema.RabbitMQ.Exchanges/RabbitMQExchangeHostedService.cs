@@ -34,7 +34,7 @@ namespace Phema.RabbitMQ
 
 						foreach (var binding in declaration.ExchangeBindings)
 						{
-							EnsureExchangeBound(channel, declaration, binding);
+							EnsureExchangeBinding(channel, declaration, binding);
 						}
 					}
 				}
@@ -66,17 +66,29 @@ namespace Phema.RabbitMQ
 				arguments: declaration.Arguments);
 		}
 
-		private static void EnsureExchangeBound(
+		private static void EnsureExchangeBinding(
 			IFullModel channel,
 			IRabbitMQExchangeDeclaration exchange,
 			IRabbitMQExchangeBindingDeclaration binding)
 		{
-			channel._Private_ExchangeBind(
-				destination: exchange.ExchangeName,
-				source: binding.ExchangeName,
-				routingKey: binding.RoutingKey ?? binding.ExchangeName,
-				nowait: binding.NoWait,
-				arguments: binding.Arguments);
+			if (binding.Deleted)
+			{
+				channel._Private_ExchangeUnbind(
+					destination: exchange.ExchangeName,
+					source: binding.ExchangeName,
+					routingKey: binding.RoutingKey ?? binding.ExchangeName,
+					nowait: binding.NoWait,
+					arguments: binding.Arguments);
+			}
+			else
+			{
+				channel._Private_ExchangeBind(
+					destination: exchange.ExchangeName,
+					source: binding.ExchangeName,
+					routingKey: binding.RoutingKey ?? binding.ExchangeName,
+					nowait: binding.NoWait,
+					arguments: binding.Arguments);
+			}
 		}
 	}
 }

@@ -24,6 +24,17 @@ namespace Phema.RabbitMQ
 
 			return builder;
 		}
+		
+		/// <summary>
+		///   Delete exchange binding
+		/// </summary>
+		public static IRabbitMQExchangeBindingBuilder Deleted(
+			this IRabbitMQExchangeBindingBuilder builder)
+		{
+			builder.Declaration.Deleted = true;
+
+			return builder;
+		}
 
 		/// <summary>
 		///   Declare RabbitMQ arguments. Allow multiple

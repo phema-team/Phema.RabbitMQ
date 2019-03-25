@@ -5,7 +5,7 @@ namespace Phema.RabbitMQ
 	public static class RabbitMQConsumerBuilderExtensions
 	{
 		/// <summary>
-		///   Declare consumer tag used in queue consumers
+		///   Declare consumer tag
 		/// </summary>
 		public static IRabbitMQConsumerBuilder WithTag(
 			this IRabbitMQConsumerBuilder builder,
@@ -35,7 +35,7 @@ namespace Phema.RabbitMQ
 
 
 		/// <summary>
-		///   Declare count parallel consumers
+		///   Declare parallel consumers count
 		/// </summary>
 		public static IRabbitMQConsumerBuilder WithCount(
 			this IRabbitMQConsumerBuilder builder,
@@ -47,7 +47,7 @@ namespace Phema.RabbitMQ
 		}
 
 		/// <summary>
-		///   Declare exclusive consumer for queue
+		///   Declare consumer as exclusive
 		/// </summary>
 		public static IRabbitMQConsumerBuilder Exclusive(this IRabbitMQConsumerBuilder builder)
 		{
@@ -56,7 +56,7 @@ namespace Phema.RabbitMQ
 		}
 
 		/// <summary>
-		///   Declare no-local flag. If true, rabbitmq will not send messages to the connection that published them
+		///   Declare no-local flag. Broker will not send messages to the connection that published them
 		/// </summary>
 		public static IRabbitMQConsumerBuilder NoLocal(this IRabbitMQConsumerBuilder builder)
 		{
@@ -66,7 +66,7 @@ namespace Phema.RabbitMQ
 		}
 
 		/// <summary>
-		///   Declare auto-ack flag. If true, consumer will ack messages when received
+		///   Declare auto-ack flag. Consumer will ack messages when received, not processed
 		/// </summary>
 		public static IRabbitMQConsumerBuilder AutoAck(this IRabbitMQConsumerBuilder builder)
 		{
@@ -76,7 +76,7 @@ namespace Phema.RabbitMQ
 		}
 
 		/// <summary>
-		///   Requeue message when fail to consume.
+		///   Requeue message when fail to consume
 		/// </summary>
 		public static IRabbitMQConsumerBuilder Requeue(
 			this IRabbitMQConsumerBuilder builder,

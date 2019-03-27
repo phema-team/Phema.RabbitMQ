@@ -15,7 +15,7 @@ This is an attempt to create a simple way to safely deploy an application with a
   - Intuitive, RabbitMQ-close fluent interfaces
   - Built-in modular serialization library, so working with objects, not bytes
 - **Modularity and flexibility**
-  - If no customers is needed, just do not add `Phema.RabbitMQ.Consumers` package.
+  - If no customers is needed, just do not add `Phema.RabbitMQ.Consumers` package
   - Each group has its own connection. Managing groups you manage connections
 
 ## Usage
@@ -47,9 +47,9 @@ services.AddPhemaRabbitMQ("InstanceName", factory => ...)
 
 - `Phema.RabbitMQ.Core` - Core factories, options and extensions
 - `Phema.RabbitMQ.Exchanges` - Exchanges, `.AddExchangeGroup()` extension
-- `Phema.RabbitMQ.Queues` - Queues
-- `Phema.RabbitMQ.Producers` - Producers
-- `Phema.RabbitMQ.Consumers` - Consumers
+- `Phema.RabbitMQ.Queues` - Queues, `.AddQueueGroup()` extension
+- `Phema.RabbitMQ.Producers` - Producers, `.AddProducerGroup()` extension
+- `Phema.RabbitMQ.Consumers` - Consumers, `.AddConsumerGroup()` extension
 - `Phema.RabbitMQ` - Meta package
 
 ## Queues

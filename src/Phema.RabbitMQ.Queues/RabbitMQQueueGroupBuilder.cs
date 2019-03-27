@@ -10,7 +10,10 @@ namespace Phema.RabbitMQ
 		/// </summary>
 		IRabbitMQQueueBuilder AddQueue(string queueName);
 	}
+}
 
+namespace Phema.RabbitMQ.Internal
+{
 	internal sealed class RabbitMQQueueGroupBuilder : IRabbitMQQueueGroupBuilder
 	{
 		private readonly string groupName;

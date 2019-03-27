@@ -6,7 +6,7 @@ using RabbitMQ.Client;
 using RabbitMQ.Client.Exceptions;
 using RabbitMQ.Client.Impl;
 
-namespace Phema.RabbitMQ
+namespace Phema.RabbitMQ.Internal
 {
 	internal sealed class RabbitMQQueueHostedService : IHostedService
 	{

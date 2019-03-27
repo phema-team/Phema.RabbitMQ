@@ -1,8 +1,9 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Phema.Serialization;
 using RabbitMQ.Client;
+
+using ISerializer = Phema.Serialization.ISerializer;
 
 namespace Phema.RabbitMQ
 {
@@ -12,7 +13,10 @@ namespace Phema.RabbitMQ
 
 		Task<bool> BatchProduce(IEnumerable<TPayload> payloads);
 	}
+}
 
+namespace Phema.RabbitMQ.Internal
+{
 	internal sealed class RabbitMQProducer<TPayload> : IRabbitMQProducer<TPayload>
 	{
 		// Each generic type has unique semaphore, because unique channel

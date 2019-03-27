@@ -4,7 +4,10 @@ namespace Phema.RabbitMQ
 	{
 		IRabbitMQExchangeBindingDeclaration Declaration { get; }
 	}
+}
 
+namespace Phema.RabbitMQ.Internal
+{
 	internal sealed class RabbitMQExchangeBindingBuilder : IRabbitMQExchangeBindingBuilder
 	{
 		public RabbitMQExchangeBindingBuilder(IRabbitMQExchangeBindingDeclaration declaration)

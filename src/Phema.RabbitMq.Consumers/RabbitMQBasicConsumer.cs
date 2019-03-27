@@ -1,11 +1,12 @@
 using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
-using Phema.Serialization;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
-namespace Phema.RabbitMQ
+using ISerializer = Phema.Serialization.ISerializer;
+
+namespace Phema.RabbitMQ.Internal
 {
 	internal sealed class RabbitMQBasicConsumer<TPayload, TPayloadConsumer> : AsyncEventingBasicConsumer
 		where TPayloadConsumer : IRabbitMQConsumer<TPayload>

@@ -6,7 +6,10 @@ namespace Phema.RabbitMQ
 	{
 		IServiceCollection Services { get; }
 	}
+}
 
+namespace Phema.RabbitMQ.Internal
+{
 	internal sealed class RabbitMQBuilder : IRabbitMQBuilder
 	{
 		public RabbitMQBuilder(IServiceCollection services)

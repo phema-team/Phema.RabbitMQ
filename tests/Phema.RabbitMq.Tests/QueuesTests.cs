@@ -1,5 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Phema.RabbitMQ.Internal;
 using Xunit;
 
 namespace Phema.RabbitMQ.Tests

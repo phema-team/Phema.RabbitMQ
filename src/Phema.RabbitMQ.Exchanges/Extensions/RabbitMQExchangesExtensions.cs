@@ -1,5 +1,6 @@
 using System;
 using Microsoft.Extensions.DependencyInjection;
+using Phema.RabbitMQ.Internal;
 
 namespace Phema.RabbitMQ
 {

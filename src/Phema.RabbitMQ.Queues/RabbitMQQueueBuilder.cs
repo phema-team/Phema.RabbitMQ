@@ -4,7 +4,10 @@ namespace Phema.RabbitMQ
 	{
 		IRabbitMQQueueDeclaration Declaration { get; }
 	}
+}
 
+namespace Phema.RabbitMQ.Internal
+{
 	internal sealed class RabbitMQQueueBuilder : IRabbitMQQueueBuilder
 	{
 		public RabbitMQQueueBuilder(IRabbitMQQueueDeclaration declaration)

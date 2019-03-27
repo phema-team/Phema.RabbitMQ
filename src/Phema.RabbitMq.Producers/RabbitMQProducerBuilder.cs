@@ -4,7 +4,10 @@ namespace Phema.RabbitMQ
 	{
 		IRabbitMQProducerDeclaration Declaration { get; }
 	}
+}
 
+namespace Phema.RabbitMQ.Internal
+{
 	internal sealed class RabbitMQProducerBuilder : IRabbitMQProducerBuilder
 	{
 		public RabbitMQProducerBuilder(IRabbitMQProducerDeclaration declaration)

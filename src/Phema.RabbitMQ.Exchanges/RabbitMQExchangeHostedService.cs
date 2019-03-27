@@ -4,7 +4,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client.Impl;
 
-namespace Phema.RabbitMQ
+namespace Phema.RabbitMQ.Internal
 {
 	internal sealed class RabbitMQExchangeHostedService : IHostedService
 	{

@@ -17,7 +17,10 @@ namespace Phema.RabbitMQ
 		IDictionary<string, object> Arguments { get; }
 		IList<Action<IBasicProperties>> Properties { get; }
 	}
+}
 
+namespace Phema.RabbitMQ.Internal
+{
 	// ReSharper disable once UnusedTypeParameter
 	internal sealed class RabbitMQProducerDeclaration<TPayload> : IRabbitMQProducerDeclaration
 	{

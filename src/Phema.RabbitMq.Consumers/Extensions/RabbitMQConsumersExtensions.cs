@@ -1,5 +1,6 @@
 using System;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Phema.RabbitMQ.Internal;
 
 namespace Phema.RabbitMQ
 {
@@ -15,7 +16,7 @@ namespace Phema.RabbitMQ
 		{
 			if (group is null)
 				throw new ArgumentNullException(nameof(group));
-			
+
 			if (groupName is null)
 				throw new ArgumentNullException(nameof(groupName));
 

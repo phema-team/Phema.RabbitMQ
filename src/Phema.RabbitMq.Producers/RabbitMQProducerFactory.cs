@@ -1,5 +1,6 @@
-using Phema.Serialization;
 using RabbitMQ.Client;
+
+using ISerializer = Phema.Serialization.ISerializer;
 
 namespace Phema.RabbitMQ
 {
@@ -7,7 +8,10 @@ namespace Phema.RabbitMQ
 	{
 		IRabbitMQProducer<TPayload> CreateProducer<TPayload>(IModel channel, IRabbitMQProducerDeclaration declaration);
 	}
-	
+}
+
+namespace Phema.RabbitMQ.Internal
+{
 	internal sealed class RabbitMQProducerFactory : IRabbitMQProducerFactory
 	{
 		private readonly ISerializer serializer;

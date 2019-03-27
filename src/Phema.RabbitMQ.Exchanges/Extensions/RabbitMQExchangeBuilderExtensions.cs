@@ -1,4 +1,5 @@
 using System;
+using Phema.RabbitMQ.Internal;
 
 namespace Phema.RabbitMQ
 {

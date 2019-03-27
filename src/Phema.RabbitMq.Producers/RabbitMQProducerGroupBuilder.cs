@@ -13,7 +13,10 @@ namespace Phema.RabbitMQ
 		/// </summary>
 		IRabbitMQProducerBuilder AddProducer<TPayload>(string exchangeName);
 	}
+}
 
+namespace Phema.RabbitMQ.Internal
+{
 	internal sealed class RabbitMQProducerGroupBuilder : IRabbitMQProducerGroupBuilder
 	{
 		private readonly string groupName;

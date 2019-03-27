@@ -9,7 +9,10 @@ namespace Phema.RabbitMQ
 	{
 		IConnection CreateConnection(string groupName);
 	}
+}
 
+namespace Phema.RabbitMQ.Internal
+{
 	internal sealed class RabbitMQConnectionFactory : IRabbitMQConnectionFactory
 	{
 		private readonly RabbitMQOptions options;

@@ -10,7 +10,10 @@ namespace Phema.RabbitMQ
 		bool Deleted { get; set; }
 		IDictionary<string, object> Arguments { get; }
 	}
+}
 
+namespace Phema.RabbitMQ.Internal
+{
 	internal sealed class RabbitMQQueueBindingDeclaration : IRabbitMQQueueBindingDeclaration
 	{
 		public RabbitMQQueueBindingDeclaration(string exchangeName)

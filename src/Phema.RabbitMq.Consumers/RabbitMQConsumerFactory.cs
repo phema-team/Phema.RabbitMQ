@@ -1,6 +1,7 @@
 using System;
-using Phema.Serialization;
 using RabbitMQ.Client;
+
+using ISerializer = Phema.Serialization.ISerializer;
 
 namespace Phema.RabbitMQ
 {
@@ -9,7 +10,10 @@ namespace Phema.RabbitMQ
 		IBasicConsumer CreateConsumer<TPayload, TPayloadConsumer>(IModel channel, IRabbitMQConsumerDeclaration declaration)
 			where TPayloadConsumer : IRabbitMQConsumer<TPayload>;
 	}
+}
 
+namespace Phema.RabbitMQ.Internal
+{
 	internal sealed class RabbitMQConsumerFactory : IRabbitMQConsumerFactory
 	{
 		private readonly ISerializer serializer;

@@ -6,7 +6,7 @@ using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Impl;
 
-namespace Phema.RabbitMQ
+namespace Phema.RabbitMQ.Internal
 {
 	internal sealed class RabbitMQConsumerHostedService<TPayload, TPayloadConsumer> : IHostedService
 		where TPayloadConsumer : IRabbitMQConsumer<TPayload>

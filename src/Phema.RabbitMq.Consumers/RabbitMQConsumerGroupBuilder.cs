@@ -12,7 +12,10 @@ namespace Phema.RabbitMQ
 		IRabbitMQConsumerBuilder AddConsumer<TPayload, TPayloadConsumer>(string queueName)
 			where TPayloadConsumer : class, IRabbitMQConsumer<TPayload>;
 	}
+}
 
+namespace Phema.RabbitMQ.Internal
+{
 	internal sealed class RabbitMQConsumerGroupBuilder : IRabbitMQConsumerGroupBuilder
 	{
 		private readonly string groupName;
@@ -41,6 +44,5 @@ namespace Phema.RabbitMQ
 
 			return new RabbitMQConsumerBuilder(declaration);
 		}
-
 	}
 }

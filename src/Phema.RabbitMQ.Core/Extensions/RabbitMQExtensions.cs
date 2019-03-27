@@ -3,6 +3,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using RabbitMQ.Client;
 
+using Phema.RabbitMQ.Internal;
+
 namespace Phema.RabbitMQ
 {
 	public static class RabbitMQExtensions

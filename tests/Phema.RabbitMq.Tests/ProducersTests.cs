@@ -1,6 +1,7 @@
 using System;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Phema.RabbitMQ.Internal;
 using Xunit;
 
 namespace Phema.RabbitMQ.Tests
@@ -43,7 +44,7 @@ namespace Phema.RabbitMQ.Tests
 				.AddProducerGroup("exchanges", group =>
 					group.AddProducer<ProducersTests>("exchange")
 						.WithArgument("x-argument", "argument")
-						.WaitForConfirms(TimeSpan.Zero, true)
+						.WaitForConfirms(TimeSpan.Zero)
 						.Mandatory()
 						.WithProperty(x => x.Persistent = true)
 						.RoutingKey("routing_key")

@@ -17,7 +17,10 @@ namespace Phema.RabbitMQ
 		bool Multiple { get; set; }
 		IDictionary<string, object> Arguments { get; }
 	}
+}
 
+namespace Phema.RabbitMQ.Internal
+{
 	// ReSharper disable once UnusedTypeParameter
 	internal sealed class RabbitMQConsumerDeclaration<TPayload, TPayloadConsumer> : IRabbitMQConsumerDeclaration
 		where TPayloadConsumer : IRabbitMQConsumer<TPayload>

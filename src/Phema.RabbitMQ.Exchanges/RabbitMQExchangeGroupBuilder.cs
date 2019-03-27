@@ -10,8 +10,11 @@ namespace Phema.RabbitMQ
 		/// </summary>
 		IRabbitMQExchangeBuilder AddExchange(string exchangeType, string exchangeName);
 	}
+}
 
-	public class RabbitMQExchangeGroupBuilder : IRabbitMQExchangeGroupBuilder
+namespace Phema.RabbitMQ.Internal
+{
+	internal sealed class RabbitMQExchangeGroupBuilder : IRabbitMQExchangeGroupBuilder
 	{
 		private readonly string groupName;
 		private readonly IServiceCollection services;

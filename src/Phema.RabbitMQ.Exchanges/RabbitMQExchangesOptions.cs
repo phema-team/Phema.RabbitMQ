@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Phema.RabbitMQ
+namespace Phema.RabbitMQ.Internal
 {
 	internal sealed class RabbitMQExchangesOptions
 	{

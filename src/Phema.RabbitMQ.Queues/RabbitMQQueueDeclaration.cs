@@ -17,7 +17,10 @@ namespace Phema.RabbitMQ
 		IDictionary<string, object> Arguments { get; }
 		IList<IRabbitMQQueueBindingDeclaration> QueueBindings { get; }
 	}
+}
 
+namespace Phema.RabbitMQ.Internal
+{
 	internal sealed class RabbitMQQueueDeclaration : IRabbitMQQueueDeclaration
 	{
 		public RabbitMQQueueDeclaration(string groupName, string queueName)

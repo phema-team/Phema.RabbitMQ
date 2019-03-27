@@ -18,7 +18,10 @@ namespace Phema.RabbitMQ
 		IDictionary<string, object> Arguments { get; }
 		IList<IRabbitMQExchangeBindingDeclaration> ExchangeBindings { get; }
 	}
+}
 
+namespace Phema.RabbitMQ.Internal
+{
 	internal sealed class RabbitMQExchangeDeclaration : IRabbitMQExchangeDeclaration
 	{
 		public RabbitMQExchangeDeclaration(string groupName, string exchangeType, string exchangeName)

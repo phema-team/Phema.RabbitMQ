@@ -1,6 +1,6 @@
 # Phema.RabbitMQ
 
-This is an attempt to create a simple way to safely deploy an application with a versioned release-specific topology in a distributed systems
+This is an attempt to create a simple way for safe and predictable application deploy with a versioned release-specific topology in a distributed systems
 
 ## Concepts
 

@@ -23,8 +23,8 @@ This is an attempt to create a simple way for safe and predictable application d
 
 ## Installation
 
-```
-  dotnet add package {{ PackageName }}
+```bash
+  $> dotnet add package {{ PackageName }}
 ```
 
 ## Packages
@@ -60,6 +60,23 @@ services.AddPhemaRabbitMQ("InstanceName", factory => ...)
     group.AddProducer<Payload>("ExchangeName", "QueueName")
       .Persistent());
 ```
+
+## Supported
+
+- Consumers and producers priority
+- Queue and message time to live
+- Max message count and size limitations
+- Lazy, durable and exclusive queues
+- Batch produce
+- Durable, internal, dead letter, bound and alternate exchanges
+- Reject-publish when queue is full
+- Purge and delete declarative operations
+- Confirm and transactional channel modes
+- NoWait operations
+- Message persistency
+- Groups
+  - Queue `QueueName` in `QueuesGroup` group will be `QueuesGroup.QueueName`)
+  - Each group has own named connection
 
 ## Queues
 
@@ -134,24 +151,6 @@ services.AddPhemaRabbitMQ("InstanceName", factory => ...)
   5. Purge `queue`
   6. No `first_node` messages survived
 - There is a problem when one type of payload is used in different producers, so `IRabbitMQProducer<TPayload>` abstraction leak
-
-
-## Supported
-
-- Consumers and producers priority
-- Queue and message time to live
-- Max message count and size limitations
-- Lazy, durable and exclusive queues
-- Batch produce
-- Durable, internal, dead letter, bound and alternate exchanges
-- Reject-publish when queue is full
-- Purge and delete declarative operations
-- Confirm and transactional channel modes
-- NoWait operations
-- Message persistency
-- Groups
-  - Queue `QueueName` in `QueuesGroup` group will be `QueuesGroup.QueueName`)
-  - Each group has own named connection
 
 ## Tips
 

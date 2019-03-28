@@ -1,5 +1,8 @@
 # Phema.RabbitMQ
 
+[![Nuget](https://img.shields.io/nuget/v/Phema.RabbitMQ.svg)](https://www.nuget.org/packages/Phema.RabbitMQ/3.0.0-preview3.0.3)
+[![Nuget](https://img.shields.io/nuget/vpre/Phema.RabbitMQ.svg)](https://www.nuget.org/packages/Phema.RabbitMQ/3.0.0-preview3.0.3)
+
 This is an attempt to create a simple way for safe and predictable application deploy with a versioned release-specific topology in a distributed systems
 
 ## Concepts
@@ -17,6 +20,21 @@ This is an attempt to create a simple way for safe and predictable application d
 - **Modularity and flexibility**
   - If no customers is needed, just do not add `Phema.RabbitMQ.Consumers` package
   - Each group has its own connection. Managing groups you manage connections
+
+## Installation
+
+```
+  dotnet add package {{ PackageName }}
+```
+
+## Packages
+
+- `Phema.RabbitMQ.Core` - Core factories, options and extensions
+- `Phema.RabbitMQ.Exchanges` - Exchanges, `.AddExchangeGroup()` extension
+- `Phema.RabbitMQ.Queues` - Queues, `.AddQueueGroup()` extension
+- `Phema.RabbitMQ.Producers` - Producers, `.AddProducerGroup()` extension
+- `Phema.RabbitMQ.Consumers` - Consumers, `.AddConsumerGroup()` extension
+- `Phema.RabbitMQ` - Meta package
 
 ## Usage
 
@@ -42,15 +60,6 @@ services.AddPhemaRabbitMQ("InstanceName", factory => ...)
     group.AddProducer<Payload>("ExchangeName", "QueueName")
       .Persistent());
 ```
-
-## Packages
-
-- `Phema.RabbitMQ.Core` - Core factories, options and extensions
-- `Phema.RabbitMQ.Exchanges` - Exchanges, `.AddExchangeGroup()` extension
-- `Phema.RabbitMQ.Queues` - Queues, `.AddQueueGroup()` extension
-- `Phema.RabbitMQ.Producers` - Producers, `.AddProducerGroup()` extension
-- `Phema.RabbitMQ.Consumers` - Consumers, `.AddConsumerGroup()` extension
-- `Phema.RabbitMQ` - Meta package
 
 ## Queues
 

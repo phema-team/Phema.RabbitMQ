@@ -69,7 +69,7 @@ namespace Phema.RabbitMQ
 
 		/// <summary>
 		///   Declare x-max-length argument. When queue message limit reached, see
-		///   <see cref="RejectPublishOnOverflow" />
+		///   <see cref="RejectPublish" />
 		/// </summary>
 		public static IRabbitMQQueueBuilder MaxMessageCount(
 			this IRabbitMQQueueBuilder configuration,
@@ -144,7 +144,7 @@ namespace Phema.RabbitMQ
 		/// <summary>
 		///   Declare x-overflow argument to reject-publish (default drop-head)
 		/// </summary>
-		public static IRabbitMQQueueBuilder RejectPublishOnOverflow(
+		public static IRabbitMQQueueBuilder RejectPublish(
 			this IRabbitMQQueueBuilder configuration)
 		{
 			return configuration.WithArgument("x-overflow", "reject-publish");

@@ -35,13 +35,13 @@ namespace Phema.RabbitMQ.Internal
 
 			var declaration = new RabbitMQProducerDeclaration<TPayload>(groupName, exchangeName);
 
-			services.TryAddSingleton(ProducerFactory<TPayload>);
+			services.TryAddSingleton(CreateProducer<TPayload>);
 			services.Configure<RabbitMQProducersOptions>(o => o.Declarations.Add(declaration));
 
 			return new RabbitMQProducerBuilder(declaration);
 		}
 
-		private IRabbitMQProducer<TPayload> ProducerFactory<TPayload>(IServiceProvider provider)
+		private IRabbitMQProducer<TPayload> CreateProducer<TPayload>(IServiceProvider provider)
 		{
 			var producerFactory = provider.GetRequiredService<IRabbitMQProducerFactory>();
 			var connectionFactory = provider.GetRequiredService<IRabbitMQConnectionFactory>();
@@ -54,16 +54,6 @@ namespace Phema.RabbitMQ.Internal
 			var declaration = options.Declarations
 				.OfType<RabbitMQProducerDeclaration<TPayload>>()
 				.Single();
-
-			if (declaration.WaitForConfirms)
-			{
-				channel.ConfirmSelect();
-			}
-				
-			if (declaration.Transactional)
-			{
-				channel.TxSelect();
-			}
 
 			return producerFactory.CreateProducer<TPayload>(channel, declaration);
 		}

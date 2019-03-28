@@ -52,7 +52,7 @@ namespace Phema.RabbitMQ.Tests
 						.MaxMessageSize(1000)
 						.MaxMessageCount(1000)
 						.MessageTimeToLive(1000)
-						.RejectPublishOnOverflow()
+						.RejectPublish()
 						.BoundTo("exchange", binding =>
 							binding.RoutingKey("routing_key")
 								.NoWait()

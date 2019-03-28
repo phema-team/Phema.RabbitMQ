@@ -37,6 +37,16 @@ namespace Phema.RabbitMQ.Internal
 			this.declaration = declaration;
 			this.serializer = serializer;
 			this.properties = properties;
+			
+			if (declaration.WaitForConfirms)
+			{
+				channel.ConfirmSelect();
+			}
+
+			if (declaration.Transactional)
+			{
+				channel.TxSelect();
+			}
 		}
 
 		public async Task<bool> Produce(TPayload payload)

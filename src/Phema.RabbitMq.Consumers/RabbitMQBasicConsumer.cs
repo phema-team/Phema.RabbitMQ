@@ -38,16 +38,16 @@ namespace Phema.RabbitMQ.Internal
 		{
 			using (var scope = provider.CreateScope())
 			{
-				var model = serializer.Deserialize<TPayload>(body);
-
 				try
 				{
+					var model = serializer.Deserialize<TPayload>(body);
+
 					await scope.ServiceProvider
 						.GetRequiredService<TPayloadConsumer>()
 						.Consume(model)
 						.ConfigureAwait(false);
 				}
-				catch (Exception)
+				catch
 				{
 					if (!declaration.AutoAck)
 					{

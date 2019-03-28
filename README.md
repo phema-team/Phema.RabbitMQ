@@ -1,7 +1,7 @@
 # Phema.RabbitMQ
 
-[![Nuget](https://img.shields.io/nuget/v/Phema.RabbitMQ.svg)](https://www.nuget.org/packages/Phema.RabbitMQ/3.0.0-preview3.0.3)
-[![Nuget](https://img.shields.io/nuget/vpre/Phema.RabbitMQ.svg)](https://www.nuget.org/packages/Phema.RabbitMQ/3.0.0-preview3.0.3)
+[![Nuget](https://img.shields.io/nuget/v/Phema.RabbitMQ.svg)](https://www.nuget.org/packages/Phema.RabbitMQ)
+[![Nuget](https://img.shields.io/nuget/vpre/Phema.RabbitMQ.svg)](https://www.nuget.org/packages/Phema.RabbitMQ)
 
 This is an attempt to create a simple way for safe and predictable application deploy with a versioned release-specific topology in a distributed systems
 

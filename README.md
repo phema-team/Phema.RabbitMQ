@@ -1,7 +1,6 @@
 # Phema.RabbitMQ
 
 [![Nuget](https://img.shields.io/nuget/v/Phema.RabbitMQ.svg)](https://www.nuget.org/packages/Phema.RabbitMQ)
-[![Nuget](https://img.shields.io/nuget/vpre/Phema.RabbitMQ.svg)](https://www.nuget.org/packages/Phema.RabbitMQ)
 
 This is an attempt to create a simple way for safe and predictable application deploy with a versioned release-specific topology in a distributed systems
 
@@ -70,7 +69,7 @@ services.AddPhemaRabbitMQ("InstanceName", factory => ...)
 - Batch produce
 - Durable, internal, dead letter, bound and alternate exchanges
 - Reject-publish when queue is full
-- Purge and delete declarative operations
+- Deleted declarative operation
 - Confirm and transactional channel modes
 - NoWait operations
 - Message persistency

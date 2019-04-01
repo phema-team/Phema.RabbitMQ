@@ -107,7 +107,7 @@ services.AddRabbitMQ("InstanceName", factory => ...)
 
 ## Consumers
 
-- Create `IRabbitMqConsumer<TPayload>`
+- Declare scoped `IRabbitMqConsumer<TPayload>` with `Consume` method
 - Tag consumers using `Tagged` extension
 - Limit prefetch count with `Prefetch` extension
 - Scale consumers by using `Count` extension
@@ -122,7 +122,7 @@ services.AddRabbitMQ("InstanceName", factory => ...)
 
 ## Producers
 
-- Inject `IRabbitMQProdicer<TPayload>` and use `Produce` or `BatchProduce`
+- Inject scoped `IRabbitMQProdicer<TPayload>` and use `Produce` or `BatchProduce` methods
 - Set routing key `RoutingKey` extension
 - Set mandatory with `Mandatory` extension
 - Set message priority with `Priority` extension
@@ -132,12 +132,12 @@ services.AddRabbitMQ("InstanceName", factory => ...)
 - Use message persistence with `Persistent` extension
 - Configure headers with `WithHeader` extension
 - Configure properties with `WithProperty` extension
-- Use `IRabbitMQProducerFactory` for custom message handling
+- Use `IRabbitMQProducerFactory` for custom message producing
 
 ## Limitations
 
-- Uses only `Microsoft.Extensions.DepencencyInjection` package
-- No dynamic topology declaration by design, but you can use `IRabbitMQConnectionFactory` for that
+- Depends on `Microsoft.Extensions.DepencencyInjection` and `Phema.Serialization` package
+- No dynamic topology declaration by design, but you can use `IRabbitMQConnectionFactory` for that ¯\_(ツ)_/¯
 - No `.Redeclared()` and `.Purged()` because it breaks consistenty
   1. Deploy `first_node`
   2. Purge `queue`
@@ -146,6 +146,8 @@ services.AddRabbitMQ("InstanceName", factory => ...)
   5. Purge `queue`
   6. No `first_node` messages survived
 - There is a problem when one type of payload is used in different producers, so `IRabbitMQProducer<TPayload>` abstraction leak ;(
+- No `correlation-id`'s
+- No `message-id`'s
 
 ## Tips
 

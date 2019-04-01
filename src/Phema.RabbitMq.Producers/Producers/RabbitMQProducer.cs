@@ -1,16 +1,17 @@
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 using RabbitMQ.Client;
-
 using ISerializer = Phema.Serialization.ISerializer;
 
 namespace Phema.RabbitMQ
 {
 	public interface IRabbitMQProducer<TPayload>
 	{
-		bool Produce(TPayload payload);
+		Task<bool> Produce(TPayload payload);
 
-		bool BatchProduce(IEnumerable<TPayload> payloads);
+
+		Task<bool> BatchProduce(IEnumerable<TPayload> payloads);
 	}
 }
 
@@ -36,7 +37,7 @@ namespace Phema.RabbitMQ.Internal
 			this.declaration = declaration;
 			this.serializer = serializer;
 			this.properties = properties;
-			
+
 			if (declaration.WaitForConfirms)
 			{
 				channel.ConfirmSelect();
@@ -48,11 +49,11 @@ namespace Phema.RabbitMQ.Internal
 			}
 		}
 
-		public bool Produce(TPayload payload)
+		public async Task<bool> Produce(TPayload payload)
 		{
 			try
 			{
-				Semaphore.Wait();
+				await Semaphore.WaitAsync().ConfigureAwait(false);
 
 				channel.BasicPublish(
 					declaration.ExchangeName,
@@ -60,6 +61,11 @@ namespace Phema.RabbitMQ.Internal
 					declaration.Mandatory,
 					properties,
 					serializer.Serialize(payload));
+
+				if (declaration.Transactional)
+				{
+					channel.TxCommit();
+				}
 
 				return !declaration.WaitForConfirms || WaitForConfirms();
 			}
@@ -74,16 +80,48 @@ namespace Phema.RabbitMQ.Internal
 			}
 			finally
 			{
+				Semaphore.Release();
+			}
+		}
+
+		public async Task<bool> BatchProduce(IEnumerable<TPayload> payloads)
+		{
+			var batch = CreateBasicPublishBatch(payloads);
+
+			try
+			{
+				await Semaphore.WaitAsync().ConfigureAwait(false);
+
+				if (declaration.Transactional)
+				{
+					channel.TxSelect();
+				}
+
+				batch.Publish();
+
 				if (declaration.Transactional)
 				{
 					channel.TxCommit();
 				}
 
+				return !declaration.WaitForConfirms || WaitForConfirms();
+			}
+			catch
+			{
+				if (declaration.Transactional)
+				{
+					channel.TxRollback();
+				}
+
+				throw;
+			}
+			finally
+			{
 				Semaphore.Release();
 			}
 		}
 
-		public bool BatchProduce(IEnumerable<TPayload> payloads)
+		private IBasicPublishBatch CreateBasicPublishBatch(IEnumerable<TPayload> payloads)
 		{
 			var batch = channel.CreateBasicPublishBatch();
 
@@ -97,37 +135,7 @@ namespace Phema.RabbitMQ.Internal
 					serializer.Serialize(payload));
 			}
 
-			try
-			{
-				Semaphore.Wait();
-
-				if (declaration.Transactional)
-				{
-					channel.TxSelect();
-				}
-
-				batch.Publish();
-
-				return !declaration.WaitForConfirms || WaitForConfirms();
-			}
-			catch
-			{
-				if (declaration.Transactional)
-				{
-					channel.TxRollback();
-				}
-
-				throw;
-			}
-			finally
-			{
-				if (declaration.Transactional)
-				{
-					channel.TxCommit();
-				}
-
-				Semaphore.Release();
-			}
+			return batch;
 		}
 
 		private bool WaitForConfirms()

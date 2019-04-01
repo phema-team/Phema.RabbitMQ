@@ -4,11 +4,11 @@ namespace Phema.RabbitMQ
 {
 	public static class RabbitMQProducerExtensions
 	{
-		public static Task BatchProduce<TPayload>(
-			this IRabbitMQAsyncProducer<TPayload> asyncProducer,
+		public static Task<bool> BatchProduce<TPayload>(
+			this IRabbitMQProducer<TPayload> producer,
 			params TPayload[] payloads)
 		{
-			return asyncProducer.BatchProduce(payloads);
+			return producer.BatchProduce(payloads);
 		}
 	}
 }

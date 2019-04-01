@@ -7,7 +7,7 @@ namespace Phema.RabbitMQ
 	public interface IRabbitMQConsumerGroupBuilder
 	{
 		/// <summary>
-		///   Register new consumer
+		///   Register new <see cref="IRabbitMQAsyncConsumer{TPayload}"/>
 		/// </summary>
 		IRabbitMQConsumerBuilder AddAsyncConsumer<TPayload, TPayloadConsumer>(string queueName)
 			where TPayloadConsumer : class, IRabbitMQAsyncConsumer<TPayload>;

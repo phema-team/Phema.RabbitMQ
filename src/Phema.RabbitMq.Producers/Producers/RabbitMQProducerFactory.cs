@@ -6,9 +6,6 @@ namespace Phema.RabbitMQ
 	public interface IRabbitMQProducerFactory
 	{
 		IRabbitMQProducer<TPayload> CreateProducer<TPayload>(IModel channel, IRabbitMQProducerDeclaration declaration);
-
-		IRabbitMQAsyncProducer<TPayload> CreateAsyncProducer<TPayload>(IModel channel,
-			IRabbitMQProducerDeclaration declaration);
 	}
 }
 
@@ -28,17 +25,6 @@ namespace Phema.RabbitMQ.Internal
 			IRabbitMQProducerDeclaration declaration)
 		{
 			return new RabbitMQProducer<TPayload>(
-				channel,
-				serializer,
-				declaration,
-				CreateBasicProperties(channel, declaration));
-		}
-
-		public IRabbitMQAsyncProducer<TPayload> CreateAsyncProducer<TPayload>(
-			IModel channel,
-			IRabbitMQProducerDeclaration declaration)
-		{
-			return new RabbitMQAsyncProducer<TPayload>(
 				channel,
 				serializer,
 				declaration,

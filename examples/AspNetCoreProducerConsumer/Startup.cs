@@ -34,7 +34,7 @@ namespace AspNetCoreProducerConsumer
 					group.AddDirectExchange("exchange")
 						.Durable())
 				.AddProducerGroup("producers", group =>
-					group.AddAsyncProducer<Payload>("exchange")
+					group.AddProducer<Payload>("exchange")
 						.RoutingKey("queue")
 						.Persistent());
 		}
@@ -43,7 +43,7 @@ namespace AspNetCoreProducerConsumer
 		{
 			app.Run(async context =>
 			{
-				var producer = context.RequestServices.GetRequiredService<IRabbitMQAsyncProducer<Payload>>();
+				var producer = context.RequestServices.GetRequiredService<IRabbitMQProducer<Payload>>();
 
 				await producer.Produce(new Payload());
 			});

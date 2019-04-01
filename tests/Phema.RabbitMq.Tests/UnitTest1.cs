@@ -75,19 +75,6 @@ namespace Phema.RabbitMQ.Tests
 								.WithArgument("x-argument", "argument"))
 						.WithArgument("x-argument", "argument"))
 				.AddProducerGroup("producers", group =>
-					{
-						group.AddAsyncProducer<Payload>("exchange")
-							.RoutingKey("routing_key")
-							.WaitForConfirms()
-							.Transactional()
-							.Mandatory()
-							.Priority(1)
-							.Persistent()
-							.MessageTimeToLive(10000)
-							.WithHeader("x-header", "header")
-							.WithProperty(x => x.Persistent = true)
-							.WithArgument("x-argument", "argument");
-						
 						group.AddProducer<Payload>("exchange")
 							.RoutingKey("routing_key")
 							.WaitForConfirms()
@@ -98,8 +85,7 @@ namespace Phema.RabbitMQ.Tests
 							.MessageTimeToLive(10000)
 							.WithHeader("x-header", "header")
 							.WithProperty(x => x.Persistent = true)
-							.WithArgument("x-argument", "argument");
-					});
+							.WithArgument("x-argument", "argument"));
 		}
 	}
 }

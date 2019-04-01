@@ -3,17 +3,11 @@ using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
-using RabbitMQ.Client;
 
 namespace Phema.RabbitMQ
 {
 	public interface IRabbitMQProducerGroupBuilder
 	{
-		/// <summary>
-		///   Add new <see cref="IRabbitMQAsyncProducer{TPayload}"/>
-		/// </summary>
-		IRabbitMQProducerBuilder AddAsyncProducer<TPayload>(string exchangeName);
-
 		/// <summary>
 		///   Add new <see cref="IRabbitMQProducer{TPayload}"/>
 		/// </summary>
@@ -41,36 +35,14 @@ namespace Phema.RabbitMQ.Internal
 
 			var declaration = new RabbitMQProducerDeclaration<TPayload>(groupName, exchangeName);
 
-			services.TryAddSingleton(provider => 
-				CreateProducer<TPayload, IRabbitMQProducer<TPayload>>(
-					provider,
-					(c, d, f) => f.CreateProducer<TPayload>(c, d)));
-
-			services.Configure<RabbitMQProducersOptions>(o => o.Declarations.Add(declaration));
-
-			return new RabbitMQProducerBuilder(declaration);
-		}
-		
-		public IRabbitMQProducerBuilder AddAsyncProducer<TPayload>(string exchangeName)
-		{
-			if (exchangeName is null)
-				throw new ArgumentNullException(nameof(exchangeName));
-
-			var declaration = new RabbitMQProducerDeclaration<TPayload>(groupName, exchangeName);
-
-			services.TryAddSingleton(provider => 
-				CreateProducer<TPayload, IRabbitMQAsyncProducer<TPayload>>(
-					provider,
-					(c, d, f) => f.CreateAsyncProducer<TPayload>(c, d)));
+			services.TryAddSingleton(CreateProducer<TPayload>);
 
 			services.Configure<RabbitMQProducersOptions>(o => o.Declarations.Add(declaration));
 
 			return new RabbitMQProducerBuilder(declaration);
 		}
 
-		private TProducer CreateProducer<TPayload, TProducer>(
-			IServiceProvider provider,
-			Func<IModel, IRabbitMQProducerDeclaration, IRabbitMQProducerFactory, TProducer> factory)
+		private IRabbitMQProducer<TPayload> CreateProducer<TPayload>(IServiceProvider provider)
 		{
 			var producerFactory = provider.GetRequiredService<IRabbitMQProducerFactory>();
 			var connectionFactory = provider.GetRequiredService<IRabbitMQConnectionFactory>();
@@ -84,7 +56,7 @@ namespace Phema.RabbitMQ.Internal
 				.OfType<RabbitMQProducerDeclaration<TPayload>>()
 				.Single();
 
-			return factory(channel, declaration, producerFactory);
+			return producerFactory.CreateProducer<TPayload>(channel, declaration);
 		}
 	}
 }

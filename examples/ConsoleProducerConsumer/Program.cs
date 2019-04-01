@@ -37,7 +37,7 @@ namespace ConsoleProducerConsumer
 					group.AddDirectExchange("exchange")
 						.Durable())
 				.AddProducerGroup("producers", group =>
-					group.AddAsyncProducer<Payload>("exchange")
+					group.AddProducer<Payload>("exchange")
 						.RoutingKey("queue")
 						.Persistent());
 
@@ -49,7 +49,7 @@ namespace ConsoleProducerConsumer
 				await hostedService.StartAsync(CancellationToken.None);
 			}
 
-			var producer = provider.GetRequiredService<IRabbitMQAsyncProducer<Payload>>();
+			var producer = provider.GetRequiredService<IRabbitMQProducer<Payload>>();
 
 			await producer.Produce(new Payload());
 

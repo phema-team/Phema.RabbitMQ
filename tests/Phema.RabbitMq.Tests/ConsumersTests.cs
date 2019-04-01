@@ -59,8 +59,8 @@ namespace Phema.RabbitMQ.Tests
 						.Exclusive()
 						.Requeue(true)
 						.NoLocal()
-						.Prefetched(2)
-						.Tag("tag"));
+						.Prefetch(2)
+						.Tagged("tag"));
 
 			var provider = services.BuildServiceProvider();
 

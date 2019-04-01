@@ -3,13 +3,26 @@ namespace Phema.RabbitMQ
 	public static class RabbitMQQueueBindingBuilderExtensions
 	{
 		/// <summary>
-		///   Declare exchange to queue routing key
+		///   Declare exchange to exchange routing key
 		/// </summary>
 		public static IRabbitMQQueueBindingBuilder RoutingKey(
 			this IRabbitMQQueueBindingBuilder builder,
 			string routingKey)
 		{
-			builder.Declaration.RoutingKey = routingKey;
+			return builder.RoutingKeys(routingKey);
+		}
+
+		/// <summary>
+		///   Declare exchange to queue routing key
+		/// </summary>
+		public static IRabbitMQQueueBindingBuilder RoutingKeys(
+			this IRabbitMQQueueBindingBuilder builder,
+			params string[] routingKeys)
+		{
+			foreach (var routingKey in routingKeys)
+			{
+				builder.Declaration.RoutingKeys.Add(routingKey);
+			}
 
 			return builder;
 		}

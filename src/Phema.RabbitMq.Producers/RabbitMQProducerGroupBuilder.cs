@@ -9,7 +9,7 @@ namespace Phema.RabbitMQ
 	public interface IRabbitMQProducerGroupBuilder
 	{
 		/// <summary>
-		///   Add new producer
+		///   Declare new <see cref="IRabbitMQProducer{TPayload}"/>
 		/// </summary>
 		IRabbitMQProducerBuilder AddProducer<TPayload>(string exchangeName);
 	}
@@ -35,7 +35,8 @@ namespace Phema.RabbitMQ.Internal
 
 			var declaration = new RabbitMQProducerDeclaration<TPayload>(groupName, exchangeName);
 
-			services.TryAddSingleton(CreateProducer<TPayload>);
+			services.TryAddScoped(CreateProducer<TPayload>);
+
 			services.Configure<RabbitMQProducersOptions>(o => o.Declarations.Add(declaration));
 
 			return new RabbitMQProducerBuilder(declaration);
@@ -49,7 +50,7 @@ namespace Phema.RabbitMQ.Internal
 			var channel = connectionFactory.CreateConnection(groupName).CreateModel();
 
 			var options = provider.GetRequiredService<IOptions<RabbitMQProducersOptions>>().Value;
-			
+
 			// TODO: Multiple producers for TPayload
 			var declaration = options.Declarations
 				.OfType<RabbitMQProducerDeclaration<TPayload>>()

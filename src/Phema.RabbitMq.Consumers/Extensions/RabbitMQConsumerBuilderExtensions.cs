@@ -7,7 +7,7 @@ namespace Phema.RabbitMQ
 		/// <summary>
 		///   Declare consumer tag
 		/// </summary>
-		public static IRabbitMQConsumerBuilder Tag(
+		public static IRabbitMQConsumerBuilder Tagged(
 			this IRabbitMQConsumerBuilder builder,
 			string consumerTag)
 		{
@@ -22,12 +22,12 @@ namespace Phema.RabbitMQ
 		/// <summary>
 		///   Declare message prefetch count
 		/// </summary>
-		public static IRabbitMQConsumerBuilder Prefetched(
+		public static IRabbitMQConsumerBuilder Prefetch(
 			this IRabbitMQConsumerBuilder builder,
-			ushort prefetch,
+			ushort prefetchCount,
 			bool global = true)
 		{
-			builder.Declaration.PrefetchCount = prefetch;
+			builder.Declaration.PrefetchCount = prefetchCount;
 			builder.Declaration.Global = global;
 
 			return builder;

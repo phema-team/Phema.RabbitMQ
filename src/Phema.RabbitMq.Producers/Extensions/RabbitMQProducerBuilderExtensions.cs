@@ -33,7 +33,7 @@ namespace Phema.RabbitMQ
 			builder.Declaration.Transactional = true;
 			return builder;
 		}
-		
+
 		/// <summary>
 		///   Declare channel mode as 'confirm'. Producer will wait for delivery confirms
 		/// </summary>
@@ -70,9 +70,22 @@ namespace Phema.RabbitMQ
 		/// </summary>
 		public static IRabbitMQProducerBuilder MessageTimeToLive(
 			this IRabbitMQProducerBuilder builder,
-			int timeToLive)
+			uint timeToLive)
 		{
 			return builder.WithProperty(x => x.Expiration = timeToLive.ToString());
+		}
+
+		/// <summary>
+		///   Declare message app id
+		/// </summary>
+		public static IRabbitMQProducerBuilder AppId(
+			this IRabbitMQProducerBuilder builder,
+			string appId)
+		{
+			if (appId is null)
+				throw new ArgumentNullException(nameof(appId));
+
+			return builder.WithProperty(p => p.AppId = appId);
 		}
 
 		/// <summary>
@@ -105,9 +118,9 @@ namespace Phema.RabbitMQ
 				x.Headers.Add(header, value);
 			});
 		}
-		
+
 		/// <summary>
-		///   Declare RabbitMQ arguments. Used for topic exchange
+		///   Declare RabbitMQ arguments
 		/// </summary>
 		public static IRabbitMQProducerBuilder WithArgument<TValue>(
 			this IRabbitMQProducerBuilder builder,

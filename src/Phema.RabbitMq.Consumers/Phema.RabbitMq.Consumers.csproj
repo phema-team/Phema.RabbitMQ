@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<TargetFramework>netcoreapp3.0</TargetFramework>
-		<Version>3.0.0-preview3.0.4</Version>
+		<Version>3.0.0-preview3.0.5</Version>
 		<RootNamespace>Phema.RabbitMQ</RootNamespace>
 		<Authors>sergeyshaykhullin</Authors>
 		<Description>

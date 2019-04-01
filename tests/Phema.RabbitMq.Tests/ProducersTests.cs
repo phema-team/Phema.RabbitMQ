@@ -48,6 +48,7 @@ namespace Phema.RabbitMQ.Tests
 						.Mandatory()
 						.WithProperty(x => x.Persistent = true)
 						.RoutingKey("routing_key")
+						.AppId("app1")
 						.Transactional());
 
 			var provider = services.BuildServiceProvider();

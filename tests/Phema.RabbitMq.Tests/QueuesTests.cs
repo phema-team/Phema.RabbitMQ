@@ -1,3 +1,4 @@
+using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Phema.RabbitMQ.Internal;
@@ -48,7 +49,7 @@ namespace Phema.RabbitMQ.Tests
 					.Exclusive()
 					.NoWait()
 					.BoundTo("exchange", b =>
-						b.RoutingKey("routing_key")
+						b.RoutingKeys("routing_key")
 							.NoWait()
 							.Deleted()
 							.WithArgument("x-argument", "argument")));
@@ -74,7 +75,7 @@ namespace Phema.RabbitMQ.Tests
 			
 			var binding = Assert.Single(declaration.QueueBindings);
 			Assert.Equal("exchange", binding.ExchangeName);
-			Assert.Equal("routing_key", binding.RoutingKey);
+			Assert.Equal("routing_key", binding.RoutingKeys.Single());
 			Assert.True(binding.Deleted);
 			Assert.True(binding.NoWait);
 			(key, value) = Assert.Single(binding.Arguments);

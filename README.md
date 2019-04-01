@@ -1,6 +1,6 @@
 # Phema.RabbitMQ
 
-[![Nuget](https://img.shields.io/nuget/v/Phema.RabbitMQ.svg)](https://www.nuget.org/packages/Phema.RabbitMQ)
+
 
 This is an attempt to create a simple way for safe and predictable application deploy with a versioned release-specific topology in a distributed systems
 
@@ -17,7 +17,7 @@ This is an attempt to create a simple way for safe and predictable application d
   - Intuitive, RabbitMQ-close fluent interfaces
   - Built-in modular serialization library, so working with objects, not bytes
 - **Modularity and flexibility**
-  - If no customers is needed, just do not add `Phema.RabbitMQ.Consumers` package
+  - If no customers is needed, just do not add `Phema.RabbitMQ.Consumers` package, etc.
   - Each group has its own connection. Managing groups you manage connections
 
 ## Installation
@@ -28,21 +28,21 @@ This is an attempt to create a simple way for safe and predictable application d
 
 ## Packages
 
-- `Phema.RabbitMQ.Core` - Core factories, options and extensions
-- `Phema.RabbitMQ.Exchanges` - Exchanges, `.AddExchangeGroup()` extension
-- `Phema.RabbitMQ.Queues` - Queues, `.AddQueueGroup()` extension
-- `Phema.RabbitMQ.Producers` - Producers, `.AddProducerGroup()` extension
-- `Phema.RabbitMQ.Consumers` - Consumers, `.AddConsumerGroup()` extension
-- `Phema.RabbitMQ` - Meta package
+- [![Nuget](https://img.shields.io/nuget/v/Phema.RabbitMQ.Core.svg)](https://www.nuget.org/packages/Phema.RabbitMQ.Core) `Phema.RabbitMQ.Core` - Core factories, options and extensions
+- [![Nuget](https://img.shields.io/nuget/v/Phema.RabbitMQ.Exchanges.svg)](https://www.nuget.org/packages/Phema.RabbitMQ.Exchanges) `Phema.RabbitMQ.Exchanges` - Exchanges, `.AddExchangeGroup()` extension
+- [![Nuget](https://img.shields.io/nuget/v/Phema.RabbitMQ.Queues.svg)](https://www.nuget.org/packages/Phema.RabbitMQ.Queues) `Phema.RabbitMQ.Queues` - Queues, `.AddQueueGroup()` extension
+- [![Nuget](https://img.shields.io/nuget/v/Phema.RabbitMQ.Producers.svg)](https://www.nuget.org/packages/Phema.RabbitMQ.Producers) `Phema.RabbitMQ.Producers` - Producers, `.AddProducerGroup()` extension
+- [![Nuget](https://img.shields.io/nuget/v/Phema.RabbitMQ.Consumers.svg)](https://www.nuget.org/packages/Phema.RabbitMQ.Consumers) `Phema.RabbitMQ.Consumers` - Consumers, `.AddConsumerGroup()` extension
+- [![Nuget](https://img.shields.io/nuget/v/Phema.RabbitMQ.svg)](https://www.nuget.org/packages/Phema.RabbitMQ) `Phema.RabbitMQ` - Meta package
 
 ## Usage
 
 ```csharp
 // Search for Phema.Serialization packages
-services.AddPhemaJsonSerializer();
+services.AddNewtonsoftJsonSerializer();
 
 // Consumers
-services.AddPhemaRabbitMQ("InstanceName", "amqp://connection.string")
+services.AddRabbitMQ("InstanceName", "amqp://connection.string")
   .AddQueueGroup(group =>
     group.AddQueue("QueueName")
       .Durable())
@@ -51,7 +51,7 @@ services.AddPhemaRabbitMQ("InstanceName", "amqp://connection.string")
       .Count(2));
 
 // Producers
-services.AddPhemaRabbitMQ("InstanceName", factory => ...)
+services.AddRabbitMQ("InstanceName", factory => ...)
   .AddExchangeGroup(group =>
     group.AddDirectExchange("ExchangeName")
       .Durable())
@@ -67,15 +67,14 @@ services.AddPhemaRabbitMQ("InstanceName", factory => ...)
 - Max message count and size limitations
 - Lazy, durable and exclusive queues
 - Batch produce
+- Declaring app id
 - Durable, internal, dead letter, bound and alternate exchanges
 - Reject-publish when queue is full
 - Deleted declarative operation
-- Confirm and transactional channel modes
+- Default, confirm and transactional channel modes
 - NoWait operations
 - Message persistency
-- Groups
-  - Queue `QueueName` in `QueuesGroup` group will be `QueuesGroup.QueueName`)
-  - Each group has own named connection
+- Group-connections
 
 ## Queues
 
@@ -86,31 +85,31 @@ services.AddPhemaRabbitMQ("InstanceName", factory => ...)
 - Declare lazy queue with `Lazy` extension
 - Set queue max message count with `MaxMessageCount` extension
 - Set queue max message size in bytes with `MaxMessageSize` extension
-- Set dead letter exchange with `DeadLetterExchange` extension
-- Set queue ttl with `WithTimeToLive` extension
-- Set message ttl with `WithMessageTimeToLive` extension
-- Set queue max priority with `WithMaxPriority` extension
+- Set dead letter exchange with `DeadLetterTo` extension
+- Set queue ttl with `TimeToLive` extension
+- Set message ttl with `MessageTimeToLive` extension
+- Set queue max priority with `MaxPriority` extension
 - Explicitly delete queue with `Deleted` extension
 - Delete queue automatically with `AutoDelete` extension
 - Add custom arguments with `WithArgument` extension
   
 ## Exchanges
 
-- Delete exchange automatically with `AutoDelete` extension
-- Explicitly delete exchange with `Deleted` extension
-- Bind exchange to exchange with `BoundTo` extension
-- Add custom arguments with `WithArgument` extension
-- Declare alternate exchange with `AlternateExchange` extension
 - Declare durable exchange with `Durable` extension
 - Declare exchange without waiting with `NoWait` extension
 - Declare exchange as internal with `Internal` extension
+- Delete exchange automatically with `AutoDelete` extension
+- Explicitly delete exchange with `Deleted` extension
+- Bind exchange to exchange with `BoundTo` extension
+- Declare alternate exchange with `AlternateTo` extension
+- Add custom arguments with `WithArgument` extension
 - Declare exchange with `AddDirectExchange(...)`, `AddFanoutExchange(...)`, `AddHeadersExchange(...)`, `AddTopicExchange(...)` extensions
 
 ## Consumers
 
 - Create `IRabbitMqConsumer<TPayload>`
-- Tag consumers using `WithTag` extension
-- Limit prefetch count with `PrefetchCount` extension
+- Tag consumers using `Tagged` extension
+- Limit prefetch count with `Prefetch` extension
 - Scale consumers by using `Count` extension
 - Declare exclusive consume with `Exclusive` extension
 - Forbid to consume own producers with `NoLocal` extension
@@ -133,15 +132,12 @@ services.AddPhemaRabbitMQ("InstanceName", factory => ...)
 - Use message persistence with `Persistent` extension
 - Configure headers with `WithHeader` extension
 - Configure properties with `WithProperty` extension
+- Use `IRabbitMQProducerFactory` for custom message handling
 
 ## Limitations
 
 - Uses only `Microsoft.Extensions.DepencencyInjection` package
-- No dynamic topology declaration
-  - No queues
-  - No exchanges
-  - No producers
-  - No consumers
+- No dynamic topology declaration by design, but you can use `IRabbitMQConnectionFactory` for that
 - No `.Redeclared()` and `.Purged()` because it breaks consistenty
   1. Deploy `first_node`
   2. Purge `queue`
@@ -149,7 +145,7 @@ services.AddPhemaRabbitMQ("InstanceName", factory => ...)
   4. Deploy `second_node`
   5. Purge `queue`
   6. No `first_node` messages survived
-- There is a problem when one type of payload is used in different producers, so `IRabbitMQProducer<TPayload>` abstraction leak
+- There is a problem when one type of payload is used in different producers, so `IRabbitMQProducer<TPayload>` abstraction leak ;(
 
 ## Tips
 

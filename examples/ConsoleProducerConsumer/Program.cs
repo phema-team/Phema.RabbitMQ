@@ -28,7 +28,7 @@ namespace ConsoleProducerConsumer
 			services.AddRabbitMQ("test", "amqp://test.test")
 				.AddConsumerGroup("consumers", group =>
 					group.AddConsumer<Payload, PayloadConsumer>("queue")
-						.Tag("tag"))
+						.Tagged("tag"))
 				.AddQueueGroup("queues", group =>
 					group.AddQueue("queue")
 						.Durable()

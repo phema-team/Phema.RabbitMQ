@@ -83,7 +83,7 @@ namespace Phema.RabbitMQ
 		///   Declare alternate-exchange argument. When message can't be routed in current exchange,
 		///   instead of mark as dead, publish to specified exchange
 		/// </summary>
-		public static IRabbitMQExchangeBuilder AlternateExchange(
+		public static IRabbitMQExchangeBuilder AlternateTo(
 			this IRabbitMQExchangeBuilder configuration,
 			string exchange)
 		{

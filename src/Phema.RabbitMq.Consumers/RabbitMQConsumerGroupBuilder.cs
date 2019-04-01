@@ -9,8 +9,8 @@ namespace Phema.RabbitMQ
 		/// <summary>
 		///   Register new consumer
 		/// </summary>
-		IRabbitMQConsumerBuilder AddConsumer<TPayload, TPayloadConsumer>(string queueName)
-			where TPayloadConsumer : class, IRabbitMQConsumer<TPayload>;
+		IRabbitMQConsumerBuilder AddAsyncConsumer<TPayload, TPayloadConsumer>(string queueName)
+			where TPayloadConsumer : class, IRabbitMQAsyncConsumer<TPayload>;
 	}
 }
 
@@ -29,8 +29,8 @@ namespace Phema.RabbitMQ.Internal
 			this.groupName = groupName;
 		}
 
-		public IRabbitMQConsumerBuilder AddConsumer<TPayload, TPayloadConsumer>(string queueName)
-			where TPayloadConsumer : class, IRabbitMQConsumer<TPayload>
+		public IRabbitMQConsumerBuilder AddAsyncConsumer<TPayload, TPayloadConsumer>(string queueName)
+			where TPayloadConsumer : class, IRabbitMQAsyncConsumer<TPayload>
 		{
 			if (queueName is null)
 				throw new ArgumentNullException(nameof(queueName));

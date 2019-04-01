@@ -15,7 +15,7 @@ namespace Phema.RabbitMQ.Tests
 
 			services.AddRabbitMQ("test", "amqp://test.test")
 				.AddProducerGroup(group =>
-					group.AddProducer<ProducersTests>("exchange"));
+					group.AddAsyncProducer<ProducersTests>("exchange"));
 
 			var provider = services.BuildServiceProvider();
 
@@ -42,7 +42,7 @@ namespace Phema.RabbitMQ.Tests
 
 			services.AddRabbitMQ("test", "amqp://test.test")
 				.AddProducerGroup("exchanges", group =>
-					group.AddProducer<ProducersTests>("exchange")
+					group.AddAsyncProducer<ProducersTests>("exchange")
 						.WithArgument("x-argument", "argument")
 						.WaitForConfirms(TimeSpan.Zero)
 						.Mandatory()

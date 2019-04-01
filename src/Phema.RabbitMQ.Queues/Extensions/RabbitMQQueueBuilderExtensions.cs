@@ -94,7 +94,7 @@ namespace Phema.RabbitMQ
 		///   Declare x-dead-letter-exchange argument. When message is dead, send to x-dead-letter-exchange.
 		///   Declare x-dead-letter-routing-key argument. When message is dead, send to x-dead-letter-exchange with routing key.
 		/// </summary>
-		public static IRabbitMQQueueBuilder DeadLetterExchange(
+		public static IRabbitMQQueueBuilder DeadLetterTo(
 			this IRabbitMQQueueBuilder configuration,
 			string exchangeName,
 			string routingKey = null)

@@ -34,7 +34,7 @@ namespace Phema.RabbitMQ.Internal
 
 						foreach (var binding in declaration.ExchangeBindings)
 						{
-							EnsureExchangeBinding(channel, declaration, binding);
+							EnsureExchangeBindings(channel, declaration, binding);
 						}
 					}
 				}
@@ -66,28 +66,35 @@ namespace Phema.RabbitMQ.Internal
 				arguments: declaration.Arguments);
 		}
 
-		private static void EnsureExchangeBinding(
+		private static void EnsureExchangeBindings(
 			IFullModel channel,
 			IRabbitMQExchangeDeclaration exchange,
 			IRabbitMQExchangeBindingDeclaration binding)
 		{
-			if (binding.Deleted)
+			var routingKeys = binding.RoutingKeys.Count == 0
+				? new[] { binding.ExchangeName }
+				: binding.RoutingKeys;
+
+			foreach (var routingKey in routingKeys)
 			{
-				channel._Private_ExchangeUnbind(
-					destination: exchange.ExchangeName,
-					source: binding.ExchangeName,
-					routingKey: binding.RoutingKey ?? binding.ExchangeName,
-					nowait: binding.NoWait,
-					arguments: binding.Arguments);
-			}
-			else
-			{
-				channel._Private_ExchangeBind(
-					destination: exchange.ExchangeName,
-					source: binding.ExchangeName,
-					routingKey: binding.RoutingKey ?? binding.ExchangeName,
-					nowait: binding.NoWait,
-					arguments: binding.Arguments);
+				if (binding.Deleted)
+				{
+					channel._Private_ExchangeUnbind(
+						destination: exchange.ExchangeName,
+						source: binding.ExchangeName,
+						routingKey: routingKey,
+						nowait: binding.NoWait,
+						arguments: binding.Arguments);
+				}
+				else
+				{
+					channel._Private_ExchangeBind(
+						destination: exchange.ExchangeName,
+						source: binding.ExchangeName,
+						routingKey: routingKey,
+						nowait: binding.NoWait,
+						arguments: binding.Arguments);
+				}
 			}
 		}
 	}

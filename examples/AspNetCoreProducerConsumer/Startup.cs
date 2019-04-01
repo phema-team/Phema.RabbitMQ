@@ -10,7 +10,7 @@ namespace AspNetCoreProducerConsumer
 	{
 	}
 	
-	public class PayloadConsumer : IRabbitMQConsumer<Payload>
+	public class PayloadAsyncConsumer : IRabbitMQAsyncConsumer<Payload>
 	{
 		public Task Consume(Payload payload)
 		{
@@ -24,8 +24,8 @@ namespace AspNetCoreProducerConsumer
 		{
 			services.AddRabbitMQ("test", "amqp://test.test")
 				.AddConsumerGroup("consumers", group =>
-					group.AddConsumer<Payload, PayloadConsumer>("queue")
-						.Tag("tag"))
+					group.AddAsyncConsumer<Payload, PayloadAsyncConsumer>("queue")
+						.Tagged("tag"))
 				.AddQueueGroup("queues", group =>
 					group.AddQueue("queue")
 						.Durable()
@@ -34,7 +34,7 @@ namespace AspNetCoreProducerConsumer
 					group.AddDirectExchange("exchange")
 						.Durable())
 				.AddProducerGroup("producers", group =>
-					group.AddProducer<Payload>("exchange")
+					group.AddAsyncProducer<Payload>("exchange")
 						.RoutingKey("queue")
 						.Persistent());
 		}
@@ -43,7 +43,7 @@ namespace AspNetCoreProducerConsumer
 		{
 			app.Run(async context =>
 			{
-				var producer = context.RequestServices.GetRequiredService<IRabbitMQProducer<Payload>>();
+				var producer = context.RequestServices.GetRequiredService<IRabbitMQAsyncProducer<Payload>>();
 
 				await producer.Produce(new Payload());
 			});

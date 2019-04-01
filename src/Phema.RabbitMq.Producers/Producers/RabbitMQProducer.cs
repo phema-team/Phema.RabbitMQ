@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Threading;
-using System.Threading.Tasks;
 using RabbitMQ.Client;
 
 using ISerializer = Phema.Serialization.ISerializer;
@@ -9,9 +8,9 @@ namespace Phema.RabbitMQ
 {
 	public interface IRabbitMQProducer<TPayload>
 	{
-		Task<bool> Produce(TPayload payload);
+		bool Produce(TPayload payload);
 
-		Task<bool> BatchProduce(IEnumerable<TPayload> payloads);
+		bool BatchProduce(IEnumerable<TPayload> payloads);
 	}
 }
 
@@ -49,12 +48,12 @@ namespace Phema.RabbitMQ.Internal
 			}
 		}
 
-		public async Task<bool> Produce(TPayload payload)
+		public bool Produce(TPayload payload)
 		{
-			await Semaphore.WaitAsync().ConfigureAwait(false);
-
 			try
 			{
+				Semaphore.Wait();
+
 				channel.BasicPublish(
 					declaration.ExchangeName,
 					declaration.RoutingKey ?? declaration.ExchangeName,
@@ -84,7 +83,7 @@ namespace Phema.RabbitMQ.Internal
 			}
 		}
 
-		public async Task<bool> BatchProduce(IEnumerable<TPayload> payloads)
+		public bool BatchProduce(IEnumerable<TPayload> payloads)
 		{
 			var batch = channel.CreateBasicPublishBatch();
 
@@ -98,10 +97,10 @@ namespace Phema.RabbitMQ.Internal
 					serializer.Serialize(payload));
 			}
 
-			await Semaphore.WaitAsync().ConfigureAwait(false);
-
 			try
 			{
+				Semaphore.Wait();
+
 				if (declaration.Transactional)
 				{
 					channel.TxSelect();

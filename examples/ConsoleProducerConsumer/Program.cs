@@ -11,7 +11,7 @@ namespace ConsoleProducerConsumer
 	{
 	}
 	
-	public class PayloadConsumer : IRabbitMQConsumer<Payload>
+	public class PayloadAsyncConsumer : IRabbitMQAsyncConsumer<Payload>
 	{
 		public Task Consume(Payload payload)
 		{
@@ -27,8 +27,8 @@ namespace ConsoleProducerConsumer
 
 			services.AddRabbitMQ("test", "amqp://test.test")
 				.AddConsumerGroup("consumers", group =>
-					group.AddConsumer<Payload, PayloadConsumer>("queue")
-						.Tag("tag"))
+					group.AddAsyncConsumer<Payload, PayloadAsyncConsumer>("queue")
+						.Tagged("tag"))
 				.AddQueueGroup("queues", group =>
 					group.AddQueue("queue")
 						.Durable()
@@ -37,7 +37,7 @@ namespace ConsoleProducerConsumer
 					group.AddDirectExchange("exchange")
 						.Durable())
 				.AddProducerGroup("producers", group =>
-					group.AddProducer<Payload>("exchange")
+					group.AddAsyncProducer<Payload>("exchange")
 						.RoutingKey("queue")
 						.Persistent());
 
@@ -49,7 +49,7 @@ namespace ConsoleProducerConsumer
 				await hostedService.StartAsync(CancellationToken.None);
 			}
 
-			var producer = provider.GetRequiredService<IRabbitMQProducer<Payload>>();
+			var producer = provider.GetRequiredService<IRabbitMQAsyncProducer<Payload>>();
 
 			await producer.Produce(new Payload());
 

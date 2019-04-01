@@ -5,10 +5,10 @@ namespace Phema.RabbitMQ
 	public static class RabbitMQProducerExtensions
 	{
 		public static Task BatchProduce<TPayload>(
-			this IRabbitMQProducer<TPayload> producer,
+			this IRabbitMQAsyncProducer<TPayload> asyncProducer,
 			params TPayload[] payloads)
 		{
-			return producer.BatchProduce(payloads);
+			return asyncProducer.BatchProduce(payloads);
 		}
 	}
 }

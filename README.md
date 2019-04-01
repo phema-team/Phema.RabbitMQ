@@ -39,7 +39,7 @@ This is an attempt to create a simple way for safe and predictable application d
 
 ```csharp
 // Search for Phema.Serialization packages
-services.AddPhemaJsonSerializer();
+services.AddNewtonsoftJsonSerializer();
 
 // Consumers
 services.AddPhemaRabbitMQ("InstanceName", "amqp://connection.string")

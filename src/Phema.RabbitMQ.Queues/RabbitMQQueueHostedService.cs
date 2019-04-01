@@ -91,31 +91,38 @@ namespace Phema.RabbitMQ.Internal
 			IRabbitMQQueueDeclaration declaration,
 			IRabbitMQQueueBindingDeclaration binding)
 		{
-			if (binding.Deleted)
+			var routingKeys = binding.RoutingKeys.Count == 0
+				? new[] { declaration.QueueName }
+				: binding.RoutingKeys;
+
+			foreach (var routingKey in routingKeys)
 			{
-				channel.QueueUnbind(
-					declaration.QueueName,
-					binding.ExchangeName,
-					binding.RoutingKey ?? declaration.QueueName,
-					binding.Arguments);
-			}
-			else
-			{
-				if (binding.NoWait)
+				if (binding.Deleted)
 				{
-					channel.QueueBindNoWait(
+					channel.QueueUnbind(
 						declaration.QueueName,
 						binding.ExchangeName,
-						binding.RoutingKey ?? declaration.QueueName,
+						routingKey,
 						binding.Arguments);
 				}
 				else
 				{
-					channel.QueueBind(
-						declaration.QueueName,
-						binding.ExchangeName,
-						binding.RoutingKey ?? declaration.QueueName,
-						binding.Arguments);
+					if (binding.NoWait)
+					{
+						channel.QueueBindNoWait(
+							declaration.QueueName,
+							binding.ExchangeName,
+							routingKey,
+							binding.Arguments);
+					}
+					else
+					{
+						channel.QueueBind(
+							declaration.QueueName,
+							binding.ExchangeName,
+							routingKey,
+							binding.Arguments);
+					}
 				}
 			}
 		}

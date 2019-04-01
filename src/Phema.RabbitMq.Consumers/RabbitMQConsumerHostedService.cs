@@ -9,7 +9,7 @@ using RabbitMQ.Client.Impl;
 namespace Phema.RabbitMQ.Internal
 {
 	internal sealed class RabbitMQConsumerHostedService<TPayload, TPayloadConsumer> : IHostedService
-		where TPayloadConsumer : IRabbitMQConsumer<TPayload>
+		where TPayloadConsumer : IRabbitMQAsyncConsumer<TPayload>
 	{
 		private readonly RabbitMQConsumersOptions options;
 		private readonly IRabbitMQConsumerFactory consumerFactory;

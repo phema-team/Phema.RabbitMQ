@@ -10,7 +10,7 @@ namespace Phema.RabbitMQ.Tests
 		public string Name { get; set; }
 	}
 
-	public class PayloadConsumer : IRabbitMQConsumer<Payload>
+	public class PayloadAsyncConsumer : IRabbitMQAsyncConsumer<Payload>
 	{
 		public Task Consume(Payload payload)
 		{
@@ -29,9 +29,9 @@ namespace Phema.RabbitMQ.Tests
 
 			services.AddRabbitMQ("test", "amqp://test.test")
 				.AddConsumerGroup("consumers", group =>
-					group.AddConsumer<Payload, PayloadConsumer>("queue")
-						.Tag("tag")
-						.Prefetched(1)
+					group.AddAsyncConsumer<Payload, PayloadAsyncConsumer>("queue")
+						.Tagged("tag")
+						.Prefetch(1)
 						.Count(1)
 						.Exclusive()
 						.NoLocal()
@@ -53,13 +53,13 @@ namespace Phema.RabbitMQ.Tests
 						.MaxMessageCount(1000)
 						.MessageTimeToLive(1000)
 						.RejectPublish()
+						.DeadLetterTo("exchange", "routing_key")
 						.BoundTo("exchange", binding =>
-							binding.RoutingKey("routing_key")
+							binding.RoutingKeys("routing_key")
 								.NoWait()
 								.Deleted()
 								.WithArgument("x-argument", "argument"))
-						.WithArgument("x-argument", "argument")
-						.DeadLetterExchange("exchange", "routing_key"))
+						.WithArgument("x-argument", "argument"))
 				.AddExchangeGroup("exchanges", group =>
 					group.AddDirectExchange("exchange")
 						.Internal()
@@ -67,25 +67,39 @@ namespace Phema.RabbitMQ.Tests
 						.NoWait()
 						.Deleted()
 						.AutoDelete()
-						.AlternateExchange("exchange")
+						.AlternateTo("exchange")
 						.BoundTo("exchange", binding =>
-							binding.RoutingKey("routing_key")
+							binding.RoutingKeys("routing_key")
 								.NoWait()
 								.Deleted()
 								.WithArgument("x-argument", "argument"))
 						.WithArgument("x-argument", "argument"))
 				.AddProducerGroup("producers", group =>
-					group.AddProducer<Payload>("exchange")
-						.RoutingKey("routing_key")
-						.WaitForConfirms()
-						.Transactional()
-						.Mandatory()
-						.Priority(1)
-						.Persistent()
-						.MessageTimeToLive(10000)
-						.WithHeader("x-header", "header")
-						.WithProperty(x => x.Persistent = true)
-						.WithArgument("x-argument", "argument"));
+					{
+						group.AddAsyncProducer<Payload>("exchange")
+							.RoutingKey("routing_key")
+							.WaitForConfirms()
+							.Transactional()
+							.Mandatory()
+							.Priority(1)
+							.Persistent()
+							.MessageTimeToLive(10000)
+							.WithHeader("x-header", "header")
+							.WithProperty(x => x.Persistent = true)
+							.WithArgument("x-argument", "argument");
+						
+						group.AddProducer<Payload>("exchange")
+							.RoutingKey("routing_key")
+							.WaitForConfirms()
+							.Transactional()
+							.Mandatory()
+							.Priority(1)
+							.Persistent()
+							.MessageTimeToLive(10000)
+							.WithHeader("x-header", "header")
+							.WithProperty(x => x.Persistent = true)
+							.WithArgument("x-argument", "argument");
+					});
 		}
 	}
 }

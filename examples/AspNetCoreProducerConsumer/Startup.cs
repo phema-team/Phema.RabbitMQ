@@ -24,7 +24,7 @@ namespace AspNetCoreProducerConsumer
 		{
 			services.AddRabbitMQ("test", "amqp://test.test")
 				.AddConsumerGroup("consumers", group =>
-					group.AddAsyncConsumer<Payload, PayloadConsumer>("queue")
+					group.AddConsumer<Payload, PayloadConsumer>("queue")
 						.Tagged("tag"))
 				.AddQueueGroup("queues", group =>
 					group.AddQueue("queue")

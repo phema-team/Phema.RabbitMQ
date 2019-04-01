@@ -23,7 +23,7 @@ namespace Phema.RabbitMQ.Tests
 
 			services.AddRabbitMQ("test", "amqp://test.test")
 				.AddConsumerGroup(group =>
-					group.AddAsyncConsumer<ConsumersTests, ConsumersTestsConsumer>("queue"));
+					group.AddConsumer<ConsumersTests, ConsumersTestsConsumer>("queue"));
 
 			var provider = services.BuildServiceProvider();
 
@@ -52,7 +52,7 @@ namespace Phema.RabbitMQ.Tests
 
 			services.AddRabbitMQ("test", "amqp://test.test")
 				.AddConsumerGroup("consumers", group =>
-					group.AddAsyncConsumer<ConsumersTests, ConsumersTestsConsumer>("queue")
+					group.AddConsumer<ConsumersTests, ConsumersTestsConsumer>("queue")
 						.WithArgument("x-argument", "argument")
 						.AutoAck()
 						.Count(2)

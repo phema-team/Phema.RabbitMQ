@@ -29,7 +29,7 @@ namespace Phema.RabbitMQ.Tests
 
 			services.AddRabbitMQ("test", "amqp://test.test")
 				.AddConsumerGroup("consumers", group =>
-					group.AddAsyncConsumer<Payload, PayloadConsumer>("queue")
+					group.AddConsumer<Payload, PayloadConsumer>("queue")
 						.Tagged("tag")
 						.Prefetch(1)
 						.Count(1)
@@ -77,17 +77,17 @@ namespace Phema.RabbitMQ.Tests
 								.RoutingKey("routing_key"))
 						.WithArgument("x-argument", "argument"))
 				.AddProducerGroup("producers", group =>
-						group.AddProducer<Payload>("exchange")
-							.RoutingKey("routing_key")
-							.WaitForConfirms()
-							.Transactional()
-							.Mandatory()
-							.Priority(1)
-							.Persistent()
-							.MessageTimeToLive(10000)
-							.WithHeader("x-header", "header")
-							.WithProperty(x => x.Persistent = true)
-							.WithArgument("x-argument", "argument"));
+					group.AddProducer<Payload>("exchange")
+						.RoutingKey("routing_key")
+						.WaitForConfirms()
+						.Transactional()
+						.Mandatory()
+						.Priority(1)
+						.Persistent()
+						.MessageTimeToLive(10000)
+						.WithHeader("x-header", "header")
+						.WithProperty(x => x.Persistent = true)
+						.WithArgument("x-argument", "argument"));
 		}
 	}
 }

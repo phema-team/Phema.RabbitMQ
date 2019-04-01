@@ -7,10 +7,10 @@ namespace Phema.RabbitMQ
 	public interface IRabbitMQConsumerGroupBuilder
 	{
 		/// <summary>
-		///   Register new <see cref="IRabbitMQAsyncConsumer{TPayload}"/>
+		///   Register new <see cref="IRabbitMQConsumer{TPayload}"/>
 		/// </summary>
 		IRabbitMQConsumerBuilder AddAsyncConsumer<TPayload, TPayloadConsumer>(string queueName)
-			where TPayloadConsumer : class, IRabbitMQAsyncConsumer<TPayload>;
+			where TPayloadConsumer : class, IRabbitMQConsumer<TPayload>;
 	}
 }
 
@@ -30,7 +30,7 @@ namespace Phema.RabbitMQ.Internal
 		}
 
 		public IRabbitMQConsumerBuilder AddAsyncConsumer<TPayload, TPayloadConsumer>(string queueName)
-			where TPayloadConsumer : class, IRabbitMQAsyncConsumer<TPayload>
+			where TPayloadConsumer : class, IRabbitMQConsumer<TPayload>
 		{
 			if (queueName is null)
 				throw new ArgumentNullException(nameof(queueName));

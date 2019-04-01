@@ -10,7 +10,7 @@ namespace Phema.RabbitMQ.Tests
 		public string Name { get; set; }
 	}
 
-	public class PayloadAsyncConsumer : IRabbitMQAsyncConsumer<Payload>
+	public class PayloadConsumer : IRabbitMQConsumer<Payload>
 	{
 		public Task Consume(Payload payload)
 		{
@@ -29,7 +29,7 @@ namespace Phema.RabbitMQ.Tests
 
 			services.AddRabbitMQ("test", "amqp://test.test")
 				.AddConsumerGroup("consumers", group =>
-					group.AddAsyncConsumer<Payload, PayloadAsyncConsumer>("queue")
+					group.AddAsyncConsumer<Payload, PayloadConsumer>("queue")
 						.Tagged("tag")
 						.Prefetch(1)
 						.Count(1)
@@ -58,7 +58,8 @@ namespace Phema.RabbitMQ.Tests
 							binding.RoutingKeys("routing_key")
 								.NoWait()
 								.Deleted()
-								.WithArgument("x-argument", "argument"))
+								.WithArgument("x-argument", "argument")
+								.RoutingKey("routing_key"))
 						.WithArgument("x-argument", "argument"))
 				.AddExchangeGroup("exchanges", group =>
 					group.AddDirectExchange("exchange")
@@ -72,7 +73,8 @@ namespace Phema.RabbitMQ.Tests
 							binding.RoutingKeys("routing_key")
 								.NoWait()
 								.Deleted()
-								.WithArgument("x-argument", "argument"))
+								.WithArgument("x-argument", "argument")
+								.RoutingKey("routing_key"))
 						.WithArgument("x-argument", "argument"))
 				.AddProducerGroup("producers", group =>
 						group.AddProducer<Payload>("exchange")

@@ -10,7 +10,7 @@ namespace AspNetCoreProducerConsumer
 	{
 	}
 	
-	public class PayloadAsyncConsumer : IRabbitMQAsyncConsumer<Payload>
+	public class PayloadConsumer : IRabbitMQConsumer<Payload>
 	{
 		public Task Consume(Payload payload)
 		{
@@ -24,7 +24,7 @@ namespace AspNetCoreProducerConsumer
 		{
 			services.AddRabbitMQ("test", "amqp://test.test")
 				.AddConsumerGroup("consumers", group =>
-					group.AddAsyncConsumer<Payload, PayloadAsyncConsumer>("queue")
+					group.AddAsyncConsumer<Payload, PayloadConsumer>("queue")
 						.Tagged("tag"))
 				.AddQueueGroup("queues", group =>
 					group.AddQueue("queue")

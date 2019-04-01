@@ -23,7 +23,7 @@ namespace Phema.RabbitMQ.Internal
 {
 	// ReSharper disable once UnusedTypeParameter
 	internal sealed class RabbitMQConsumerDeclaration<TPayload, TPayloadConsumer> : IRabbitMQConsumerDeclaration
-		where TPayloadConsumer : IRabbitMQAsyncConsumer<TPayload>
+		where TPayloadConsumer : IRabbitMQConsumer<TPayload>
 	{
 		public RabbitMQConsumerDeclaration(string groupName, string queueName)
 		{

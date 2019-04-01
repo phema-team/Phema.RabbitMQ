@@ -9,7 +9,7 @@ using ISerializer = Phema.Serialization.ISerializer;
 namespace Phema.RabbitMQ.Internal
 {
 	internal sealed class RabbitMQBasicConsumer<TPayload, TPayloadConsumer> : AsyncEventingBasicConsumer
-		where TPayloadConsumer : IRabbitMQAsyncConsumer<TPayload>
+		where TPayloadConsumer : IRabbitMQConsumer<TPayload>
 	{
 		private readonly IRabbitMQConsumerDeclaration declaration;
 		private readonly IServiceProvider provider;

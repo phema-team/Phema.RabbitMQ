@@ -8,7 +8,7 @@ namespace Phema.RabbitMQ
 	public interface IRabbitMQConsumerFactory
 	{
 		IBasicConsumer CreateConsumer<TPayload, TPayloadConsumer>(IModel channel, IRabbitMQConsumerDeclaration declaration)
-			where TPayloadConsumer : IRabbitMQAsyncConsumer<TPayload>;
+			where TPayloadConsumer : IRabbitMQConsumer<TPayload>;
 	}
 }
 
@@ -26,7 +26,7 @@ namespace Phema.RabbitMQ.Internal
 		}
 
 		public IBasicConsumer CreateConsumer<TPayload, TPayloadConsumer>(IModel channel, IRabbitMQConsumerDeclaration declaration)
-			where TPayloadConsumer : IRabbitMQAsyncConsumer<TPayload>
+			where TPayloadConsumer : IRabbitMQConsumer<TPayload>
 		{
 			return new RabbitMQBasicConsumer<TPayload, TPayloadConsumer>(provider, channel, declaration, serializer);
 		}

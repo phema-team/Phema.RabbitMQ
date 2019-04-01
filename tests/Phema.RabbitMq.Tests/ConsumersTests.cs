@@ -8,7 +8,7 @@ namespace Phema.RabbitMQ.Tests
 {
 	public class ConsumersTests
 	{
-		private class AsyncConsumersTestsAsyncConsumer : IRabbitMQAsyncConsumer<ConsumersTests>
+		private class ConsumersTestsConsumer : IRabbitMQConsumer<ConsumersTests>
 		{
 			public Task Consume(ConsumersTests payload)
 			{
@@ -23,7 +23,7 @@ namespace Phema.RabbitMQ.Tests
 
 			services.AddRabbitMQ("test", "amqp://test.test")
 				.AddConsumerGroup(group =>
-					group.AddAsyncConsumer<ConsumersTests, AsyncConsumersTestsAsyncConsumer>("queue"));
+					group.AddAsyncConsumer<ConsumersTests, ConsumersTestsConsumer>("queue"));
 
 			var provider = services.BuildServiceProvider();
 
@@ -52,7 +52,7 @@ namespace Phema.RabbitMQ.Tests
 
 			services.AddRabbitMQ("test", "amqp://test.test")
 				.AddConsumerGroup("consumers", group =>
-					group.AddAsyncConsumer<ConsumersTests, AsyncConsumersTestsAsyncConsumer>("queue")
+					group.AddAsyncConsumer<ConsumersTests, ConsumersTestsConsumer>("queue")
 						.WithArgument("x-argument", "argument")
 						.AutoAck()
 						.Count(2)

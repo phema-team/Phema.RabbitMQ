@@ -148,11 +148,13 @@ services.AddRabbitMQ("InstanceName", factory => ...)
 - There is a problem when one type of payload is used in different producers, so `IRabbitMQProducer<TPayload>` abstraction leak ;(
 - No `correlation-id`'s
 - No `message-id`'s
+- No `BasicReturn` and other events for now
 
 ## Tips
 
-- `RoutingKey` is `Queue.Name` by default
-- Do not use same group(connection) for consumers and producers
+- `RoutingKey` is `QueueName`/`ExchangeName` by default
+- Do not use same group(connection) for consumers and producers because of tcp backpressure
 - `IRabbitMQConnectionFactory` - singleton dependency in `IServiceProvider` per instance for custom connections
 - If queue or exchange is default or exists, binding goes withot declaration
-- Used `ISerializer` from `Phema.Serialization...` search for nuget package to add
+- Use `BatchProduce` instead of `Produce` with loop
+- Do not declare channel as `Transactional` and `WaitForConfirms`

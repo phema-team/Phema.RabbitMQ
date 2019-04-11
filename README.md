@@ -1,6 +1,6 @@
 # Phema.RabbitMQ
 
-
+[![Build Status](https://cloud.drone.io/api/badges/phema-team/Phema.RabbitMQ/status.svg)](https://cloud.drone.io/phema-team/Phema.RabbitMQ)
 
 This is an attempt to create a simple way for safe and predictable application deploy with a versioned release-specific topology in a distributed systems
 

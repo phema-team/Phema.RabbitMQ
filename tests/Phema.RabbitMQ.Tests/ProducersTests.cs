@@ -65,7 +65,7 @@ namespace Phema.RabbitMQ.Tests
 			Assert.Equal("exchange", declaration.ExchangeName);
 			Assert.Equal("exchanges", declaration.GroupName);
 			Assert.True(declaration.Mandatory);
-			Assert.Single(declaration.Properties);
+			Assert.Equal(2, declaration.Properties.Count);
 			Assert.Equal("routing_key", declaration.RoutingKey);
 			Assert.Equal(TimeSpan.Zero, declaration.Timeout);
 			Assert.True(declaration.Transactional);

@@ -5,5 +5,4 @@ steps:
 - name: build & test
   image: mcr.microsoft.com/dotnet/core/sdk:3.0.100-preview3-stretch
   commands:
-  - cd ./tests/Phema.RabbitMq.Tests
-  - dotnet test
+  - dotnet --version

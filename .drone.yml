@@ -5,6 +5,5 @@ steps:
 - name: build & test
   image: mcr.microsoft.com/dotnet/core/sdk:3.0-alpine3.9
   commands:
-  - dotnet restore
-  - dotnet build
+  - cd tests/Phema.RabbitMQ.Tests
   - dotnet test

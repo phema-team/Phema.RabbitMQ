@@ -5,5 +5,5 @@ steps:
 - name: build & test
   image: mcr.microsoft.com/dotnet/core/sdk:3.0-alpine3.9
   commands:
+  - cd src/Phema.RabbitMQ.Queues
   - dotnet build
-  - dotnet test

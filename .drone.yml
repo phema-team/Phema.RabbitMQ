@@ -5,4 +5,10 @@ steps:
 - name: build & test
   image: mcr.microsoft.com/dotnet/core/sdk:3.0.100-preview3-stretch
   commands:
-  - dotnet --version
+  - dotnet build src/Phema.RabbitMQ.Core
+  - dotnet build src/Phema.RabbitMQ.Queues
+  - dotnet build src/Phema.RabbitMQ.Producers
+  - dotnet build src/Phema.RabbitMQ.Consumers
+  - dotnet build src/Phema.RabbitMQ.Exchanges
+  - dotnet build src/Phema.RabbitMQ
+  - dotnet test .\tests\Phema.RabbitMQ.Tests\

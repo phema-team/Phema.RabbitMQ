@@ -18,7 +18,7 @@ namespace Phema.RabbitMQ.Tests
 		}
 	}
 
-	public class UnitTest1
+	public class UsabilityTests
 	{
 		[Fact]
 		public void Usability()

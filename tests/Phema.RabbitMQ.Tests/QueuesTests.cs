@@ -1,7 +1,5 @@
-using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Phema.RabbitMQ.Internal;
 using Xunit;
 
 namespace Phema.RabbitMQ.Tests
@@ -14,52 +12,52 @@ namespace Phema.RabbitMQ.Tests
 			var services = new ServiceCollection();
 
 			services.AddRabbitMQ("test", "amqp://test.test")
-				.AddQueueGroup(group => group.AddQueue("queue"));
+				.AddConnection("connection", group => group.AddQueue<string>("queue"));
 
 			var provider = services.BuildServiceProvider();
 
-			var options = provider.GetRequiredService<IOptions<RabbitMQQueuesOptions>>().Value;
+			var options = provider.GetRequiredService<IOptions<RabbitMQOptions>>().Value;
 
-			var declaration = Assert.Single(options.Declarations);
-			
+			var declaration = Assert.Single(options.QueueDeclarations);
+
 			Assert.Empty(declaration.Arguments);
 			Assert.False(declaration.AutoDelete);
 			Assert.False(declaration.Deleted);
 			Assert.False(declaration.Durable);
 			Assert.False(declaration.Exclusive);
-			Assert.Equal(RabbitMQDefaults.DefaultGroupName, declaration.GroupName);
+			Assert.Equal("connection", declaration.Connection.Name);
 			Assert.False(declaration.IfEmpty);
 			Assert.False(declaration.IfUnused);
 			Assert.False(declaration.NoWait);
-			Assert.Empty(declaration.QueueBindings);
-			Assert.Equal("queue", declaration.QueueName);
+			Assert.Empty(declaration.Bindings);
+			Assert.Equal("queue", declaration.Name);
 		}
-		
+
 		[Fact]
 		public void Specified()
 		{
 			var services = new ServiceCollection();
 
 			services.AddRabbitMQ("test", "amqp://test.test")
-				.AddQueueGroup("group", group => group.AddQueue("queue")
-					.WithArgument("x-argument", "argument")
+				.AddConnection("group", connection => connection.AddQueue<string>("queue")
+					.Argument("x-argument", "argument")
 					.AutoDelete()
 					.Deleted(true, true)
 					.Durable()
 					.Exclusive()
 					.NoWait()
-					.BoundTo("exchange", b =>
-						b.RoutingKeys("routing_key")
+					.BoundTo(connection.AddDirectExchange("exchange"), b =>
+						b.RoutingKey("routing_key")
 							.NoWait()
 							.Deleted()
-							.WithArgument("x-argument", "argument")));
+							.Argument("x-argument", "argument")));
 
 			var provider = services.BuildServiceProvider();
 
-			var options = provider.GetRequiredService<IOptions<RabbitMQQueuesOptions>>().Value;
+			var options = provider.GetRequiredService<IOptions<RabbitMQOptions>>().Value;
 
-			var declaration = Assert.Single(options.Declarations);
-			
+			var declaration = Assert.Single(options.QueueDeclarations);
+
 			var (key, value) = Assert.Single(declaration.Arguments);
 			Assert.Equal("x-argument", key);
 			Assert.Equal("argument", value);
@@ -68,21 +66,21 @@ namespace Phema.RabbitMQ.Tests
 			Assert.True(declaration.Deleted);
 			Assert.True(declaration.Durable);
 			Assert.True(declaration.Exclusive);
-			Assert.Equal("group", declaration.GroupName);
+			Assert.Equal("group", declaration.Connection.Name);
 			Assert.True(declaration.IfEmpty);
 			Assert.True(declaration.IfUnused);
 			Assert.True(declaration.NoWait);
-			
-			var binding = Assert.Single(declaration.QueueBindings);
-			Assert.Equal("exchange", binding.ExchangeName);
-			Assert.Equal("routing_key", binding.RoutingKeys.Single());
+
+			var binding = Assert.Single(declaration.Bindings);
+			Assert.Equal("exchange", binding.Exchange.Name);
+			Assert.Equal("routing_key", binding.RoutingKey);
 			Assert.True(binding.Deleted);
 			Assert.True(binding.NoWait);
 			(key, value) = Assert.Single(binding.Arguments);
 			Assert.Equal("x-argument", key);
 			Assert.Equal("argument", value);
-			
-			Assert.Equal("queue", declaration.QueueName);
+
+			Assert.Equal("queue", declaration.Name);
 		}
 	}
 }

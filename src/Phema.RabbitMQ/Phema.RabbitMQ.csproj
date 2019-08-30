@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>netstandard2.0</TargetFramework>
-		<Version>3.0.0</Version>
+		<TargetFramework>netcoreapp3.0</TargetFramework>
+		<Version>3.1.0</Version>
 		<RootNamespace>Phema.RabbitMQ</RootNamespace>
 		<Authors>sergeyshaykhullin</Authors>
 		<Description>
@@ -10,16 +10,15 @@
 		</Description>
 		<PackageTags>RabbitMQ;.NET Core;ASP.NET Core</PackageTags>
 		<PackageProjectUrl>https://github.com/sergeyshaykhullin/Phema.RabbitMQ</PackageProjectUrl>
-		<PackageIconUrl>https://raw.githubusercontent.com/sergeyshaykhullin/Phema.RabbitMQ/master/icon.png</PackageIconUrl>
 		<RepositoryType>git</RepositoryType>
 		<RepositoryUrl>https://github.com/sergeyshaykhullin/Phema.RabbitMQ</RepositoryUrl>
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Phema.RabbitMQ.Consumers\Phema.RabbitMQ.Consumers.csproj" />
-	  <ProjectReference Include="..\Phema.RabbitMQ.Exchanges\Phema.RabbitMQ.Exchanges.csproj" />
-	  <ProjectReference Include="..\Phema.RabbitMQ.Producers\Phema.RabbitMQ.Producers.csproj" />
-	  <ProjectReference Include="..\Phema.RabbitMQ.Queues\Phema.RabbitMQ.Queues.csproj" />
+	  <PackageReference Include="RabbitMQ.Client" Version="6.0.0-pre3" />
+	  <PackageReference Include="Microsoft.Extensions.Options" Version="3.0.0-preview8.19405.4" />
+	  <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="3.0.0-preview8.19405.4" />
+	  <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.0.0-preview8.19405.4" />
 	</ItemGroup>
 
 </Project>

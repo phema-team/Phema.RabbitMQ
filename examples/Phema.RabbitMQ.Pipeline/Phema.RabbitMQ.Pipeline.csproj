@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+	<PropertyGroup>
+		<TargetFramework>netcoreapp3.0</TargetFramework>
+		<UserSecretsId>dotnet-Phema.RabbitMQ.Pipeline-8A142026-F042-4AE8-96EA-47634B16E141</UserSecretsId>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.Hosting" Version="3.0.0-preview8.19405.4" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\src\Phema.RabbitMQ\Phema.RabbitMQ.csproj" />
+	</ItemGroup>
+
+</Project>

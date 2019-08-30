@@ -10,10 +10,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <_ContentIncludedByDefault Remove="Properties\launchSettings.json" />
+	  <ProjectReference Include="..\..\src\Phema.RabbitMQ\Phema.RabbitMQ.csproj" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <ProjectReference Include="..\..\src2\Phema.RabbitMQ\Phema.RabbitMQ.csproj" />
-	</ItemGroup>
 </Project>

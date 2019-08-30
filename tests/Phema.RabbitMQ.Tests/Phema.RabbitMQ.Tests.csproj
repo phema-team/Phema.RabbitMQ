@@ -15,6 +15,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\..\src2\Phema.RabbitMQ\Phema.RabbitMQ.csproj" />
 	  <ProjectReference Include="..\..\src\Phema.RabbitMQ\Phema.RabbitMQ.csproj" />
 	</ItemGroup>
 

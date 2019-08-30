@@ -1,7 +1,6 @@
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Phema.RabbitMQ.Internal;
 using RabbitMQ.Client;
 using Xunit;
 
@@ -15,23 +14,23 @@ namespace Phema.RabbitMQ.Tests
 			var services = new ServiceCollection();
 
 			services.AddRabbitMQ("test", "amqp://test.test")
-				.AddExchangeGroup(group =>
-					group.AddDirectExchange("exchange"));
+				.AddConnection("connection", connection =>
+					connection.AddDirectExchange("exchange"));
 
 			var provider = services.BuildServiceProvider();
 
-			var options = provider.GetRequiredService<IOptions<RabbitMQExchangesOptions>>().Value;
+			var options = provider.GetRequiredService<IOptions<RabbitMQOptions>>().Value;
 
-			var declaration = Assert.Single(options.Declarations);
+			var declaration = Assert.Single(options.ExchangeDeclarations);
 
 			Assert.Empty(declaration.Arguments);
 			Assert.False(declaration.AutoDelete);
 			Assert.False(declaration.Deleted);
 			Assert.False(declaration.Durable);
-			Assert.Empty(declaration.ExchangeBindings);
-			Assert.Equal("exchange", declaration.ExchangeName);
-			Assert.Equal(ExchangeType.Direct, declaration.ExchangeType);
-			Assert.Equal(RabbitMQDefaults.DefaultGroupName, declaration.GroupName);
+			Assert.Empty(declaration.Bindings);
+			Assert.Equal("exchange", declaration.Name);
+			Assert.Equal(ExchangeType.Direct, declaration.Type);
+			Assert.Equal("connection", declaration.Connection.Name);
 			Assert.False(declaration.IfUnused);
 			Assert.False(declaration.Internal);
 			Assert.False(declaration.NoWait);
@@ -43,25 +42,25 @@ namespace Phema.RabbitMQ.Tests
 			var services = new ServiceCollection();
 
 			services.AddRabbitMQ("test", "amqp://test.test")
-				.AddExchangeGroup("exchanges", group =>
-					group.AddTopicExchange("exchange")
-						.WithArgument("x-argument", "argument")
+				.AddConnection("exchanges", connection =>
+					connection.AddTopicExchange("exchange")
+						.Argument("x-argument", "argument")
 						.AutoDelete()
 						.Deleted(true)
 						.Durable()
-						.BoundTo("exchange2", b =>
-							b.RoutingKeys("routing_key")
+						.BoundTo(connection.AddDirectExchange("exchange2"), b =>
+							b.RoutingKey("routing_key")
 								.Deleted()
 								.NoWait()
-								.WithArgument("x-argument", "argument"))
+								.Argument("x-argument", "argument"))
 						.Internal()
 						.NoWait());
 
 			var provider = services.BuildServiceProvider();
 
-			var options = provider.GetRequiredService<IOptions<RabbitMQExchangesOptions>>().Value;
+			var options = provider.GetRequiredService<IOptions<RabbitMQOptions>>().Value;
 
-			var declaration = Assert.Single(options.Declarations);
+			var declaration = options.ExchangeDeclarations.First();
 
 			var (key, value) = Assert.Single(declaration.Arguments);
 			Assert.Equal("x-argument", key);
@@ -70,9 +69,9 @@ namespace Phema.RabbitMQ.Tests
 			Assert.True(declaration.AutoDelete);
 			Assert.True(declaration.Deleted);
 			Assert.True(declaration.Durable);
-			var binding = Assert.Single(declaration.ExchangeBindings);
-			Assert.Equal("routing_key", binding.RoutingKeys.Single());
-			Assert.Equal("exchange2", binding.ExchangeName);
+			var binding = Assert.Single(declaration.Bindings);
+			Assert.Equal("routing_key", binding.RoutingKey);
+			Assert.Equal("exchange2", binding.Exchange.Name);
 			Assert.True(binding.Deleted);
 			Assert.True(binding.NoWait);
 
@@ -80,9 +79,9 @@ namespace Phema.RabbitMQ.Tests
 			Assert.Equal("x-argument", key);
 			Assert.Equal("argument", value);
 
-			Assert.Equal("exchange", declaration.ExchangeName);
-			Assert.Equal(ExchangeType.Topic, declaration.ExchangeType);
-			Assert.Equal("exchanges", declaration.GroupName);
+			Assert.Equal("exchange", declaration.Name);
+			Assert.Equal(ExchangeType.Topic, declaration.Type);
+			Assert.Equal("exchanges", declaration.Connection.Name);
 			Assert.True(declaration.IfUnused);
 			Assert.True(declaration.Internal);
 			Assert.True(declaration.NoWait);

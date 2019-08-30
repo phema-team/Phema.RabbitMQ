@@ -9,20 +9,7 @@ namespace Phema.RabbitMQ
 			this IRabbitMQExchangeBindingBuilder builder,
 			string routingKey)
 		{
-			return builder.RoutingKeys(routingKey);
-		}
-
-		/// <summary>
-		///   Declare exchange to exchange routing keys
-		/// </summary>
-		public static IRabbitMQExchangeBindingBuilder RoutingKeys(
-			this IRabbitMQExchangeBindingBuilder builder,
-			params string[] routingKeys)
-		{
-			foreach (var routingKey in routingKeys)
-			{
-				builder.Declaration.RoutingKeys.Add(routingKey);
-			}
+			builder.Declaration.RoutingKey = routingKey;
 
 			return builder;
 		}
@@ -52,7 +39,7 @@ namespace Phema.RabbitMQ
 		/// <summary>
 		///   Declare RabbitMQ arguments. Allow multiple
 		/// </summary>
-		public static IRabbitMQExchangeBindingBuilder WithArgument<TValue>(
+		public static IRabbitMQExchangeBindingBuilder Argument<TValue>(
 			this IRabbitMQExchangeBindingBuilder builder,
 			string argument,
 			TValue value)

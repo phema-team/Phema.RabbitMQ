@@ -12,7 +12,8 @@ namespace Phema.RabbitMQ
 		private readonly RabbitMQOptions options;
 		private readonly IRabbitMQConnectionCache connectionCache;
 
-		public RabbitMQExchangeHostedService(IOptions<RabbitMQOptions> options,
+		public RabbitMQExchangeHostedService(
+			IOptions<RabbitMQOptions> options,
 			IRabbitMQConnectionCache connectionCache)
 		{
 			this.options = options.Value;
@@ -107,49 +108,44 @@ namespace Phema.RabbitMQ
 			RabbitMQExchangeDeclaration exchange,
 			RabbitMQExchangeBindingDeclaration binding)
 		{
-			var routingKeys = binding.RoutingKeys.Count == 0
-				? new[] { binding.Exchange.Name }
-				: binding.RoutingKeys;
+			var routingKey = binding.RoutingKey ?? binding.Exchange.Name;
 
-			foreach (var routingKey in routingKeys)
+			if (binding.Deleted)
 			{
-				if (binding.Deleted)
+				if (binding.NoWait)
 				{
-					if (binding.NoWait)
-					{
-						channel.ExchangeUnbindNoWait(
-							destination: exchange.Name,
-							source: binding.Exchange.Name,
-							routingKey: routingKey,
-							arguments: binding.Arguments);
-					}
-					else
-					{
-						channel.ExchangeUnbind(
-							destination: exchange.Name,
-							source: binding.Exchange.Name,
-							routingKey: routingKey,
-							arguments: binding.Arguments);
-					}
+					channel.ExchangeUnbindNoWait(
+						destination: exchange.Name,
+						source: binding.Exchange.Name,
+						routingKey: routingKey,
+						arguments: binding.Arguments);
 				}
 				else
 				{
-					if (binding.NoWait)
-					{
-						channel.ExchangeBindNoWait(
-							destination: exchange.Name,
-							source: binding.Exchange.Name,
-							routingKey: routingKey,
-							arguments: binding.Arguments);
-					}
-					else
-					{
-						channel.ExchangeBind(
-							destination: exchange.Name,
-							source: binding.Exchange.Name,
-							routingKey: routingKey,
-							arguments: binding.Arguments);
-					}
+					channel.ExchangeUnbind(
+						destination: exchange.Name,
+						source: binding.Exchange.Name,
+						routingKey: routingKey,
+						arguments: binding.Arguments);
+				}
+			}
+			else
+			{
+				if (binding.NoWait)
+				{
+					channel.ExchangeBindNoWait(
+						destination: exchange.Name,
+						source: binding.Exchange.Name,
+						routingKey: routingKey,
+						arguments: binding.Arguments);
+				}
+				else
+				{
+					channel.ExchangeBind(
+						destination: exchange.Name,
+						source: binding.Exchange.Name,
+						routingKey: routingKey,
+						arguments: binding.Arguments);
 				}
 			}
 		}

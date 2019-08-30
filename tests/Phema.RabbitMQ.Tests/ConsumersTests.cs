@@ -1,46 +1,37 @@
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Phema.RabbitMQ.Internal;
 using Xunit;
 
 namespace Phema.RabbitMQ.Tests
 {
 	public class ConsumersTests
 	{
-		private class ConsumersTestsConsumer : IRabbitMQConsumer<ConsumersTests>
-		{
-			public Task Consume(ConsumersTests payload)
-			{
-				throw new System.NotImplementedException();
-			}
-		}
-
 		[Fact]
 		public void Default()
 		{
 			var services = new ServiceCollection();
 
 			services.AddRabbitMQ("test", "amqp://test.test")
-				.AddConsumerGroup(group =>
-					group.AddConsumer<ConsumersTests, ConsumersTestsConsumer>("queue"));
+				.AddConnection("connection", connection =>
+					connection.AddConsumer(connection.AddQueue<ConsumersTests>("queue"), (scope, s) => new ValueTask()));
 
 			var provider = services.BuildServiceProvider();
 
-			var options = provider.GetRequiredService<IOptions<RabbitMQConsumersOptions>>().Value;
+			var options = provider.GetRequiredService<IOptions<RabbitMQOptions>>().Value;
 
-			var declaration = Assert.Single(options.Declarations);
+			var declaration = Assert.Single(options.ConsumerDeclarations);
 			
 			Assert.Empty(declaration.Arguments);
 			Assert.False(declaration.AutoAck);
 			Assert.Equal(1u, declaration.Count);
 			Assert.False(declaration.Exclusive);
 			Assert.False(declaration.Global);
-			Assert.Equal(RabbitMQDefaults.DefaultGroupName, declaration.GroupName);
 			Assert.False(declaration.Multiple);
 			Assert.False(declaration.NoLocal);
 			Assert.Equal(0, declaration.PrefetchCount);
-			Assert.Equal("queue", declaration.QueueName);
+			Assert.Equal("queue", declaration.Queue.Name);
+			Assert.Equal("connection", declaration.Connection.Name);
 			Assert.False(declaration.Requeue);
 			Assert.Null(declaration.Tag);
 		}
@@ -51,9 +42,9 @@ namespace Phema.RabbitMQ.Tests
 			var services = new ServiceCollection();
 
 			services.AddRabbitMQ("test", "amqp://test.test")
-				.AddConsumerGroup("consumers", group =>
-					group.AddConsumer<ConsumersTests, ConsumersTestsConsumer>("queue")
-						.WithArgument("x-argument", "argument")
+				.AddConnection("consumers", connection =>
+					connection.AddConsumer(connection.AddQueue<ConsumersTests>("queue"), (scope, tests) => new ValueTask())
+						.Argument("x-argument", "argument")
 						.AutoAck()
 						.Count(2)
 						.Exclusive()
@@ -64,9 +55,9 @@ namespace Phema.RabbitMQ.Tests
 
 			var provider = services.BuildServiceProvider();
 
-			var options = provider.GetRequiredService<IOptions<RabbitMQConsumersOptions>>().Value;
+			var options = provider.GetRequiredService<IOptions<RabbitMQOptions>>().Value;
 
-			var declaration = Assert.Single(options.Declarations);
+			var declaration = Assert.Single(options.ConsumerDeclarations);
 			
 			var (key, value) = Assert.Single(declaration.Arguments);
 			Assert.Equal("x-argument", key);
@@ -75,12 +66,12 @@ namespace Phema.RabbitMQ.Tests
 			Assert.True(declaration.AutoAck);
 			Assert.Equal(2u, declaration.Count);
 			Assert.True(declaration.Exclusive);
-			Assert.True(declaration.Global);
-			Assert.Equal("consumers", declaration.GroupName);
+			Assert.False(declaration.Global);
+			Assert.Equal("consumers", declaration.Connection.Name);
 			Assert.True(declaration.Multiple);
 			Assert.True(declaration.NoLocal);
 			Assert.Equal(2, declaration.PrefetchCount);
-			Assert.Equal("queue", declaration.QueueName);
+			Assert.Equal("queue", declaration.Queue.Name);
 			Assert.True(declaration.Requeue);
 			Assert.Equal("tag", declaration.Tag);
 		}

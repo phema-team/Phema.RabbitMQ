@@ -11,13 +11,12 @@ namespace Phema.RabbitMQ.Tests
 		{
 			var services = new ServiceCollection();
 
-			services.AddRabbitMQ(o => { });
+			services.AddRabbitMQ();
 
 			var provider = services.BuildServiceProvider();
 
 			var options = provider.GetRequiredService<IOptions<RabbitMQOptions>>().Value;
-			
-			Assert.Equal(RabbitMQDefaults.DefaultInstanceName, options.InstanceName);
+
 			Assert.True(options.ConnectionFactory.DispatchConsumersAsync);
 		}
 		

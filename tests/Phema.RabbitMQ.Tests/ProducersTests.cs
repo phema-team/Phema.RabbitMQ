@@ -1,7 +1,6 @@
 using System;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Phema.RabbitMQ.Internal;
 using Xunit;
 
 namespace Phema.RabbitMQ.Tests
@@ -14,19 +13,19 @@ namespace Phema.RabbitMQ.Tests
 			var services = new ServiceCollection();
 
 			services.AddRabbitMQ("test", "amqp://test.test")
-				.AddProducerGroup(group =>
-					group.AddProducer<ProducersTests>("exchange"));
+				.AddConnection("connection", connection =>
+					connection.AddProducer<ProducersTests>(connection.AddDirectExchange("exchange")));
 
 			var provider = services.BuildServiceProvider();
 
-			var options = provider.GetRequiredService<IOptions<RabbitMQProducersOptions>>().Value;
+			var options = provider.GetRequiredService<IOptions<RabbitMQOptions>>().Value;
 
-			var declaration = Assert.Single(options.Declarations);
+			var declaration = Assert.Single(options.ProducerDeclarations);
 
 			Assert.Empty(declaration.Arguments);
 			Assert.False(declaration.Die);
-			Assert.Equal("exchange", declaration.ExchangeName);
-			Assert.Equal(RabbitMQDefaults.DefaultGroupName, declaration.GroupName);
+			Assert.Equal("exchange", declaration.Exchange.Name);
+			Assert.Equal("connection", declaration.Connection.Name);
 			Assert.False(declaration.Mandatory);
 			Assert.Empty(declaration.Properties);
 			Assert.Null(declaration.RoutingKey);
@@ -41,29 +40,29 @@ namespace Phema.RabbitMQ.Tests
 			var services = new ServiceCollection();
 
 			services.AddRabbitMQ("test", "amqp://test.test")
-				.AddProducerGroup("exchanges", group =>
-					group.AddProducer<ProducersTests>("exchange")
-						.WithArgument("x-argument", "argument")
+				.AddConnection("exchanges", connection =>
+					connection.AddProducer<ProducersTests>(connection.AddDirectExchange("exchange"))
+						.Argument("x-argument", "argument")
 						.WaitForConfirms(TimeSpan.Zero)
 						.Mandatory()
-						.WithProperty(x => x.Persistent = true)
+						.Property(x => x.Persistent = true)
 						.RoutingKey("routing_key")
 						.AppId("app1")
 						.Transactional());
 
 			var provider = services.BuildServiceProvider();
 
-			var options = provider.GetRequiredService<IOptions<RabbitMQProducersOptions>>().Value;
+			var options = provider.GetRequiredService<IOptions<RabbitMQOptions>>().Value;
 
-			var declaration = Assert.Single(options.Declarations);
+			var declaration = Assert.Single(options.ProducerDeclarations);
 
 			var (key, value) = Assert.Single(declaration.Arguments);
 			Assert.Equal("x-argument", key);
 			Assert.Equal("argument", value);
 
 			Assert.True(declaration.Die);
-			Assert.Equal("exchange", declaration.ExchangeName);
-			Assert.Equal("exchanges", declaration.GroupName);
+			Assert.Equal("exchange", declaration.Exchange.Name);
+			Assert.Equal("exchanges", declaration.Connection.Name);
 			Assert.True(declaration.Mandatory);
 			Assert.Equal(2, declaration.Properties.Count);
 			Assert.Equal("routing_key", declaration.RoutingKey);

@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
-using RabbitMQ.Client.Impl;
 
 namespace Phema.RabbitMQ.Internal
 {
@@ -31,7 +30,7 @@ namespace Phema.RabbitMQ.Internal
 
 			foreach (var declaration in declarations)
 			{
-				var channel = (IFullModel) connectionFactory.CreateConnection(declaration.GroupName).CreateModel();
+				var channel = connectionFactory.CreateConnection(declaration.GroupName).CreateModel();
 
 				EnsurePrefetchCount(channel, declaration);
 

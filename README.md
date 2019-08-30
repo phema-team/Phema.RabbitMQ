@@ -1,6 +1,8 @@
 # Phema.RabbitMQ
 
 [![Build Status](https://cloud.drone.io/api/badges/phema-team/Phema.RabbitMQ/status.svg)](https://cloud.drone.io/phema-team/Phema.RabbitMQ)
+[![Nuget](https://img.shields.io/nuget/v/Phema.RabbitMQ.svg)](https://www.nuget.org/packages/Phema.RabbitMQ)
+[![Nuget](https://img.shields.io/nuget/dt/Phema.RabbitMQ.svg)](https://nuget.org/packages/Phema.RabbitMQ)
 
 This is an attempt to create a simple way for safe and predictable application deploy with a versioned release-specific topology in a distributed systems
 
@@ -23,17 +25,8 @@ This is an attempt to create a simple way for safe and predictable application d
 ## Installation
 
 ```bash
-  $> dotnet add package {{ PackageName }}
+  $> dotnet add package Phema.RabbitMQ
 ```
-
-## Packages
-
-- [![Nuget](https://img.shields.io/nuget/v/Phema.RabbitMQ.Core.svg)](https://www.nuget.org/packages/Phema.RabbitMQ.Core) `Phema.RabbitMQ.Core` - Core factories, options and extensions
-- [![Nuget](https://img.shields.io/nuget/v/Phema.RabbitMQ.Exchanges.svg)](https://www.nuget.org/packages/Phema.RabbitMQ.Exchanges) `Phema.RabbitMQ.Exchanges` - Exchanges, `.AddExchangeGroup()` extension
-- [![Nuget](https://img.shields.io/nuget/v/Phema.RabbitMQ.Queues.svg)](https://www.nuget.org/packages/Phema.RabbitMQ.Queues) `Phema.RabbitMQ.Queues` - Queues, `.AddQueueGroup()` extension
-- [![Nuget](https://img.shields.io/nuget/v/Phema.RabbitMQ.Producers.svg)](https://www.nuget.org/packages/Phema.RabbitMQ.Producers) `Phema.RabbitMQ.Producers` - Producers, `.AddProducerGroup()` extension
-- [![Nuget](https://img.shields.io/nuget/v/Phema.RabbitMQ.Consumers.svg)](https://www.nuget.org/packages/Phema.RabbitMQ.Consumers) `Phema.RabbitMQ.Consumers` - Consumers, `.AddConsumerGroup()` extension
-- [![Nuget](https://img.shields.io/nuget/v/Phema.RabbitMQ.svg)](https://www.nuget.org/packages/Phema.RabbitMQ) `Phema.RabbitMQ` - Meta package
 
 ## Usage
 
@@ -43,10 +36,28 @@ services.AddRabbitMQ("instance", "amqp://connection.string")
   .AddConnection(connection =>
   {
     var queue = connection.AddQueue<Payload>("name")
+      // .Exclusive()
+      // .Deleted()
+      // .NoWait()
+      // .Lazy()
+      // .MaxPriority(10)
+      // .TimeToLive(10000)
+      // .MaxMessageSize(1000)
+      // .MaxMessageCount(1000)
+      // .MessageTimeToLive(1000)
+      // .RejectPublish()
       .AutoDelete()
       .Durable();
 
-    connection.AddConsumer<Payload>(queue)
+    connection.AddConsumer<Payload>(queue, PayloadConsumer)
+      // .Tagged("tag")
+      // .Prefetch(1)
+      // .Count(1)
+      // .Exclusive()
+      // .NoLocal()
+      // .AutoAck()
+      // .Requeue()
+      // .Priority(2)
       .Count(2)
       .Requeue();
   });
@@ -58,12 +69,28 @@ services.AddRabbitMQ("instance", "amqp://connection.string")
   .AddConnection(connection =>
   {
     var exchange = connection.AddDirectExchange("name")
+      //.Internal()
+      // .NoWait()
+      // .Deleted()
       .AutoDelete()
       .Durable();
 
     connection.AddProducer<Payload>(exchange)
+      // .WaitForConfirms()
+      // .Transactional()
+      // .Mandatory()
+      // .Priority(1)
+      // .MessageTimeToLive(10000)
       .Persistent();
   });
+```
+
+```csharp
+// Get or inject
+var producer = provider.GetRequiredService<IRabbitMQProdicer>();
+
+// Use
+await producer.Produce(new Payload());
 ```
 
 ## Supported
@@ -142,7 +169,6 @@ services.AddRabbitMQ("instance", "amqp://connection.string")
 
 ## Limitations
 
-- Depends on `Microsoft.Extensions.DepencencyInjection` and `Phema.Serialization` package
 - No dynamic topology declaration by design, but you can use `IRabbitMQConnectionFactory` for that ¯\_(ツ)_/¯
 - No `.Redeclared()` and `.Purged()` because it breaks consistenty
   1. Deploy `first_node`
@@ -151,7 +177,6 @@ services.AddRabbitMQ("instance", "amqp://connection.string")
   4. Deploy `second_node`
   5. Purge `queue`
   6. No `first_node` messages survived
-- There is a problem when one type of payload is used in different producers, so `IRabbitMQProducer<TPayload>` abstraction leak ;(
 - No `correlation-id`'s
 - No `message-id`'s
 - No `BasicReturn` and other events for now
@@ -159,8 +184,5 @@ services.AddRabbitMQ("instance", "amqp://connection.string")
 ## Tips
 
 - `RoutingKey` is `QueueName`/`ExchangeName` by default
-- Do not use same group(connection) for consumers and producers because of tcp backpressure
-- `IRabbitMQConnectionFactory` - singleton dependency in `IServiceProvider` per instance for custom connections
-- If queue or exchange is default or exists, binding goes withot declaration
+- Do not use same connection for consumers and producers because of tcp backpressure
 - Use `BatchProduce` instead of `Produce` with loop
-- Do not declare channel as `Transactional` and `WaitForConfirms`

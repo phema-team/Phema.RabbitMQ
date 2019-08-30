@@ -168,7 +168,7 @@ await producer.Produce(new Payload());
 
 ## Limitations
 
-- No dynamic topology declaration by design, but you can use `IRabbitMQConnectionFactory` for that ¯\_(ツ)_/¯
+- No dynamic topology declaration by design, but you can use `IRabbitMQConnectionCache` for that ¯\_(ツ)_/¯
 - No `.Redeclared()` and `.Purged()` because it breaks consistenty
   1. Deploy `first_node`
   2. Purge `queue`

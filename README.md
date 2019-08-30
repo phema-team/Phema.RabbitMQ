@@ -17,9 +17,8 @@ This is an attempt to create a simple way for safe and predictable application d
 - **Declarativeness and simplicity**
   - All parts are defined by describing their state
   - Intuitive, RabbitMQ-close fluent interfaces
-  - Built-in modular serialization library, so working with objects, not bytes
+  - Generic type checks
 - **Modularity and flexibility**
-  - If no customers is needed, just do not add `Phema.RabbitMQ.Consumers` package, etc.
   - Each group has its own connection. Managing groups you manage connections
 
 ## Installation

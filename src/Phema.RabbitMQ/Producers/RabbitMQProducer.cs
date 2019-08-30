@@ -1,8 +1,11 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 
@@ -16,28 +19,36 @@ namespace Phema.RabbitMQ
 
 	internal sealed class RabbitMQProducer : IRabbitMQProducer
 	{
+		private readonly ILogger logger;
 		private readonly RabbitMQOptions options;
 		private readonly IRabbitMQChannelCache channelCache;
 
-		public RabbitMQProducer(IOptions<RabbitMQOptions> options, IRabbitMQChannelCache channelCache)
+		public RabbitMQProducer(
+			IServiceProvider serviceProvider,
+			IOptions<RabbitMQOptions> options,
+			IRabbitMQChannelCache channelCache)
 		{
+			logger = serviceProvider.GetService<ILogger<RabbitMQProducer>>();
 			this.options = options.Value;
 			this.channelCache = channelCache;
 		}
 
 		public async Task<bool> Produce<TPayload>(TPayload payload)
 		{
+			// TODO: Dictionary?
 			var declaration = options.ProducerDeclarations.First(d => d.Type == typeof(TPayload));
 
 			var channel = channelCache.FromDeclaration(declaration);
 			var properties = CreateBasicProperties(channel, declaration);
 			var body = await Serialize(payload).ConfigureAwait(false);
 
+			var routingKey = declaration.RoutingKey ?? declaration.Exchange.Name;
+			
 			try
 			{
 				channel.BasicPublish(
 					declaration.Exchange.Name,
-					declaration.RoutingKey ?? declaration.Exchange.Name,
+					routingKey,
 					declaration.Mandatory,
 					properties,
 					body);
@@ -46,16 +57,17 @@ namespace Phema.RabbitMQ
 				{
 					channel.TxCommit();
 				}
-
+				
 				return !declaration.WaitForConfirms || WaitForConfirms(channel, declaration);
 			}
-			catch
+			catch (Exception exception)
 			{
 				if (declaration.Transactional)
 				{
 					channel.TxRollback();
 				}
 
+				logger?.LogError(exception, $"Routing key: {routingKey}");
 				throw;
 			}
 		}
@@ -79,13 +91,14 @@ namespace Phema.RabbitMQ
 
 				return !declaration.WaitForConfirms || WaitForConfirms(channel, declaration);
 			}
-			catch
+			catch (Exception exception)
 			{
 				if (declaration.Transactional)
 				{
 					channel.TxRollback();
 				}
 
+				logger?.LogError(exception, $"Routing key: {declaration.RoutingKey ?? declaration.Exchange.Name}");
 				throw;
 			}
 		}
@@ -119,11 +132,13 @@ namespace Phema.RabbitMQ
 			var batch = channel.CreateBasicPublishBatch();
 			var properties = CreateBasicProperties(channel, declaration);
 
+			var routingKey = declaration.RoutingKey ?? declaration.Exchange.Name;
+			
 			foreach (var payload in payloads)
 			{
 				batch.Add(
 					declaration.Exchange.Name,
-					declaration.RoutingKey ?? declaration.Exchange.Name,
+					routingKey,
 					declaration.Mandatory,
 					properties,
 					await Serialize(payload).ConfigureAwait(false));
@@ -146,7 +161,7 @@ namespace Phema.RabbitMQ
 
 		private async Task<byte[]> Serialize<TPayload>(TPayload payload)
 		{
-			using (var stream = new MemoryStream())
+			await using (var stream = new MemoryStream())
 			{
 				await JsonSerializer.SerializeAsync(stream, payload, options.JsonSerializerOptions).ConfigureAwait(false);
 

@@ -37,9 +37,7 @@ namespace Phema.RabbitMQ
 					channel.BasicConsume(
 						queue: declaration.Queue.Name,
 						autoAck: declaration.AutoAck,
-						consumerTag: declaration.Tag is null
-							? Guid.NewGuid().ToString("N")
-							: $"{declaration.Tag}_{index}",
+						consumerTag:  $"{declaration.Tag}_{index}",
 						noLocal: declaration.NoLocal,
 						exclusive: declaration.Exclusive,
 						arguments: declaration.Arguments,

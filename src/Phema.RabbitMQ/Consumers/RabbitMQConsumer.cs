@@ -42,7 +42,7 @@ namespace Phema.RabbitMQ
 
 			using (var scope = serviceProvider.CreateScope())
 			{
-				var logger = scope.ServiceProvider.GetService<ILogger>();
+				var logger = scope.ServiceProvider.GetService<ILogger<RabbitMQConsumer>>();
 
 				try
 				{
@@ -67,11 +67,11 @@ namespace Phema.RabbitMQ
 			}
 		}
 
-		private ValueTask<object> Deserialize(byte[] body)
+		private async ValueTask<object> Deserialize(byte[] body)
 		{
-			using (var stream = new MemoryStream(body))
+			await using (var stream = new MemoryStream(body))
 			{
-				return JsonSerializer.DeserializeAsync(
+				return await JsonSerializer.DeserializeAsync(
 					stream,
 					declaration.Type,
 					options.JsonSerializerOptions,

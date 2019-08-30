@@ -1,6 +1,7 @@
 using System;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace Phema.RabbitMQ.ConsumerPriority
 {
@@ -13,6 +14,7 @@ namespace Phema.RabbitMQ.ConsumerPriority
 
 		public static IHostBuilder CreateHostBuilder(string[] args) =>
 			Host.CreateDefaultBuilder(args)
+				.ConfigureLogging(builder => builder.AddConsole())
 				.ConfigureServices((hostContext, services) =>
 				{
 					services.AddRabbitMQ()

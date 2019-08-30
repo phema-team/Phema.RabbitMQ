@@ -15,7 +15,7 @@ namespace Phema.RabbitMQ
 		{
 			services.Configure(options)
 
-				.AddScoped<IRabbitMQProducer, RabbitMQProducer>()
+				.AddSingleton<IRabbitMQProducer, RabbitMQProducer>()
 				.AddSingleton<IRabbitMQChannelCache, RabbitMQChannelCache>()
 				.AddSingleton<IRabbitMQConnectionCache, RabbitMQConnectionCache>()
 

@@ -19,6 +19,7 @@ namespace Phema.RabbitMQ
 			Queue = queue;
 			Consumer = consumer;
 			Count = 1;
+			Tag = Guid.NewGuid().ToString("N");
 			Arguments = new Dictionary<string, object>();
 		}
 

@@ -38,26 +38,32 @@ This is an attempt to create a simple way for safe and predictable application d
 ## Usage
 
 ```csharp
-// Search for Phema.Serialization packages
-services.AddNewtonsoftJsonSerializer();
-
 // Consumers
-services.AddRabbitMQ("InstanceName", "amqp://connection.string")
-  .AddQueueGroup(group =>
-    group.AddQueue("QueueName")
-      .Durable())
-  .AddConsumerGroup(group =>
-    group.AddConsumer<Payload, PayloadConsumer>("QueueName")
-      .Count(2));
+services.AddRabbitMQ("instance", "amqp://connection.string")
+  .AddConnection(connection =>
+  {
+    var queue = connection.AddQueue<Payload>("name")
+      .AutoDelete()
+      .Durable();
 
+    connection.AddConsumer<Payload>(queue)
+      .Count(2)
+      .Requeue();
+  });
+```
+
+```csharp
 // Producers
-services.AddRabbitMQ("InstanceName", factory => ...)
-  .AddExchangeGroup(group =>
-    group.AddDirectExchange("ExchangeName")
-      .Durable())
-  .AddProducerGroup(group =>
-    group.AddProducer<Payload>("ExchangeName", "QueueName")
-      .Persistent());
+services.AddRabbitMQ("instance", "amqp://connection.string")
+  .AddConnection(connection =>
+  {
+    var exchange = connection.AddDirectExchange("name")
+      .AutoDelete()
+      .Durable();
+
+    connection.AddProducer<Payload>(exchange)
+      .Persistent();
+  });
 ```
 
 ## Supported

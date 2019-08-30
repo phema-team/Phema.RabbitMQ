@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -33,7 +34,7 @@ namespace Phema.RabbitMQ.Tests
 			Assert.Equal("queue", declaration.Queue.Name);
 			Assert.Equal("connection", declaration.Connection.Name);
 			Assert.False(declaration.Requeue);
-			Assert.Null(declaration.Tag);
+			Assert.True(Guid.TryParse(declaration.Tag, out _));
 		}
 		
 		[Fact]

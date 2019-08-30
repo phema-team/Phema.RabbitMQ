@@ -17,8 +17,7 @@ namespace Phema.RabbitMQ
 		/// <summary>
 		///   Nowait for exchange to exchange declaration
 		/// </summary>
-		public static IRabbitMQExchangeBindingBuilder NoWait(
-			this IRabbitMQExchangeBindingBuilder builder)
+		public static IRabbitMQExchangeBindingBuilder NoWait(this IRabbitMQExchangeBindingBuilder builder)
 		{
 			builder.Declaration.NoWait = true;
 
@@ -28,8 +27,7 @@ namespace Phema.RabbitMQ
 		/// <summary>
 		///   Delete exchange binding
 		/// </summary>
-		public static IRabbitMQExchangeBindingBuilder Deleted(
-			this IRabbitMQExchangeBindingBuilder builder)
+		public static IRabbitMQExchangeBindingBuilder Deleted(this IRabbitMQExchangeBindingBuilder builder)
 		{
 			builder.Declaration.Deleted = true;
 

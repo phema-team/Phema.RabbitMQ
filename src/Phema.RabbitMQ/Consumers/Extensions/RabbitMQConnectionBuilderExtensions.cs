@@ -23,7 +23,7 @@ namespace Phema.RabbitMQ
 
 			return new RabbitMQConsumerBuilder<TPayload>(declaration);
 		}
-		
+
 		public static IRabbitMQConsumerBuilder<TPayload> AddConsumer<TPayload>(
 			this IRabbitMQConnectionBuilder connection,
 			IRabbitMQQueueBuilder<TPayload> queue,

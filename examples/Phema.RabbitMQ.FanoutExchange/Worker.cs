@@ -12,7 +12,7 @@ namespace Phema.RabbitMQ.ConsumerPriority
 		{
 			this.producer = producer;
 		}
-		
+
 		protected override async Task ExecuteAsync(CancellationToken stoppingToken)
 		{
 			while (!stoppingToken.IsCancellationRequested)

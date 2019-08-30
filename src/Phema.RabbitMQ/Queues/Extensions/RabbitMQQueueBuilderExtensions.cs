@@ -7,8 +7,7 @@ namespace Phema.RabbitMQ
 		/// <summary>
 		///   Declare queue as durable
 		/// </summary>
-		public static IRabbitMQQueueBuilder<TPayload> Durable<TPayload>(
-			this IRabbitMQQueueBuilder<TPayload> builder)
+		public static IRabbitMQQueueBuilder<TPayload> Durable<TPayload>(this IRabbitMQQueueBuilder<TPayload> builder)
 		{
 			builder.Declaration.Durable = true;
 
@@ -18,8 +17,7 @@ namespace Phema.RabbitMQ
 		/// <summary>
 		///   Declare queue as exclusive for consumers
 		/// </summary>
-		public static IRabbitMQQueueBuilder<TPayload> Exclusive<TPayload>(
-			this IRabbitMQQueueBuilder<TPayload> builder)
+		public static IRabbitMQQueueBuilder<TPayload> Exclusive<TPayload>(this IRabbitMQQueueBuilder<TPayload> builder)
 		{
 			builder.Declaration.Exclusive = true;
 
@@ -29,8 +27,7 @@ namespace Phema.RabbitMQ
 		/// <summary>
 		///   Nowait for queue declaration
 		/// </summary>
-		public static IRabbitMQQueueBuilder<TPayload> NoWait<TPayload>(
-			this IRabbitMQQueueBuilder<TPayload> builder)
+		public static IRabbitMQQueueBuilder<TPayload> NoWait<TPayload>(this IRabbitMQQueueBuilder<TPayload> builder)
 		{
 			builder.Declaration.NoWait = true;
 			return builder;
@@ -54,8 +51,7 @@ namespace Phema.RabbitMQ
 		/// <summary>
 		///   Declare auto-delete flag to queue
 		/// </summary>
-		public static IRabbitMQQueueBuilder<TPayload> AutoDelete<TPayload>(
-			this IRabbitMQQueueBuilder<TPayload> builder)
+		public static IRabbitMQQueueBuilder<TPayload> AutoDelete<TPayload>(this IRabbitMQQueueBuilder<TPayload> builder)
 		{
 			builder.Declaration.AutoDelete = true;
 
@@ -65,8 +61,7 @@ namespace Phema.RabbitMQ
 		/// <summary>
 		///   Declare x-queue-mode argument to lazy (default "default")
 		/// </summary>
-		public static IRabbitMQQueueBuilder<TPayload> Lazy<TPayload>(
-			this IRabbitMQQueueBuilder<TPayload> configuration)
+		public static IRabbitMQQueueBuilder<TPayload> Lazy<TPayload>(this IRabbitMQQueueBuilder<TPayload> configuration)
 		{
 			return configuration.Argument("x-queue-mode", "lazy");
 		}
@@ -123,7 +118,7 @@ namespace Phema.RabbitMQ
 		{
 			return configuration.Argument("x-expires", milliseconds);
 		}
-		
+
 		/// <summary>
 		///   Declare x-message-ttl argument. When expires message will be marked as dead
 		/// </summary>
@@ -142,7 +137,7 @@ namespace Phema.RabbitMQ
 			byte priority)
 		{
 			// TODO: Hack, because RabbitMQ.Client has no conversion to byte
-			return configuration.Argument("x-max-priority", (int) priority);
+			return configuration.Argument("x-max-priority", (int)priority);
 		}
 
 		/// <summary>

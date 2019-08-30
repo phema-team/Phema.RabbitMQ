@@ -33,7 +33,6 @@ namespace Phema.RabbitMQ
 			return builder;
 		}
 
-
 		/// <summary>
 		///   Declare parallel consumers count
 		/// </summary>
@@ -59,8 +58,7 @@ namespace Phema.RabbitMQ
 		/// <summary>
 		///   Declare no-local flag. Broker will not send messages to the connection that published them
 		/// </summary>
-		public static IRabbitMQConsumerBuilder<TPayload> NoLocal<TPayload>(
-			this IRabbitMQConsumerBuilder<TPayload> builder)
+		public static IRabbitMQConsumerBuilder<TPayload> NoLocal<TPayload>(this IRabbitMQConsumerBuilder<TPayload> builder)
 		{
 			builder.Declaration.NoLocal = true;
 
@@ -70,8 +68,7 @@ namespace Phema.RabbitMQ
 		/// <summary>
 		///   Declare auto-ack flag. Consumer will ack messages when received, not processed
 		/// </summary>
-		public static IRabbitMQConsumerBuilder<TPayload> AutoAck<TPayload>(
-			this IRabbitMQConsumerBuilder<TPayload> builder)
+		public static IRabbitMQConsumerBuilder<TPayload> AutoAck<TPayload>(this IRabbitMQConsumerBuilder<TPayload> builder)
 		{
 			builder.Declaration.AutoAck = true;
 
@@ -96,7 +93,7 @@ namespace Phema.RabbitMQ
 			byte priority)
 		{
 			// TODO: Hack, because RabbitMQ.Client has no conversion to byte
-			return configuration.Argument("x-priority", (int) priority);
+			return configuration.Argument("x-priority", (int)priority);
 		}
 
 		/// <summary>

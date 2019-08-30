@@ -7,8 +7,7 @@ namespace Phema.RabbitMQ
 		/// <summary>
 		///   Declare exchange as durable
 		/// </summary>
-		public static IRabbitMQExchangeBuilder<TPayload> Durable<TPayload>(
-			this IRabbitMQExchangeBuilder<TPayload> builder)
+		public static IRabbitMQExchangeBuilder<TPayload> Durable<TPayload>(this IRabbitMQExchangeBuilder<TPayload> builder)
 		{
 			builder.Declaration.Durable = true;
 
@@ -18,8 +17,7 @@ namespace Phema.RabbitMQ
 		/// <summary>
 		///   Nowait for exchange declaration
 		/// </summary>
-		public static IRabbitMQExchangeBuilder<TPayload> NoWait<TPayload>(
-			this IRabbitMQExchangeBuilder<TPayload> builder)
+		public static IRabbitMQExchangeBuilder<TPayload> NoWait<TPayload>(this IRabbitMQExchangeBuilder<TPayload> builder)
 		{
 			builder.Declaration.NoWait = true;
 
@@ -30,8 +28,7 @@ namespace Phema.RabbitMQ
 		///   Declare exchange as internal.
 		///   Exchange can't be accessed from producers directly, only by exchange to exchange bindings
 		/// </summary>
-		public static IRabbitMQExchangeBuilder<TPayload> Internal<TPayload>(
-			this IRabbitMQExchangeBuilder<TPayload> builder)
+		public static IRabbitMQExchangeBuilder<TPayload> Internal<TPayload>(this IRabbitMQExchangeBuilder<TPayload> builder)
 		{
 			builder.Declaration.Internal = true;
 
@@ -48,7 +45,7 @@ namespace Phema.RabbitMQ
 
 			return builder;
 		}
-		
+
 		/// <summary>
 		///   Delete excahnge declaration
 		/// </summary>

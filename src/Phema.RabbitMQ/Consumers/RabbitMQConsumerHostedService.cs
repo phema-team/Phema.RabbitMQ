@@ -53,7 +53,7 @@ namespace Phema.RabbitMQ
 			return Task.CompletedTask;
 		}
 
-		private  IBasicConsumer FromDeclaration(
+		private IBasicConsumer FromDeclaration(
 			IModel channel,
 			RabbitMQConsumerDeclaration declaration,
 			CancellationToken token)

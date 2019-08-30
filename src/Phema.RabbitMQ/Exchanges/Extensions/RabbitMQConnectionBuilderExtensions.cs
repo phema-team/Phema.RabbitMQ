@@ -60,7 +60,7 @@ namespace Phema.RabbitMQ
 		{
 			return connection.AddExchange<TPayload>(ExchangeType.Topic, exchangeName);
 		}
-		
+
 		public static IRabbitMQExchangeBuilder<object> AddHeadersExchange(
 			this IRabbitMQConnectionBuilder connection,
 			string exchangeName)

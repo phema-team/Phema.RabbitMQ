@@ -19,7 +19,7 @@ namespace Phema.RabbitMQ.Tests
 			var options = provider.GetRequiredService<IOptions<RabbitMQOptions>>().Value;
 
 			var declaration = Assert.Single(options.QueueDeclarations);
-			
+
 			Assert.Empty(declaration.Arguments);
 			Assert.False(declaration.AutoDelete);
 			Assert.False(declaration.Deleted);
@@ -32,7 +32,7 @@ namespace Phema.RabbitMQ.Tests
 			Assert.Empty(declaration.Bindings);
 			Assert.Equal("queue", declaration.Name);
 		}
-		
+
 		[Fact]
 		public void Specified()
 		{
@@ -57,7 +57,7 @@ namespace Phema.RabbitMQ.Tests
 			var options = provider.GetRequiredService<IOptions<RabbitMQOptions>>().Value;
 
 			var declaration = Assert.Single(options.QueueDeclarations);
-			
+
 			var (key, value) = Assert.Single(declaration.Arguments);
 			Assert.Equal("x-argument", key);
 			Assert.Equal("argument", value);
@@ -70,7 +70,7 @@ namespace Phema.RabbitMQ.Tests
 			Assert.True(declaration.IfEmpty);
 			Assert.True(declaration.IfUnused);
 			Assert.True(declaration.NoWait);
-			
+
 			var binding = Assert.Single(declaration.Bindings);
 			Assert.Equal("exchange", binding.Exchange.Name);
 			Assert.Equal("routing_key", binding.RoutingKey);
@@ -79,7 +79,7 @@ namespace Phema.RabbitMQ.Tests
 			(key, value) = Assert.Single(binding.Arguments);
 			Assert.Equal("x-argument", key);
 			Assert.Equal("argument", value);
-			
+
 			Assert.Equal("queue", declaration.Name);
 		}
 	}

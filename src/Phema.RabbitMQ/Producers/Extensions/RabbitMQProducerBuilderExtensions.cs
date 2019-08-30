@@ -16,7 +16,7 @@ namespace Phema.RabbitMQ
 			var binding = queue.Declaration
 				.Bindings
 				.FirstOrDefault(b => b.Exchange == builder.Declaration.Exchange);
-			
+
 			builder.Declaration.RoutingKey = binding.RoutingKey ?? queue.Declaration.Name;
 			return builder;
 		}

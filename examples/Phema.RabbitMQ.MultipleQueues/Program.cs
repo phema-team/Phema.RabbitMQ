@@ -11,8 +11,9 @@ namespace Phema.RabbitMQ.ConsumerPriority
 			CreateHostBuilder(args).Build().Run();
 		}
 
-		public static IHostBuilder CreateHostBuilder(string[] args) =>
-			Host.CreateDefaultBuilder(args)
+		public static IHostBuilder CreateHostBuilder(string[] args)
+		{
+			return Host.CreateDefaultBuilder(args)
 				.ConfigureServices((hostContext, services) =>
 				{
 					services.AddRabbitMQ()
@@ -32,15 +33,15 @@ namespace Phema.RabbitMQ.ConsumerPriority
 
 							// Typed checks
 							connection.AddConsumer(queue1, async (scope, payload) =>
-								{
-									await Console.Out.WriteLineAsync("1:" + payload.Name);
-								});
+							{
+								await Console.Out.WriteLineAsync("1:" + payload.Name);
+							});
 
 							// Typed checks
 							connection.AddConsumer(queue2, async (scope, payload) =>
-								{
-									await Console.Out.WriteLineAsync("2:" + payload.Age);
-								});
+							{
+								await Console.Out.WriteLineAsync("2:" + payload.Age);
+							});
 
 							connection.AddProducer<ToQueue1>(exchange)
 								// Typed checks
@@ -53,5 +54,6 @@ namespace Phema.RabbitMQ.ConsumerPriority
 
 					services.AddHostedService<Worker>();
 				});
+		}
 	}
 }

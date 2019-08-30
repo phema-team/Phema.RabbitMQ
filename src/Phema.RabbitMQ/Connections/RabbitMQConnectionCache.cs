@@ -22,7 +22,7 @@ namespace Phema.RabbitMQ
 
 		public IConnection FromDeclaration(RabbitMQConnectionDeclaration declaration)
 		{
-			return connections.GetOrAdd(declaration.Name, _ => 
+			return connections.GetOrAdd(declaration.Name, _ =>
 				new RabbitMQConnection(options.InstanceName is null
 					? options.ConnectionFactory.CreateConnection(declaration.Name)
 					: options.ConnectionFactory.CreateConnection($"{options.InstanceName}.{declaration.Name}")));

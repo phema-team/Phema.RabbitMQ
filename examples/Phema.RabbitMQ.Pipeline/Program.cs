@@ -12,8 +12,9 @@ namespace Phema.RabbitMQ.ConsumerPriority
 			CreateHostBuilder(args).Build().Run();
 		}
 
-		public static IHostBuilder CreateHostBuilder(string[] args) =>
-			Host.CreateDefaultBuilder(args)
+		public static IHostBuilder CreateHostBuilder(string[] args)
+		{
+			return Host.CreateDefaultBuilder(args)
 				.ConfigureLogging(builder => builder.AddConsole())
 				.ConfigureServices((hostContext, services) =>
 				{
@@ -38,7 +39,7 @@ namespace Phema.RabbitMQ.ConsumerPriority
 								Console.WriteLine("Click request: " + click.Id);
 
 								var producer = scope.ServiceProvider.GetRequiredService<IRabbitMQProducer>();
-								
+
 								await producer.Produce(new ProcessClick
 								{
 									Id = click.Id
@@ -55,13 +56,14 @@ namespace Phema.RabbitMQ.ConsumerPriority
 								.ToQueue(processClicks);
 
 							connection.AddConsumer(processClicks, async (scope, click) =>
-							{
-								await Console.Out.WriteLineAsync($"Click {click.Id} processed");
-							})
+								{
+									await Console.Out.WriteLineAsync($"Click {click.Id} processed");
+								})
 								.Count(2);
 						});
 
 					services.AddHostedService<Worker>();
 				});
+		}
 	}
 }

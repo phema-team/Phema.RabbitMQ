@@ -8,7 +8,7 @@ namespace Phema.RabbitMQ
 	{
 		IModel FromDeclaration(RabbitMQProducerDeclaration declaration);
 	}
-	
+
 	internal sealed class RabbitMQChannelCache : IRabbitMQChannelCache
 	{
 		private readonly IRabbitMQConnectionCache connectionCache;
@@ -24,10 +24,10 @@ namespace Phema.RabbitMQ
 		{
 			var key = (declaration.Type, declaration.Connection.Name, declaration.Exchange.Name);
 			var connection = connectionCache.FromDeclaration(declaration.Connection);
-			
+
 			return channels.GetOrAdd(key, _ =>
 			{
-				var channel =  connection.CreateModel();
+				var channel = connection.CreateModel();
 
 				if (declaration.WaitForConfirms)
 				{

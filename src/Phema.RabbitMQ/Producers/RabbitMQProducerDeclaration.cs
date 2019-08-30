@@ -6,7 +6,10 @@ namespace Phema.RabbitMQ
 {
 	public sealed class RabbitMQProducerDeclaration
 	{
-		public RabbitMQProducerDeclaration(Type type, RabbitMQConnectionDeclaration connection, RabbitMQExchangeDeclaration exchange)
+		public RabbitMQProducerDeclaration(
+			Type type,
+			RabbitMQConnectionDeclaration connection,
+			RabbitMQExchangeDeclaration exchange)
 		{
 			Type = type;
 			Connection = connection;

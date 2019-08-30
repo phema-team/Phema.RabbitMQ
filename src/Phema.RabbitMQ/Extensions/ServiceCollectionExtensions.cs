@@ -14,11 +14,9 @@ namespace Phema.RabbitMQ
 			Action<RabbitMQOptions> options)
 		{
 			services.Configure(options)
-
 				.AddSingleton<IRabbitMQProducer, RabbitMQProducer>()
 				.AddSingleton<IRabbitMQChannelCache, RabbitMQChannelCache>()
 				.AddSingleton<IRabbitMQConnectionCache, RabbitMQConnectionCache>()
-
 				.AddHostedService<RabbitMQConnectionHostedService>()
 				.AddHostedService<RabbitMQExchangeHostedService>()
 				.AddHostedService<RabbitMQQueueHostedService>()
@@ -53,9 +51,7 @@ namespace Phema.RabbitMQ
 			return services.AddRabbitMQ(instanceName, factory =>
 			{
 				if (url != null)
-				{
 					factory.Uri = new Uri(url);
-				}
 			});
 		}
 

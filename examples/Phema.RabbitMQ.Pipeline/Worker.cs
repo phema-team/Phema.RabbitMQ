@@ -13,18 +13,18 @@ namespace Phema.RabbitMQ.ConsumerPriority
 		{
 			this.producer = producer;
 		}
-		
+
 		protected override async Task ExecuteAsync(CancellationToken stoppingToken)
 		{
 			var clickId = 0;
-			
+
 			while (!stoppingToken.IsCancellationRequested)
 			{
 				await Task.Delay(1000, stoppingToken);
 
 				await producer.Produce(new ClickRequest
 				{
-					Id = clickId 
+					Id = clickId
 				});
 
 				Console.WriteLine("Clicked: " + clickId++);

@@ -22,7 +22,7 @@ namespace Phema.RabbitMQ.Tests
 			var options = provider.GetRequiredService<IOptions<RabbitMQOptions>>().Value;
 
 			var declaration = Assert.Single(options.ConsumerDeclarations);
-			
+
 			Assert.Empty(declaration.Arguments);
 			Assert.False(declaration.AutoAck);
 			Assert.Equal(1u, declaration.Count);
@@ -36,7 +36,7 @@ namespace Phema.RabbitMQ.Tests
 			Assert.False(declaration.Requeue);
 			Assert.True(Guid.TryParse(declaration.Tag, out _));
 		}
-		
+
 		[Fact]
 		public void Specified()
 		{
@@ -59,11 +59,11 @@ namespace Phema.RabbitMQ.Tests
 			var options = provider.GetRequiredService<IOptions<RabbitMQOptions>>().Value;
 
 			var declaration = Assert.Single(options.ConsumerDeclarations);
-			
+
 			var (key, value) = Assert.Single(declaration.Arguments);
 			Assert.Equal("x-argument", key);
 			Assert.Equal("argument", value);
-			
+
 			Assert.True(declaration.AutoAck);
 			Assert.Equal(2u, declaration.Count);
 			Assert.True(declaration.Exclusive);

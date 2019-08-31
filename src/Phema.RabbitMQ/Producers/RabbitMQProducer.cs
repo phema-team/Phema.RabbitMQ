@@ -15,7 +15,7 @@ namespace Phema.RabbitMQ
 			TPayload payload,
 			Action<IRabbitMQProducerBuilder<TPayload>> overrides = null);
 
-		Task<bool> Publish<TPayload>(
+		Task<bool> PublishBatch<TPayload>(
 			IEnumerable<TPayload> payloads,
 			Action<IRabbitMQProducerBuilder<TPayload>> overrides = null);
 	}
@@ -73,7 +73,7 @@ namespace Phema.RabbitMQ
 			}
 		}
 
-		public async Task<bool> Publish<TPayload>(
+		public async Task<bool> PublishBatch<TPayload>(
 			IEnumerable<TPayload> payloads,
 			Action<IRabbitMQProducerBuilder<TPayload>> overrides = null)
 		{

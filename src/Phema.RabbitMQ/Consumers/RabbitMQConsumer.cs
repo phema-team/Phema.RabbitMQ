@@ -42,8 +42,6 @@ namespace Phema.RabbitMQ
 
 			using (var scope = serviceProvider.CreateScope())
 			{
-				var logger = scope.ServiceProvider.GetService<ILogger<RabbitMQConsumer>>();
-
 				try
 				{
 					await declaration.Consumer(scope, payload, token).ConfigureAwait(false);
@@ -55,7 +53,9 @@ namespace Phema.RabbitMQ
 						Model.BasicNack(deliveryTag, declaration.Multiple, !redelivered && declaration.Requeue);
 					}
 
-					logger?.LogError(exception, $"Consumer tag: {declaration.Tag}");
+					scope.ServiceProvider
+						.GetService<ILogger<RabbitMQConsumer>>()
+						?.LogError(exception, $"Consumer tag: {declaration.Tag}");
 
 					throw;
 				}

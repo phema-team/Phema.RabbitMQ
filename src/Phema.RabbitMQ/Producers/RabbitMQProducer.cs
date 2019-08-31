@@ -21,12 +21,12 @@ namespace Phema.RabbitMQ
 	{
 		private readonly ILogger logger;
 		private readonly RabbitMQOptions options;
-		private readonly IRabbitMQChannelCache channelCache;
+		private readonly IRabbitMQProducerChannelCache channelCache;
 
 		public RabbitMQProducer(
 			IServiceProvider serviceProvider,
 			IOptions<RabbitMQOptions> options,
-			IRabbitMQChannelCache channelCache)
+			IRabbitMQProducerChannelCache channelCache)
 		{
 			logger = serviceProvider.GetService<ILogger<RabbitMQProducer>>();
 			this.options = options.Value;
@@ -43,7 +43,7 @@ namespace Phema.RabbitMQ
 			var body = await Serialize(payload).ConfigureAwait(false);
 
 			var routingKey = declaration.RoutingKey ?? declaration.Exchange.Name;
-			
+
 			try
 			{
 				channel.BasicPublish(
@@ -57,7 +57,7 @@ namespace Phema.RabbitMQ
 				{
 					channel.TxCommit();
 				}
-				
+
 				return !declaration.WaitForConfirms || WaitForConfirms(channel, declaration);
 			}
 			catch (Exception exception)

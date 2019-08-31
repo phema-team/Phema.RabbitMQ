@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
-using RabbitMQ.Client;
 
 namespace Phema.RabbitMQ
 {
@@ -41,7 +40,7 @@ namespace Phema.RabbitMQ
 						noLocal: declaration.NoLocal,
 						exclusive: declaration.Exclusive,
 						arguments: declaration.Arguments,
-						consumer: FromDeclaration(channel, declaration, token));
+						consumer: new RabbitMQConsumer(channel, options, serviceProvider, declaration, token));
 				}
 			}
 
@@ -51,14 +50,6 @@ namespace Phema.RabbitMQ
 		public Task StopAsync(CancellationToken cancellationToken)
 		{
 			return Task.CompletedTask;
-		}
-
-		private IBasicConsumer FromDeclaration(
-			IModel channel,
-			RabbitMQConsumerDeclaration declaration,
-			CancellationToken token)
-		{
-			return new RabbitMQConsumer(channel, options, serviceProvider, declaration, token);
 		}
 	}
 }

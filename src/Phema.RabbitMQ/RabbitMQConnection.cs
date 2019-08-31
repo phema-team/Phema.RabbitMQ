@@ -10,10 +10,12 @@ namespace Phema.RabbitMQ
 	{
 		private readonly object @lock = new object();
 		private readonly IConnection connection;
+		private readonly IProtocol protocol;
 
 		public RabbitMQConnection(IConnection connection)
 		{
 			this.connection = connection;
+			protocol = new RabbitMQProtocol(connection.Protocol);
 		}
 
 		public int LocalPort
@@ -228,7 +230,7 @@ namespace Phema.RabbitMQ
 			{
 				lock (@lock)
 				{
-					return connection.Protocol;
+					return protocol;
 				}
 			}
 		}
@@ -266,6 +268,7 @@ namespace Phema.RabbitMQ
 			}
 		}
 
+		// TODO: Thread-safe?
 		public ConsumerWorkService ConsumerWorkService
 		{
 			get

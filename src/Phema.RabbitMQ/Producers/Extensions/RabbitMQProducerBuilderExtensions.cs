@@ -9,7 +9,7 @@ namespace Phema.RabbitMQ
 		/// <summary>
 		///   Sets routing key to queue name or queue binding routing key
 		/// </summary>
-		public static IRabbitMQProducerBuilder<TPayload> ToQueue<TPayload>(
+		public static IRabbitMQProducerBuilder<TPayload> RoutedTo<TPayload>(
 			this IRabbitMQProducerBuilder<TPayload> builder,
 			IRabbitMQQueueBuilder<TPayload> queue)
 		{
@@ -24,7 +24,7 @@ namespace Phema.RabbitMQ
 		/// <summary>
 		///   Declare message routing key
 		/// </summary>
-		public static IRabbitMQProducerBuilder<TPayload> RoutingKey<TPayload>(
+		public static IRabbitMQProducerBuilder<TPayload> RoutedTo<TPayload>(
 			this IRabbitMQProducerBuilder<TPayload> builder,
 			string routingKey)
 		{

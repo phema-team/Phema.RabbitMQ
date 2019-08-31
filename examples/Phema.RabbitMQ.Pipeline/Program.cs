@@ -32,7 +32,7 @@ namespace Phema.RabbitMQ.ConsumerPriority
 								.BoundTo(exchange);
 
 							connection.AddProducer<ClickRequest>(exchange)
-								.ToQueue(clickRequests);
+								.RoutedTo(clickRequests);
 
 							connection.AddConsumer(clickRequests, async (scope, click) =>
 							{
@@ -53,7 +53,7 @@ namespace Phema.RabbitMQ.ConsumerPriority
 								.BoundTo(exchange);
 
 							connection.AddProducer<ProcessClick>(exchange)
-								.ToQueue(processClicks);
+								.RoutedTo(processClicks);
 
 							connection.AddConsumer(processClicks, async (scope, click) =>
 								{

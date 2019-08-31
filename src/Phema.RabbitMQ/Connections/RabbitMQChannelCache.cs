@@ -4,17 +4,20 @@ using RabbitMQ.Client;
 
 namespace Phema.RabbitMQ
 {
-	public interface IRabbitMQChannelCache
+	public interface IRabbitMQProducerChannelCache
 	{
+		/// <summary>
+		/// Get cached thread-safe channel
+		/// </summary>
 		IModel FromDeclaration(RabbitMQProducerDeclaration declaration);
 	}
 
-	internal sealed class RabbitMQChannelCache : IRabbitMQChannelCache
+	internal sealed class RabbitMQProducerChannelCache : IRabbitMQProducerChannelCache
 	{
 		private readonly IRabbitMQConnectionCache connectionCache;
 		private readonly ConcurrentDictionary<(Type, string, string), IModel> channels;
 
-		public RabbitMQChannelCache(IRabbitMQConnectionCache connectionCache)
+		public RabbitMQProducerChannelCache(IRabbitMQConnectionCache connectionCache)
 		{
 			this.connectionCache = connectionCache;
 			channels = new ConcurrentDictionary<(Type, string, string), IModel>();

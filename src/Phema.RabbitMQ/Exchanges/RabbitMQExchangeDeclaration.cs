@@ -25,7 +25,7 @@ namespace Phema.RabbitMQ
 		public bool AutoDelete { get; set; }
 
 		public bool Deleted { get; set; }
-		public bool IfUnused { get; set; }
+		public bool UnusedOnly { get; set; }
 
 		public IDictionary<string, object> Arguments { get; }
 		public IList<RabbitMQExchangeBindingDeclaration> Bindings { get; }

@@ -11,7 +11,8 @@ namespace Phema.RabbitMQ
 			var declaration = new RabbitMQQueueDeclaration(connection.Declaration, queueName);
 
 			connection.Services
-				.Configure<RabbitMQOptions>(options => options.QueueDeclarations.Add(declaration));
+				.Configure<RabbitMQOptions>(
+					options => options.QueueDeclarations.Add(declaration));
 
 			return new RabbitMQQueueBuilder<TPayload>(declaration);
 		}

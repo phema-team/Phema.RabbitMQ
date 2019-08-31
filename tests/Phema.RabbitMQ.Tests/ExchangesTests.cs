@@ -31,7 +31,7 @@ namespace Phema.RabbitMQ.Tests
 			Assert.Equal("exchange", declaration.Name);
 			Assert.Equal(ExchangeType.Direct, declaration.Type);
 			Assert.Equal("connection", declaration.Connection.Name);
-			Assert.False(declaration.IfUnused);
+			Assert.False(declaration.UnusedOnly);
 			Assert.False(declaration.Internal);
 			Assert.False(declaration.NoWait);
 		}
@@ -49,7 +49,7 @@ namespace Phema.RabbitMQ.Tests
 						.Deleted(true)
 						.Durable()
 						.BoundTo(connection.AddDirectExchange("exchange2"), b =>
-							b.RoutingKey("routing_key")
+							b.RoutedTo("routing_key")
 								.Deleted()
 								.NoWait()
 								.Argument("x-argument", "argument"))
@@ -82,7 +82,7 @@ namespace Phema.RabbitMQ.Tests
 			Assert.Equal("exchange", declaration.Name);
 			Assert.Equal(ExchangeType.Topic, declaration.Type);
 			Assert.Equal("exchanges", declaration.Connection.Name);
-			Assert.True(declaration.IfUnused);
+			Assert.True(declaration.UnusedOnly);
 			Assert.True(declaration.Internal);
 			Assert.True(declaration.NoWait);
 		}

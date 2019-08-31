@@ -56,13 +56,13 @@ namespace Phema.RabbitMQ
 			{
 				channel.ExchangeDeleteNoWait(
 					declaration.Name,
-					declaration.IfUnused);
+					declaration.UnusedOnly);
 			}
 			else
 			{
 				channel.ExchangeDelete(
 					declaration.Name,
-					declaration.IfUnused);
+					declaration.UnusedOnly);
 			}
 		}
 

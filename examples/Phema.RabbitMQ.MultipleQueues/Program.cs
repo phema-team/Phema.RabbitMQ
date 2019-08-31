@@ -45,11 +45,11 @@ namespace Phema.RabbitMQ.ConsumerPriority
 
 							connection.AddProducer<ToQueue1>(exchange)
 								// Typed checks
-								.ToQueue(queue1);
+								.RoutedTo(queue1);
 
 							connection.AddProducer<ToQueue2>(exchange)
 								// Typed checks
-								.ToQueue(queue2);
+								.RoutedTo(queue2);
 						});
 
 					services.AddHostedService<Worker>();

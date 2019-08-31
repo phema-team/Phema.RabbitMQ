@@ -15,7 +15,7 @@ namespace Phema.RabbitMQ
 		{
 			services.Configure(options)
 				.AddSingleton<IRabbitMQProducer, RabbitMQProducer>()
-				.AddSingleton<IRabbitMQChannelCache, RabbitMQChannelCache>()
+				.AddSingleton<IRabbitMQProducerChannelCache, RabbitMQProducerChannelCache>()
 				.AddSingleton<IRabbitMQConnectionCache, RabbitMQConnectionCache>()
 				.AddHostedService<RabbitMQConnectionHostedService>()
 				.AddHostedService<RabbitMQExchangeHostedService>()

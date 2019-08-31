@@ -47,7 +47,7 @@ namespace Phema.RabbitMQ.Tests
 					.Exclusive()
 					.NoWait()
 					.BoundTo(connection.AddDirectExchange("exchange"), b =>
-						b.RoutingKey("routing_key")
+						b.RoutedTo("routing_key")
 							.NoWait()
 							.Deleted()
 							.Argument("x-argument", "argument")));

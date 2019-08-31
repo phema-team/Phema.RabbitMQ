@@ -124,11 +124,11 @@ namespace Phema.RabbitMQ
 		}
 
 		public static IRabbitMQConsumerBuilder<TPayload> Priority<TPayload>(
-			this IRabbitMQConsumerBuilder<TPayload> configuration,
+			this IRabbitMQConsumerBuilder<TPayload> builder,
 			byte priority)
 		{
 			// TODO: Hack, because RabbitMQ.Client has no conversion to byte
-			return configuration.Argument("x-priority", (int)priority);
+			return builder.Argument("x-priority", (int)priority);
 		}
 
 		/// <summary>

@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 
 namespace Phema.RabbitMQ
 {
@@ -61,9 +62,9 @@ namespace Phema.RabbitMQ
 		/// <summary>
 		///   Declare x-queue-mode argument to lazy (default "default")
 		/// </summary>
-		public static IRabbitMQQueueBuilder<TPayload> Lazy<TPayload>(this IRabbitMQQueueBuilder<TPayload> configuration)
+		public static IRabbitMQQueueBuilder<TPayload> Lazy<TPayload>(this IRabbitMQQueueBuilder<TPayload> builder)
 		{
-			return configuration.Argument("x-queue-mode", "lazy");
+			return builder.Argument("x-queue-mode", "lazy");
 		}
 
 		/// <summary>
@@ -71,22 +72,22 @@ namespace Phema.RabbitMQ
 		///   <see cref="RejectPublish{TPayload}" />
 		/// </summary>
 		public static IRabbitMQQueueBuilder<TPayload> MaxMessageCount<TPayload>(
-			this IRabbitMQQueueBuilder<TPayload> configuration,
+			this IRabbitMQQueueBuilder<TPayload> builder,
 			uint count)
 		{
 			// TODO: Hack, because does not uint table value support yet
-			return configuration.Argument("x-max-length", (long)count);
+			return builder.Argument("x-max-length", (long)count);
 		}
 
 		/// <summary>
 		///   Declare x-max-length-bytes argument. When size limit reached, message will be marked as dead
 		/// </summary>
 		public static IRabbitMQQueueBuilder<TPayload> MaxMessageSize<TPayload>(
-			this IRabbitMQQueueBuilder<TPayload> configuration,
+			this IRabbitMQQueueBuilder<TPayload> builder,
 			uint bytes)
 		{
 			// TODO: Hack, because does not uint table value support yet
-			return configuration.Argument("x-max-length-bytes", (long)bytes);
+			return builder.Argument("x-max-length-bytes", (long)bytes);
 		}
 
 		/// <summary>
@@ -94,7 +95,23 @@ namespace Phema.RabbitMQ
 		///   Declare x-dead-letter-routing-key argument. When message is dead, send to x-dead-letter-exchange with routing key.
 		/// </summary>
 		public static IRabbitMQQueueBuilder<TPayload> DeadLetterTo<TPayload>(
-			this IRabbitMQQueueBuilder<TPayload> configuration,
+			this IRabbitMQQueueBuilder<TPayload> builder,
+			IRabbitMQExchangeBuilder<TPayload> exchange,
+			IRabbitMQQueueBuilder<TPayload> queue)
+		{
+			var binding = queue.Declaration
+				.Bindings
+				.FirstOrDefault(b => b.Exchange == exchange.Declaration);
+
+			return builder.DeadLetterTo(exchange, binding?.RoutingKey ?? queue.Declaration.Name);
+		}
+
+		/// <summary>
+		///   Declare x-dead-letter-exchange argument. When message is dead, send to x-dead-letter-exchange.
+		///   Declare x-dead-letter-routing-key argument. When message is dead, send to x-dead-letter-exchange with routing key.
+		/// </summary>
+		public static IRabbitMQQueueBuilder<TPayload> DeadLetterTo<TPayload>(
+			this IRabbitMQQueueBuilder<TPayload> builder,
 			IRabbitMQExchangeBuilder<TPayload> exchange,
 			string routingKey = null)
 		{
@@ -103,50 +120,50 @@ namespace Phema.RabbitMQ
 
 			if (routingKey != null)
 			{
-				configuration.Argument("x-dead-letter-routing-key", routingKey);
+				builder.Argument("x-dead-letter-routing-key", routingKey);
 			}
 
-			return configuration.Argument("x-dead-letter-exchange", exchange.Declaration.Name);
+			return builder.Argument("x-dead-letter-exchange", exchange.Declaration.Name);
 		}
 
 		/// <summary>
 		///   Declare x-expires argument for queue. When expires queue will be deleted
 		/// </summary>
 		public static IRabbitMQQueueBuilder<TPayload> TimeToLive<TPayload>(
-			this IRabbitMQQueueBuilder<TPayload> configuration,
+			this IRabbitMQQueueBuilder<TPayload> builder,
 			int milliseconds)
 		{
-			return configuration.Argument("x-expires", milliseconds);
+			return builder.Argument("x-expires", milliseconds);
 		}
 
 		/// <summary>
 		///   Declare x-message-ttl argument. When expires message will be marked as dead
 		/// </summary>
 		public static IRabbitMQQueueBuilder<TPayload> MessageTimeToLive<TPayload>(
-			this IRabbitMQQueueBuilder<TPayload> configuration,
+			this IRabbitMQQueueBuilder<TPayload> builder,
 			int timeToLive)
 		{
-			return configuration.Argument("x-message-ttl", timeToLive);
+			return builder.Argument("x-message-ttl", timeToLive);
 		}
 
 		/// <summary>
 		///   Declare x-max-priority argument for queue (default 0)
 		/// </summary>
 		public static IRabbitMQQueueBuilder<TPayload> MaxPriority<TPayload>(
-			this IRabbitMQQueueBuilder<TPayload> configuration,
+			this IRabbitMQQueueBuilder<TPayload> builder,
 			byte priority)
 		{
 			// TODO: Hack, because RabbitMQ.Client has no conversion to byte
-			return configuration.Argument("x-max-priority", (int)priority);
+			return builder.Argument("x-max-priority", (int)priority);
 		}
 
 		/// <summary>
 		///   Declare x-overflow argument to reject-publish (default drop-head)
 		/// </summary>
 		public static IRabbitMQQueueBuilder<TPayload> RejectPublish<TPayload>(
-			this IRabbitMQQueueBuilder<TPayload> configuration)
+			this IRabbitMQQueueBuilder<TPayload> builder)
 		{
-			return configuration.Argument("x-overflow", "reject-publish");
+			return builder.Argument("x-overflow", "reject-publish");
 		}
 
 		/// <summary>

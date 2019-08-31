@@ -43,8 +43,10 @@ namespace Phema.RabbitMQ
 			{
 				try
 				{
-					// TODO: No dispatch?
-					await declaration.Dispatch(scope, payload, token).ConfigureAwait(false);
+					if (declaration.Dispatch != null)
+					{
+						await declaration.Dispatch.Invoke(scope, payload, token).ConfigureAwait(false);
+					}
 				}
 				catch
 				{

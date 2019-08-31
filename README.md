@@ -4,22 +4,21 @@
 [![Nuget](https://img.shields.io/nuget/v/Phema.RabbitMQ.svg)](https://www.nuget.org/packages/Phema.RabbitMQ)
 [![Nuget](https://img.shields.io/nuget/dt/Phema.RabbitMQ.svg)](https://nuget.org/packages/Phema.RabbitMQ)
 
-This is an attempt to create a simple way for safe and predictable application deploy with a versioned release-specific topology in a distributed systems
+.NET Core strongly typed RabbitMQ integration library
 
 ## Concepts
 
 - **Release immutability**
   - The topology for each release must be strictly defined and not changed during its existence
-    - There is no such thing as:
-      - Canceling consumers
-      - Removing queues and exchanges
+    - Until application is running you can't:
+      - Cancel consumers
+      - Remove queues and exchanges
       - Change bindings
+
 - **Declarativeness and simplicity**
-  - All parts are defined by describing their state
-  - Intuitive, RabbitMQ-close fluent interfaces
+  - Intuitive RabbitMQ-close fluent interfaces
   - Generic type checks
-- **Modularity and flexibility**
-  - Each group has its own connection. Managing groups you manage connections
+  - Connection, Exchange, Queue, Consumer and Producer declaration classes
 
 ## Installation
 
@@ -27,10 +26,9 @@ This is an attempt to create a simple way for safe and predictable application d
   $> dotnet add package Phema.RabbitMQ
 ```
 
-## Usage
+## Usage ([examples](https://github.com/phema-team/Phema.RabbitMQ/tree/master/examples))
 
 ```csharp
-// Consumers
 services.AddRabbitMQ("instance", "amqp://connection.string")
   .AddConnection(connection =>
   {
@@ -48,7 +46,7 @@ services.AddRabbitMQ("instance", "amqp://connection.string")
       .AutoDelete()
       .Durable();
 
-    connection.AddConsumer<Payload>(queue, PayloadConsumer)
+    connection.AddConsumer(queue)
       // .Tagged("tag")
       // .Prefetch(1)
       // .Count(1)
@@ -58,17 +56,11 @@ services.AddRabbitMQ("instance", "amqp://connection.string")
       // .Requeue()
       // .Priority(2)
       .Count(2)
-      .Requeue();
-  });
-```
+      .Requeue()
+      .Dispatch(...);
 
-```csharp
-// Producers
-services.AddRabbitMQ("instance", "amqp://connection.string")
-  .AddConnection(connection =>
-  {
     var exchange = connection.AddDirectExchange("name")
-      //.Internal()
+      // .Internal()
       // .NoWait()
       // .Deleted()
       .AutoDelete()
@@ -82,31 +74,28 @@ services.AddRabbitMQ("instance", "amqp://connection.string")
       // .MessageTimeToLive(10000)
       .Persistent();
   });
-```
 
-```csharp
-// Get or inject
-var producer = provider.GetRequiredService<IRabbitMQProdicer>();
+    // Get or inject
+var producer = provider.GetRequiredService<IRabbitMQProducer>();
 
 // Use
-await producer.Produce(new Payload());
+await producer.Produce(new Payload(), overrides => ...);
 ```
 
 ## Supported
 
-- Consumers and producers priority
+- Durable, internal, dead letter, bound and alternate exchanges
+- Lazy, durable and exclusive queues
+- Default, confirm and transactional channel modes
+- Persistent producers
+- Consumers priority
 - Queue and message time to live
 - Max message count and size limitations
-- Lazy, durable and exclusive queues
 - Batch produce
-- Declaring app id
-- Durable, internal, dead letter, bound and alternate exchanges
+- App id declaration
 - Reject-publish when queue is full
-- Deleted declarative operation
-- Default, confirm and transactional channel modes
+- Deleted operations
 - NoWait operations
-- Message persistency
-- Group-connections
 
 ## Queues
 
@@ -123,7 +112,7 @@ await producer.Produce(new Payload());
 - Set queue max priority with `MaxPriority` extension
 - Explicitly delete queue with `Deleted` extension
 - Delete queue automatically with `AutoDelete` extension
-- Add custom arguments with `WithArgument` extension
+- Add custom arguments with `Argument` extension
   
 ## Exchanges
 
@@ -134,12 +123,11 @@ await producer.Produce(new Payload());
 - Explicitly delete exchange with `Deleted` extension
 - Bind exchange to exchange with `BoundTo` extension
 - Declare alternate exchange with `AlternateTo` extension
-- Add custom arguments with `WithArgument` extension
+- Add custom arguments with `Argument` extension
 - Declare exchange with `AddDirectExchange(...)`, `AddFanoutExchange(...)`, `AddHeadersExchange(...)`, `AddTopicExchange(...)` extensions
 
 ## Consumers
 
-- Declare scoped `IRabbitMqConsumer<TPayload>` with `Consume` method
 - Tag consumers using `Tagged` extension
 - Limit prefetch count with `Prefetch` extension
 - Scale consumers by using `Count` extension
@@ -148,13 +136,11 @@ await producer.Produce(new Payload());
 - When no need to ack explicitly use `AutoAck` extension
 - Requeue messages on fail with `Requeue` extension
 - Set consumer priority with `Priority` extension
-- Add custom arguments with `WithArgument` extension
+- Add custom arguments with `Argument` extension
 - All consumers start in `IHostedService`
-- Use `IRabbitMQConsumerFactory` for custom message handling
 
 ## Producers
 
-- Inject scoped `IRabbitMQProdicer<TPayload>` and use `Produce` or `BatchProduce` methods
 - Set routing key `RoutingKey` extension
 - Set mandatory with `Mandatory` extension
 - Set message priority with `Priority` extension
@@ -162,20 +148,12 @@ await producer.Produce(new Payload());
 - Use channel transactional mode with `Transactional` extension
 - Use channel confirm mode with `WaitForConfirms` extension
 - Use message persistence with `Persistent` extension
-- Configure headers with `WithHeader` extension
-- Configure properties with `WithProperty` extension
-- Use `IRabbitMQProducerFactory` for custom message producing
+- Configure headers with `Header` extension
+- Configure properties with `Property` extension
 
 ## Limitations
 
-- No dynamic topology declaration by design, but you can use `IRabbitMQConnectionCache` for that ¯\_(ツ)_/¯
-- No `.Redeclared()` and `.Purged()` because it breaks consistenty
-  1. Deploy `first_node`
-  2. Purge `queue`
-  3. `first_node` starts produce messages
-  4. Deploy `second_node`
-  5. Purge `queue`
-  6. No `first_node` messages survived
+- No dynamic topology declaration by design, but you can use `IRabbitMQConnectionProvider` for that
 - No `correlation-id`'s
 - No `message-id`'s
 - No `BasicReturn` and other events for now

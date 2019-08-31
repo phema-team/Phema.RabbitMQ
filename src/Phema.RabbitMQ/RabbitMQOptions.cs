@@ -16,7 +16,7 @@ namespace Phema.RabbitMQ
 				AutomaticRecoveryEnabled = false
 			};
 
-			Serializer = payload => JsonSerializer.SerializeToUtf8Bytes(payload); 
+			Serializer = payload => JsonSerializer.SerializeToUtf8Bytes(payload);
 			Deserializer = (bytes, type) => JsonSerializer.Deserialize(bytes, type);
 
 			ConnectionDeclarations = new List<RabbitMQConnectionDeclaration>();

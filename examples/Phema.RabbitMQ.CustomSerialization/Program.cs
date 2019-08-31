@@ -16,10 +16,10 @@ namespace Phema.RabbitMQ.CustomSerialization
 			Host.CreateDefaultBuilder(args)
 				.ConfigureServices((hostContext, services) =>
 				{
-					services.AddRabbitMQ(options => 
-						options.UseSerialization(
-							serializer: payload => Encoding.UTF8.GetBytes(payload.ToString()),
-							deserializer: (bytes, type) => Encoding.UTF8.GetString(bytes)))
+					services.AddRabbitMQ(options =>
+							options.UseSerialization(
+								serializer: payload => Encoding.UTF8.GetBytes(payload.ToString()),
+								deserializer: (bytes, type) => Encoding.UTF8.GetString(bytes)))
 						.AddConnection(connection =>
 						{
 							var exchange = connection.AddDirectExchange("exchange")
@@ -35,7 +35,7 @@ namespace Phema.RabbitMQ.CustomSerialization
 							connection.AddProducer<string>(exchange)
 								.RoutedTo(queue);
 						});
-					
+
 					services.AddHostedService<Worker>();
 				});
 	}

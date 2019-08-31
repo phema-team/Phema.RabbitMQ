@@ -38,6 +38,5 @@ namespace Phema.RabbitMQ
 		{
 			return options.UseConnectionFactory(factory => factory.ClientProvidedName = clientProvidedName);
 		}
-		
 	}
 }

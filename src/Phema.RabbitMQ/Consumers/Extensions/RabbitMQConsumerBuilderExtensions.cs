@@ -46,12 +46,12 @@ namespace Phema.RabbitMQ
 		/// </summary>
 		public static IRabbitMQConsumerBuilder<TPayload> Tagged<TPayload>(
 			this IRabbitMQConsumerBuilder<TPayload> builder,
-			string consumerTag)
+			string tag)
 		{
-			if (consumerTag is null)
-				throw new ArgumentNullException(nameof(consumerTag));
+			if (tag is null)
+				throw new ArgumentNullException(nameof(tag));
 
-			builder.Declaration.Tag = consumerTag;
+			builder.Declaration.Tag = tag;
 
 			return builder;
 		}

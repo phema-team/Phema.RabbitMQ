@@ -1,6 +1,5 @@
 using System;
 using Microsoft.Extensions.DependencyInjection;
-using RabbitMQ.Client;
 
 namespace Phema.RabbitMQ
 {
@@ -11,9 +10,9 @@ namespace Phema.RabbitMQ
 		/// </summary>
 		public static IRabbitMQBuilder AddRabbitMQ(
 			this IServiceCollection services,
-			Action<RabbitMQOptions> options)
+			Action<RabbitMQOptions> options = null)
 		{
-			services.Configure(options)
+			services.Configure(options ?? (o => {}))
 				.AddSingleton<IRabbitMQProducer, RabbitMQProducer>()
 				.AddSingleton<IRabbitMQChannelProvider, RabbitMQChannelProvider>()
 				.AddSingleton<IRabbitMQConnectionProvider, RabbitMQConnectionProvider>()
@@ -23,46 +22,6 @@ namespace Phema.RabbitMQ
 				.AddHostedService<RabbitMQConsumerHostedService>();
 
 			return new RabbitMQBuilder(services);
-		}
-
-		/// <summary>
-		/// Adds RabbitMQ services
-		/// </summary>
-		public static IRabbitMQBuilder AddRabbitMQ(
-			this IServiceCollection services,
-			string clientProvidedName,
-			Action<ConnectionFactory> factory)
-		{
-			return services.AddRabbitMQ(options =>
-			{
-				options.ConnectionFactory.ClientProvidedName = clientProvidedName;
-				factory?.Invoke(options.ConnectionFactory);
-			});
-		}
-
-		/// <summary>
-		/// Adds RabbitMQ services
-		/// </summary>
-		public static IRabbitMQBuilder AddRabbitMQ(
-			this IServiceCollection services,
-			string clientProvidedName,
-			string url)
-		{
-			return services.AddRabbitMQ(clientProvidedName, factory =>
-			{
-				if (url != null)
-					factory.Uri = new Uri(url);
-			});
-		}
-
-		/// <summary>
-		/// Adds RabbitMQ services
-		/// </summary>
-		public static IRabbitMQBuilder AddRabbitMQ(
-			this IServiceCollection services,
-			string clientProvidedName = null)
-		{
-			return services.AddRabbitMQ(clientProvidedName, factory => {});
 		}
 	}
 }

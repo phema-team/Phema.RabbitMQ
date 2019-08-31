@@ -7,18 +7,18 @@ namespace Phema.RabbitMQ
 	{
 		public static IRabbitMQExchangeBuilder<object> AddExchange(
 			this IRabbitMQConnectionBuilder connection,
-			string exchangeType,
-			string exchangeName)
+			string type,
+			string name)
 		{
-			return connection.AddExchange<object>(exchangeType, exchangeName);
+			return connection.AddExchange<object>(type, name);
 		}
 
 		public static IRabbitMQExchangeBuilder<TPayload> AddExchange<TPayload>(
 			this IRabbitMQConnectionBuilder connection,
-			string exchangeType,
-			string exchangeName)
+			string type,
+			string name)
 		{
-			var declaration = new RabbitMQExchangeDeclaration(connection.Declaration, exchangeType, exchangeName);
+			var declaration = new RabbitMQExchangeDeclaration(connection.Declaration, type, name);
 
 			connection.Services
 				.Configure<RabbitMQOptions>(options => options.ExchangeDeclarations.Add(declaration));
@@ -28,51 +28,51 @@ namespace Phema.RabbitMQ
 
 		public static IRabbitMQExchangeBuilder<object> AddDirectExchange(
 			this IRabbitMQConnectionBuilder connection,
-			string exchangeName)
+			string name)
 		{
-			return connection.AddExchange(ExchangeType.Direct, exchangeName);
+			return connection.AddExchange(ExchangeType.Direct, name);
 		}
 
 		public static IRabbitMQExchangeBuilder<TPayload> AddDirectExchange<TPayload>(
 			this IRabbitMQConnectionBuilder connection,
-			string exchangeName)
+			string name)
 		{
-			return connection.AddExchange<TPayload>(ExchangeType.Direct, exchangeName);
+			return connection.AddExchange<TPayload>(ExchangeType.Direct, name);
 		}
 
 		public static IRabbitMQExchangeBuilder<TPayload> AddFanoutExchange<TPayload>(
 			this IRabbitMQConnectionBuilder connection,
-			string exchangeName)
+			string name)
 		{
-			return connection.AddExchange<TPayload>(ExchangeType.Fanout, exchangeName);
+			return connection.AddExchange<TPayload>(ExchangeType.Fanout, name);
 		}
 
 		public static IRabbitMQExchangeBuilder<object> AddTopicExchange(
 			this IRabbitMQConnectionBuilder connection,
-			string exchangeName)
+			string name)
 		{
-			return connection.AddExchange(ExchangeType.Topic, exchangeName);
+			return connection.AddExchange(ExchangeType.Topic, name);
 		}
 
 		public static IRabbitMQExchangeBuilder<TPayload> AddTopicExchange<TPayload>(
 			this IRabbitMQConnectionBuilder connection,
-			string exchangeName)
+			string name)
 		{
-			return connection.AddExchange<TPayload>(ExchangeType.Topic, exchangeName);
+			return connection.AddExchange<TPayload>(ExchangeType.Topic, name);
 		}
 
 		public static IRabbitMQExchangeBuilder<object> AddHeadersExchange(
 			this IRabbitMQConnectionBuilder connection,
-			string exchangeName)
+			string name)
 		{
-			return connection.AddExchange(ExchangeType.Headers, exchangeName);
+			return connection.AddExchange(ExchangeType.Headers, name);
 		}
 
 		public static IRabbitMQExchangeBuilder<TPayload> AddHeadersExchange<TPayload>(
 			this IRabbitMQConnectionBuilder connection,
-			string exchangeName)
+			string name)
 		{
-			return connection.AddExchange<TPayload>(ExchangeType.Headers, exchangeName);
+			return connection.AddExchange<TPayload>(ExchangeType.Headers, name);
 		}
 	}
 }

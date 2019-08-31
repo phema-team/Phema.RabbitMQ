@@ -63,6 +63,7 @@ namespace Phema.RabbitMQ
 			builder.Declaration.WaitForConfirms = true;
 			builder.Declaration.Timeout = timeout;
 			builder.Declaration.Die = die;
+
 			return builder;
 		}
 
@@ -90,9 +91,9 @@ namespace Phema.RabbitMQ
 		/// </summary>
 		public static IRabbitMQProducerBuilder<TPayload> MessageTimeToLive<TPayload>(
 			this IRabbitMQProducerBuilder<TPayload> builder,
-			uint timeToLive)
+			TimeSpan timeToLive)
 		{
-			return builder.Property(x => x.Expiration = timeToLive.ToString());
+			return builder.Property(x => x.Expiration = timeToLive.Milliseconds.ToString());
 		}
 
 		/// <summary>
@@ -133,7 +134,7 @@ namespace Phema.RabbitMQ
 			return builder.Property(x =>
 			{
 				if (x.Headers.ContainsKey(header))
-					throw new ArgumentException($"Header {header} already registered", nameof(header));
+					throw new ArgumentException($"Header '{header}' already registered", nameof(header));
 
 				x.Headers.Add(header, value);
 			});

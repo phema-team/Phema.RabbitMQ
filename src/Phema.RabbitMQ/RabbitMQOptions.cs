@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Text.Json;
 using RabbitMQ.Client;
@@ -14,7 +15,9 @@ namespace Phema.RabbitMQ
 				// TODO: Hack for now, because StackOverflowException
 				AutomaticRecoveryEnabled = false
 			};
-			JsonSerializerOptions = new JsonSerializerOptions();
+
+			Serializer = payload => JsonSerializer.SerializeToUtf8Bytes(payload); 
+			Deserializer = (bytes, type) => JsonSerializer.Deserialize(bytes, type);
 
 			ConnectionDeclarations = new List<RabbitMQConnectionDeclaration>();
 			ExchangeDeclarations = new List<RabbitMQExchangeDeclaration>();
@@ -23,13 +26,15 @@ namespace Phema.RabbitMQ
 			ProducerDeclarations = new List<RabbitMQProducerDeclaration>();
 		}
 
-		public ConnectionFactory ConnectionFactory { get; set; }
-		public JsonSerializerOptions JsonSerializerOptions { get; set; }
+		internal ConnectionFactory ConnectionFactory { get; }
 
-		public IList<RabbitMQConnectionDeclaration> ConnectionDeclarations { get; }
-		public IList<RabbitMQExchangeDeclaration> ExchangeDeclarations { get; }
-		public IList<RabbitMQQueueDeclaration> QueueDeclarations { get; }
-		public List<RabbitMQConsumerDeclaration> ConsumerDeclarations { get; }
-		public List<RabbitMQProducerDeclaration> ProducerDeclarations { get; }
+		internal Func<object, byte[]> Serializer { get; set; }
+		internal Func<byte[], Type, object> Deserializer { get; set; }
+
+		internal IList<RabbitMQConnectionDeclaration> ConnectionDeclarations { get; }
+		internal IList<RabbitMQExchangeDeclaration> ExchangeDeclarations { get; }
+		internal IList<RabbitMQQueueDeclaration> QueueDeclarations { get; }
+		internal List<RabbitMQConsumerDeclaration> ConsumerDeclarations { get; }
+		internal List<RabbitMQProducerDeclaration> ProducerDeclarations { get; }
 	}
 }

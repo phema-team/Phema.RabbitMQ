@@ -11,15 +11,18 @@ namespace Phema.RabbitMQ.Tests
 		{
 			var services = new ServiceCollection();
 
-			services.AddRabbitMQ("test", "amqp://test.test")
+			// "test", 
+			services.AddRabbitMQ(options => options
+					.UseConnectionUrl("amqp://test.test")
+					.UseClientProvidedName("test"))
 				.AddConnection("connection", connection =>
 					connection.AddConsumer(connection.AddQueue<ConsumersTests>("queue")));
 
 			var provider = services.BuildServiceProvider();
 
-			var options = provider.GetRequiredService<IOptions<RabbitMQOptions>>().Value;
+			var declarations = provider.GetRequiredService<IOptions<RabbitMQOptions>>().Value.ConsumerDeclarations;
 
-			var declaration = Assert.Single(options.ConsumerDeclarations);
+			var declaration = Assert.Single(declarations);
 
 			Assert.Empty(declaration.Arguments);
 			Assert.False(declaration.AutoAck);
@@ -40,7 +43,9 @@ namespace Phema.RabbitMQ.Tests
 		{
 			var services = new ServiceCollection();
 
-			services.AddRabbitMQ("test", "amqp://test.test")
+			services.AddRabbitMQ(options => options
+					.UseConnectionUrl("amqp://test.test")
+					.UseClientProvidedName("test"))
 				.AddConnection("consumers", connection =>
 					connection.AddConsumer(connection.AddQueue<ConsumersTests>("queue"))
 						.Argument("x-argument", "argument")
@@ -54,9 +59,9 @@ namespace Phema.RabbitMQ.Tests
 
 			var provider = services.BuildServiceProvider();
 
-			var options = provider.GetRequiredService<IOptions<RabbitMQOptions>>().Value;
+			var declarations = provider.GetRequiredService<IOptions<RabbitMQOptions>>().Value.ConsumerDeclarations;
 
-			var declaration = Assert.Single(options.ConsumerDeclarations);
+			var declaration = Assert.Single(declarations);
 
 			var (key, value) = Assert.Single(declaration.Arguments);
 			Assert.Equal("x-argument", key);

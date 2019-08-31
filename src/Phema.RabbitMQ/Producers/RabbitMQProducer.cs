@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
@@ -49,7 +48,7 @@ namespace Phema.RabbitMQ
 					routingKey,
 					declaration.Mandatory,
 					properties,
-					JsonSerializer.SerializeToUtf8Bytes(payload, options.JsonSerializerOptions));
+					options.Serializer(payload));
 
 				if (declaration.Transactional)
 				{
@@ -168,7 +167,7 @@ namespace Phema.RabbitMQ
 					routingKey,
 					declaration.Mandatory,
 					properties,
-					JsonSerializer.SerializeToUtf8Bytes(payload, options.JsonSerializerOptions));
+					options.Serializer(payload));
 			}
 
 			return batch;

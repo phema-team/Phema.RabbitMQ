@@ -1,5 +1,4 @@
 using System;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
@@ -36,7 +35,7 @@ namespace Phema.RabbitMQ
 			IBasicProperties properties,
 			byte[] body)
 		{
-			var payload = JsonSerializer.Deserialize(body, declaration.Type, options.JsonSerializerOptions);
+			var payload = options.Deserializer(body, declaration.Type);
 
 			using (var scope = serviceProvider.CreateScope())
 			{

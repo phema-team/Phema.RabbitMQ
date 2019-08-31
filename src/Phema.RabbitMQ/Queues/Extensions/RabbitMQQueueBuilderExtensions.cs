@@ -97,22 +97,6 @@ namespace Phema.RabbitMQ
 		public static IRabbitMQQueueBuilder<TPayload> DeadLetterTo<TPayload>(
 			this IRabbitMQQueueBuilder<TPayload> builder,
 			IRabbitMQExchangeBuilder<TPayload> exchange,
-			IRabbitMQQueueBuilder<TPayload> queue)
-		{
-			var binding = queue.Declaration
-				.Bindings
-				.FirstOrDefault(b => b.Exchange == exchange.Declaration);
-
-			return builder.DeadLetterTo(exchange, binding?.RoutingKey ?? queue.Declaration.Name);
-		}
-
-		/// <summary>
-		///   Declare x-dead-letter-exchange argument. When message is dead, send to x-dead-letter-exchange.
-		///   Declare x-dead-letter-routing-key argument. When message is dead, send to x-dead-letter-exchange with routing key.
-		/// </summary>
-		public static IRabbitMQQueueBuilder<TPayload> DeadLetterTo<TPayload>(
-			this IRabbitMQQueueBuilder<TPayload> builder,
-			IRabbitMQExchangeBuilder<TPayload> exchange,
 			string routingKey = null)
 		{
 			if (exchange is null)
@@ -127,13 +111,29 @@ namespace Phema.RabbitMQ
 		}
 
 		/// <summary>
+		///   Declare x-dead-letter-exchange argument. When message is dead, send to x-dead-letter-exchange.
+		///   Declare x-dead-letter-routing-key argument. When message is dead, send to x-dead-letter-exchange with routing key.
+		/// </summary>
+		public static IRabbitMQQueueBuilder<TPayload> DeadLetterTo<TPayload>(
+			this IRabbitMQQueueBuilder<TPayload> builder,
+			IRabbitMQExchangeBuilder<TPayload> exchange,
+			IRabbitMQQueueBuilder<TPayload> queue)
+		{
+			var binding = queue.Declaration
+				.Bindings
+				.FirstOrDefault(b => b.Exchange == exchange.Declaration);
+
+			return builder.DeadLetterTo(exchange, binding?.RoutingKey ?? queue.Declaration.Name);
+		}
+
+		/// <summary>
 		///   Declare x-expires argument for queue. When expires queue will be deleted
 		/// </summary>
 		public static IRabbitMQQueueBuilder<TPayload> TimeToLive<TPayload>(
 			this IRabbitMQQueueBuilder<TPayload> builder,
-			int milliseconds)
+			TimeSpan timeToLive)
 		{
-			return builder.Argument("x-expires", milliseconds);
+			return builder.Argument("x-expires", timeToLive.Milliseconds);
 		}
 
 		/// <summary>
@@ -141,9 +141,9 @@ namespace Phema.RabbitMQ
 		/// </summary>
 		public static IRabbitMQQueueBuilder<TPayload> MessageTimeToLive<TPayload>(
 			this IRabbitMQQueueBuilder<TPayload> builder,
-			int timeToLive)
+			TimeSpan timeToLive)
 		{
-			return builder.Argument("x-message-ttl", timeToLive);
+			return builder.Argument("x-message-ttl", timeToLive.Milliseconds);
 		}
 
 		/// <summary>

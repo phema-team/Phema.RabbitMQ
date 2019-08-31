@@ -6,7 +6,7 @@
 		<RootNamespace>Phema.RabbitMQ</RootNamespace>
 		<Authors>sergeyshaykhullin</Authors>
 		<Description>
-			.NET Core strongly typed RabbitMQ integration library 
+			.NET Core strongly typed RabbitMQ integration library
 		</Description>
 		<PackageTags>RabbitMQ;.NET Core;ASP.NET Core</PackageTags>
 		<PackageProjectUrl>https://github.com/sergeyshaykhullin/Phema.RabbitMQ</PackageProjectUrl>
@@ -21,10 +21,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="RabbitMQ.Client" Version="6.0.0-pre3" />
-	  <PackageReference Include="Microsoft.Extensions.Options" Version="3.0.0-preview8.19405.4" />
-	  <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="3.0.0-preview8.19405.4" />
-	  <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.0.0-preview8.19405.4" />
+		<PackageReference Include="RabbitMQ.Client" Version="6.0.0-pre3"/>
+		<PackageReference Include="Microsoft.Extensions.Options" Version="3.0.0-preview8.19405.4"/>
+		<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="3.0.0-preview8.19405.4"/>
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.0.0-preview8.19405.4"/>
 	</ItemGroup>
 
 </Project>

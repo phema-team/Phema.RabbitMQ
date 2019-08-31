@@ -32,7 +32,7 @@ namespace Phema.RabbitMQ.ProducerOverrides
 
 							connection.AddProducer(exchange);
 						});
-					
+
 					services.AddHostedService<Worker>();
 				});
 	}

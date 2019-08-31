@@ -20,7 +20,7 @@ namespace Phema.RabbitMQ
 
 			return builder;
 		}
-		
+
 		/// <summary>
 		///   Received payload handler with service scope support
 		/// </summary>
@@ -30,7 +30,7 @@ namespace Phema.RabbitMQ
 		{
 			return builder.Subscribe((scope, payload, token) => subscription(scope, payload));
 		}
-		
+
 		/// <summary>
 		///   Received payload handler
 		/// </summary>

@@ -46,7 +46,7 @@ namespace Phema.RabbitMQ
 		{
 			var key = (declaration.Type, declaration.Connection.Name, declaration.Exchange.Name);
 			var connection = connectionProvider.FromDeclaration(declaration.Connection);
-			
+
 			return channels.GetOrAdd(key, _ =>
 			{
 				var channel = connection.CreateModel();

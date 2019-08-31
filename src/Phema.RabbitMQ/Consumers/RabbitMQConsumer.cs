@@ -4,7 +4,6 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 
 namespace Phema.RabbitMQ
@@ -44,18 +43,15 @@ namespace Phema.RabbitMQ
 			{
 				try
 				{
-					await declaration.Consumer(scope, payload, token).ConfigureAwait(false);
+					// TODO: No dispatch?
+					await declaration.Dispatch(scope, payload, token).ConfigureAwait(false);
 				}
-				catch (Exception exception)
+				catch
 				{
 					if (!declaration.AutoAck)
 					{
 						Model.BasicNack(deliveryTag, declaration.Multiple, !redelivered && declaration.Requeue);
 					}
-
-					scope.ServiceProvider
-						.GetService<ILogger<RabbitMQConsumer>>()
-						?.LogError(exception, $"Consumer tag: {declaration.Tag}");
 
 					throw;
 				}

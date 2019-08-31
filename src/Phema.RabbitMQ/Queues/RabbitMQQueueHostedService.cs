@@ -10,19 +10,19 @@ namespace Phema.RabbitMQ
 	internal sealed class RabbitMQQueueHostedService : IHostedService
 	{
 		private readonly RabbitMQOptions options;
-		private readonly IRabbitMQConnectionCache connectionCache;
+		private readonly IRabbitMQChannelProvider channelProvider;
 
-		public RabbitMQQueueHostedService(IOptions<RabbitMQOptions> options, IRabbitMQConnectionCache connectionCache)
+		public RabbitMQQueueHostedService(IOptions<RabbitMQOptions> options, IRabbitMQChannelProvider channelProvider)
 		{
 			this.options = options.Value;
-			this.connectionCache = connectionCache;
+			this.channelProvider = channelProvider;
 		}
 
 		public Task StartAsync(CancellationToken cancellationToken)
 		{
 			foreach (var declaration in options.QueueDeclarations)
 			{
-				using (var channel = connectionCache.FromDeclaration(declaration.Connection).CreateModel())
+				using (var channel = channelProvider.FromDeclaration(declaration))
 				{
 					if (declaration.Deleted)
 					{

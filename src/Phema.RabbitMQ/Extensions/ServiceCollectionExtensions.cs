@@ -15,8 +15,8 @@ namespace Phema.RabbitMQ
 		{
 			services.Configure(options)
 				.AddSingleton<IRabbitMQProducer, RabbitMQProducer>()
-				.AddSingleton<IRabbitMQProducerChannelCache, RabbitMQProducerChannelCache>()
-				.AddSingleton<IRabbitMQConnectionCache, RabbitMQConnectionCache>()
+				.AddSingleton<IRabbitMQChannelProvider, RabbitMQChannelProvider>()
+				.AddSingleton<IRabbitMQConnectionProvider, RabbitMQConnectionProvider>()
 				.AddHostedService<RabbitMQConnectionHostedService>()
 				.AddHostedService<RabbitMQExchangeHostedService>()
 				.AddHostedService<RabbitMQQueueHostedService>()
@@ -30,12 +30,12 @@ namespace Phema.RabbitMQ
 		/// </summary>
 		public static IRabbitMQBuilder AddRabbitMQ(
 			this IServiceCollection services,
-			string instanceName,
+			string clientProvidedName,
 			Action<ConnectionFactory> factory)
 		{
 			return services.AddRabbitMQ(options =>
 			{
-				options.InstanceName = instanceName;
+				options.ConnectionFactory.ClientProvidedName = clientProvidedName;
 				factory?.Invoke(options.ConnectionFactory);
 			});
 		}
@@ -45,10 +45,10 @@ namespace Phema.RabbitMQ
 		/// </summary>
 		public static IRabbitMQBuilder AddRabbitMQ(
 			this IServiceCollection services,
-			string instanceName,
+			string clientProvidedName,
 			string url)
 		{
-			return services.AddRabbitMQ(instanceName, factory =>
+			return services.AddRabbitMQ(clientProvidedName, factory =>
 			{
 				if (url != null)
 					factory.Uri = new Uri(url);
@@ -60,9 +60,9 @@ namespace Phema.RabbitMQ
 		/// </summary>
 		public static IRabbitMQBuilder AddRabbitMQ(
 			this IServiceCollection services,
-			string instanceName = null)
+			string clientProvidedName = null)
 		{
-			return services.AddRabbitMQ(instanceName, factory => {});
+			return services.AddRabbitMQ(clientProvidedName, factory => {});
 		}
 	}
 }

@@ -11,22 +11,19 @@ namespace Phema.RabbitMQ
 		public RabbitMQConsumerDeclaration(
 			Type type,
 			RabbitMQConnectionDeclaration connection,
-			RabbitMQQueueDeclaration queue,
-			Func<IServiceScope, object, CancellationToken, ValueTask> consumer)
+			RabbitMQQueueDeclaration[] queues)
 		{
 			Type = type;
 			Connection = connection;
-			Queue = queue;
-			Consumer = consumer;
+			Queues = queues;
 			Count = 1;
-			Tag = Guid.NewGuid().ToString("N");
 			Arguments = new Dictionary<string, object>();
 		}
 
 		public Type Type { get; }
 		public RabbitMQConnectionDeclaration Connection { get; }
-		public RabbitMQQueueDeclaration Queue { get; }
-		public Func<IServiceScope, object, CancellationToken, ValueTask> Consumer { get; }
+		public RabbitMQQueueDeclaration[] Queues { get; }
+		public Func<IServiceScope, object, CancellationToken, ValueTask> Dispatch { get; set; }
 
 		public string Tag { get; set; }
 		public ushort PrefetchCount { get; set; }

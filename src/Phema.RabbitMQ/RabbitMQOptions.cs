@@ -8,7 +8,6 @@ namespace Phema.RabbitMQ
 	{
 		public RabbitMQOptions()
 		{
-			InstanceName = null;
 			ConnectionFactory = new ConnectionFactory
 			{
 				DispatchConsumersAsync = true,
@@ -24,7 +23,6 @@ namespace Phema.RabbitMQ
 			ProducerDeclarations = new List<RabbitMQProducerDeclaration>();
 		}
 
-		public string InstanceName { get; set; }
 		public ConnectionFactory ConnectionFactory { get; set; }
 		public JsonSerializerOptions JsonSerializerOptions { get; set; }
 

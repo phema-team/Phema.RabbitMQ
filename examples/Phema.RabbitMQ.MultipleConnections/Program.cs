@@ -30,11 +30,12 @@ namespace Phema.RabbitMQ.ConsumerPriority
 
 						builder.AddConnection("consumers", consumers =>
 						{
-							consumers.AddConsumer(queue, async (scope, payload) =>
-							{
-								await Console.Out.WriteLineAsync(
-									$"Connection: {consumers.Declaration.Name}, payload: {payload.Id.ToString()}");
-							});
+							consumers.AddConsumer(queue)
+								.Dispatch(async (scope, payload) =>
+								{
+									await Console.Out.WriteLineAsync(
+										$"Connection: {consumers.Declaration.Name}, payload: {payload.Id.ToString()}");
+								});
 						});
 
 						builder.AddConnection("producers", producers =>

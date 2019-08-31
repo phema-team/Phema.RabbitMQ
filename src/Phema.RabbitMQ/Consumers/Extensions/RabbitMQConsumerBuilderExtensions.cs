@@ -1,9 +1,44 @@
 using System;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Phema.RabbitMQ
 {
 	public static class RabbitMQConsumerBuilderExtensions
 	{
+		/// <summary>
+		///   Received payload handler with service scope support and cancellation support
+		/// </summary>
+		public static IRabbitMQConsumerBuilder<TPayload> Dispatch<TPayload>(
+			this IRabbitMQConsumerBuilder<TPayload> builder,
+			Func<IServiceScope, TPayload, CancellationToken, ValueTask> dispatch)
+		{
+			builder.Declaration.Dispatch = (scope, payload, token) => dispatch(scope, (TPayload)payload, token);
+
+			return builder;
+		}
+		
+		/// <summary>
+		///   Received payload handler with service scope support
+		/// </summary>
+		public static IRabbitMQConsumerBuilder<TPayload> Dispatch<TPayload>(
+			this IRabbitMQConsumerBuilder<TPayload> builder,
+			Func<IServiceScope, TPayload, ValueTask> dispatch)
+		{
+			return builder.Dispatch((scope, payload, token) => dispatch(scope, payload));
+		}
+		
+		/// <summary>
+		///   Received payload handler
+		/// </summary>
+		public static IRabbitMQConsumerBuilder<TPayload> Dispatch<TPayload>(
+			this IRabbitMQConsumerBuilder<TPayload> builder,
+			Func<TPayload, ValueTask> dispatch)
+		{
+			return builder.Dispatch((scope, payload, token) => dispatch(payload));
+		}
+
 		/// <summary>
 		///   Declare consumer tag
 		/// </summary>

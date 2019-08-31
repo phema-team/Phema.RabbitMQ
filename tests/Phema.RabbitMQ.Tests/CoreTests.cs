@@ -27,7 +27,7 @@ namespace Phema.RabbitMQ.Tests
 
 			services.AddRabbitMQ(o =>
 			{
-				o.InstanceName = "test";
+				o.ConnectionFactory.ClientProvidedName = "test";
 				o.ConnectionFactory.HostName = "test.test";
 				o.ConnectionFactory.UserName = "test";
 				o.ConnectionFactory.Password = "password";
@@ -37,7 +37,7 @@ namespace Phema.RabbitMQ.Tests
 
 			var options = provider.GetRequiredService<IOptions<RabbitMQOptions>>().Value;
 
-			Assert.Equal("test", options.InstanceName);
+			Assert.Equal("test", options.ConnectionFactory.ClientProvidedName);
 			Assert.Equal("test.test", options.ConnectionFactory.HostName);
 			Assert.Equal("test", options.ConnectionFactory.UserName);
 			Assert.Equal("password", options.ConnectionFactory.Password);

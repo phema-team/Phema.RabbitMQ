@@ -1,6 +1,4 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
+using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Phema.RabbitMQ
@@ -9,28 +7,18 @@ namespace Phema.RabbitMQ
 	{
 		public static IRabbitMQConsumerBuilder<TPayload> AddConsumer<TPayload>(
 			this IRabbitMQConnectionBuilder connection,
-			IRabbitMQQueueBuilder<TPayload> queue,
-			Func<IServiceScope, TPayload, CancellationToken, ValueTask> consumer)
+			params IRabbitMQQueueBuilder<TPayload>[] queues)
 		{
 			var declaration = new RabbitMQConsumerDeclaration(
 				typeof(TPayload),
 				connection.Declaration,
-				queue.Declaration,
-				(scope, payload, token) => consumer(scope, (TPayload)payload, token));
+				queues.Select(queue => queue.Declaration).ToArray());
 
 			connection.Services
 				.Configure<RabbitMQOptions>(
 					options => options.ConsumerDeclarations.Add(declaration));
 
 			return new RabbitMQConsumerBuilder<TPayload>(declaration);
-		}
-
-		public static IRabbitMQConsumerBuilder<TPayload> AddConsumer<TPayload>(
-			this IRabbitMQConnectionBuilder connection,
-			IRabbitMQQueueBuilder<TPayload> queue,
-			Func<IServiceScope, TPayload, ValueTask> consumer)
-		{
-			return connection.AddConsumer(queue, (scope, payload, token) => consumer(scope, payload));
 		}
 	}
 }

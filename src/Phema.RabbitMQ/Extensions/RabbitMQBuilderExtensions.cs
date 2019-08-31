@@ -19,5 +19,12 @@ namespace Phema.RabbitMQ
 
 			return builder;
 		}
+
+		public static IRabbitMQBuilder AddConnection(
+			this IRabbitMQBuilder builder,
+			Action<IRabbitMQConnectionBuilder> connection)
+		{
+			return builder.AddConnection(string.Empty, connection);
+		}
 	}
 }

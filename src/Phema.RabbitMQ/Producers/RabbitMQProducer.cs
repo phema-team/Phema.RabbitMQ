@@ -4,8 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 
@@ -13,32 +11,36 @@ namespace Phema.RabbitMQ
 {
 	public interface IRabbitMQProducer
 	{
-		Task<bool> Produce<TPayload>(TPayload payload);
-		Task<bool> BatchProduce<TPayload>(IEnumerable<TPayload> payloads);
+		Task<bool> Produce<TPayload>(
+			TPayload payload,
+			Action<IRabbitMQProducerBuilder<TPayload>> overrides = null);
+
+		Task<bool> BatchProduce<TPayload>(
+			IEnumerable<TPayload> payloads,
+			Action<IRabbitMQProducerBuilder<TPayload>> overrides = null);
 	}
 
 	internal sealed class RabbitMQProducer : IRabbitMQProducer
 	{
-		private readonly ILogger logger;
 		private readonly RabbitMQOptions options;
-		private readonly IRabbitMQProducerChannelCache channelCache;
+		private readonly IRabbitMQChannelProvider channelProvider;
 
 		public RabbitMQProducer(
-			IServiceProvider serviceProvider,
 			IOptions<RabbitMQOptions> options,
-			IRabbitMQProducerChannelCache channelCache)
+			IRabbitMQChannelProvider channelProvider)
 		{
-			logger = serviceProvider.GetService<ILogger<RabbitMQProducer>>();
 			this.options = options.Value;
-			this.channelCache = channelCache;
+			this.channelProvider = channelProvider;
 		}
 
-		public async Task<bool> Produce<TPayload>(TPayload payload)
+		public async Task<bool> Produce<TPayload>(
+			TPayload payload,
+			Action<IRabbitMQProducerBuilder<TPayload>> overrides = null)
 		{
-			// TODO: Dictionary?
-			var declaration = options.ProducerDeclarations.First(d => d.Type == typeof(TPayload));
+			var declaration = GetDeclaration(overrides);
 
-			var channel = channelCache.FromDeclaration(declaration);
+			var channel = FromDeclaration(declaration);
+
 			var properties = CreateBasicProperties(channel, declaration);
 			var body = await Serialize(payload).ConfigureAwait(false);
 
@@ -60,23 +62,24 @@ namespace Phema.RabbitMQ
 
 				return !declaration.WaitForConfirms || WaitForConfirms(channel, declaration);
 			}
-			catch (Exception exception)
+			catch
 			{
 				if (declaration.Transactional)
 				{
 					channel.TxRollback();
 				}
 
-				logger?.LogError(exception, $"Routing key: {routingKey}");
 				throw;
 			}
 		}
 
-		public async Task<bool> BatchProduce<TPayload>(IEnumerable<TPayload> payloads)
+		public async Task<bool> BatchProduce<TPayload>(
+			IEnumerable<TPayload> payloads,
+			Action<IRabbitMQProducerBuilder<TPayload>> overrides = null)
 		{
-			var declaration = options.ProducerDeclarations.Single(d => d.Type == typeof(TPayload));
+			var declaration = GetDeclaration(overrides);
 
-			var channel = channelCache.FromDeclaration(declaration);
+			var channel = FromDeclaration(declaration);
 
 			var batch = await CreateBasicPublishBatch(channel, declaration, payloads).ConfigureAwait(false);
 
@@ -91,14 +94,13 @@ namespace Phema.RabbitMQ
 
 				return !declaration.WaitForConfirms || WaitForConfirms(channel, declaration);
 			}
-			catch (Exception exception)
+			catch
 			{
 				if (declaration.Transactional)
 				{
 					channel.TxRollback();
 				}
 
-				logger?.LogError(exception, $"Routing key: {declaration.RoutingKey ?? declaration.Exchange.Name}");
 				throw;
 			}
 		}
@@ -124,6 +126,37 @@ namespace Phema.RabbitMQ
 				: channel.WaitForConfirms(declaration.Timeout.Value);
 		}
 
+		private RabbitMQProducerDeclaration GetDeclaration<TPayload>(Action<IRabbitMQProducerBuilder<TPayload>> overrides)
+		{
+			// TODO: Dictionary?
+			var declaration = options.ProducerDeclarations.First(d => d.Type == typeof(TPayload));
+
+			if (overrides != null)
+			{
+				declaration = RabbitMQProducerDeclaration.FromDeclaration(declaration);
+				overrides(new RabbitMQProducerBuilder<TPayload>(declaration));
+			}
+
+			return declaration;
+		}
+		
+		private IModel FromDeclaration(RabbitMQProducerDeclaration declaration)
+		{
+			var channel = channelProvider.FromDeclaration(declaration);
+
+			if (declaration.WaitForConfirms)
+			{
+				channel.ConfirmSelect();
+			}
+
+			if (declaration.Transactional)
+			{
+				channel.TxSelect();
+			}
+
+			return channel;
+		}
+		
 		private async Task<IBasicPublishBatch> CreateBasicPublishBatch<TPayload>(
 			IModel channel,
 			RabbitMQProducerDeclaration declaration,
@@ -133,7 +166,7 @@ namespace Phema.RabbitMQ
 			var properties = CreateBasicProperties(channel, declaration);
 
 			var routingKey = declaration.RoutingKey ?? declaration.Exchange.Name;
-			
+
 			foreach (var payload in payloads)
 			{
 				batch.Add(
@@ -159,7 +192,7 @@ namespace Phema.RabbitMQ
 			return properties;
 		}
 
-		private async Task<byte[]> Serialize<TPayload>(TPayload payload)
+		private async ValueTask<byte[]> Serialize<TPayload>(TPayload payload)
 		{
 			await using (var stream = new MemoryStream())
 			{

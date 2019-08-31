@@ -18,7 +18,7 @@ namespace Phema.RabbitMQ.ConsumerPriority
 				.ConfigureLogging(builder => builder.AddConsole())
 				.ConfigureServices((hostContext, services) =>
 				{
-					services.AddRabbitMQ()
+					services.AddRabbitMQ("pipeline")
 						.AddConnection("connection", connection =>
 						{
 							var exchange = connection.AddDirectExchange("exchange")
@@ -26,7 +26,7 @@ namespace Phema.RabbitMQ.ConsumerPriority
 								.Durable();
 
 							// Click requests
-							var clickRequests = connection.AddQueue<ClickRequest>("clickRequests")
+							var clickRequests = connection.AddQueue<ClickRequest>("click_requests")
 								.AutoDelete()
 								.Durable()
 								.BoundTo(exchange);
@@ -34,20 +34,21 @@ namespace Phema.RabbitMQ.ConsumerPriority
 							connection.AddProducer<ClickRequest>(exchange)
 								.RoutedTo(clickRequests);
 
-							connection.AddConsumer(clickRequests, async (scope, click) =>
-							{
-								Console.WriteLine("Click request: " + click.Id);
-
-								var producer = scope.ServiceProvider.GetRequiredService<IRabbitMQProducer>();
-
-								await producer.Produce(new ProcessClick
+							connection.AddConsumer(clickRequests)
+								.Dispatch(async (scope, click) =>
 								{
-									Id = click.Id
+									Console.WriteLine("Click request: " + click.Id);
+
+									var producer = scope.ServiceProvider.GetRequiredService<IRabbitMQProducer>();
+
+									await producer.Produce(new ProcessClick
+									{
+										Id = click.Id
+									});
 								});
-							});
 
 							// Processing clicks
-							var processClicks = connection.AddQueue<ProcessClick>("processClicks")
+							var processClicks = connection.AddQueue<ProcessClick>("process_clicks")
 								.AutoDelete()
 								.Durable()
 								.BoundTo(exchange);
@@ -55,11 +56,12 @@ namespace Phema.RabbitMQ.ConsumerPriority
 							connection.AddProducer<ProcessClick>(exchange)
 								.RoutedTo(processClicks);
 
-							connection.AddConsumer(processClicks, async (scope, click) =>
+							connection.AddConsumer(processClicks)
+								.Count(2)
+								.Dispatch(async (scope, click) =>
 								{
 									await Console.Out.WriteLineAsync($"Click {click.Id} processed");
-								})
-								.Count(2);
+								});
 						});
 
 					services.AddHostedService<Worker>();

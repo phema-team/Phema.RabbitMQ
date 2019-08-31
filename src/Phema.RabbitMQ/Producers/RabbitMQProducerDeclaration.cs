@@ -27,7 +27,22 @@ namespace Phema.RabbitMQ
 		public bool WaitForConfirms { get; set; }
 		public bool Die { get; set; }
 		public TimeSpan? Timeout { get; set; }
-		public IDictionary<string, object> Arguments { get; }
-		public IList<Action<IBasicProperties>> Properties { get; }
+		public IDictionary<string, object> Arguments { get; set; }
+		public IList<Action<IBasicProperties>> Properties { get; set; }
+
+		public static RabbitMQProducerDeclaration FromDeclaration(RabbitMQProducerDeclaration declaration)
+		{
+			return new RabbitMQProducerDeclaration(declaration.Type, declaration.Connection, declaration.Exchange)
+			{
+				RoutingKey = declaration.RoutingKey,
+				Mandatory = declaration.Mandatory,
+				Transactional = declaration.Transactional,
+				WaitForConfirms = declaration.WaitForConfirms,
+				Die = declaration.Die,
+				Timeout = declaration.Timeout,
+				Arguments = declaration.Arguments,
+				Properties = declaration.Properties
+			};
+		}
 	}
 }

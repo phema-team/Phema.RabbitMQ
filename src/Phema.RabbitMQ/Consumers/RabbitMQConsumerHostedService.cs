@@ -10,37 +10,42 @@ namespace Phema.RabbitMQ
 	{
 		private readonly RabbitMQOptions options;
 		private readonly IServiceProvider serviceProvider;
-		private readonly IRabbitMQConnectionCache connectionCache;
+		private readonly IRabbitMQChannelProvider channelProvider;
 
 		public RabbitMQConsumerHostedService(
 			IServiceProvider serviceProvider,
 			IOptions<RabbitMQOptions> options,
-			IRabbitMQConnectionCache connectionCache)
+			IRabbitMQChannelProvider channelProvider)
 		{
 			this.options = options.Value;
 			this.serviceProvider = serviceProvider;
-			this.connectionCache = connectionCache;
+			this.channelProvider = channelProvider;
 		}
 
 		public Task StartAsync(CancellationToken token)
 		{
 			foreach (var declaration in options.ConsumerDeclarations)
 			{
-				var channel = connectionCache.FromDeclaration(declaration.Connection).CreateModel();
-
-				// PrefetchSize != 0 is not implemented for now
-				channel.BasicQos(0, declaration.PrefetchCount, declaration.Global);
-
-				for (var index = 0; index < declaration.Count; index++)
+				foreach (var queue in declaration.Queues)
 				{
-					channel.BasicConsume(
-						queue: declaration.Queue.Name,
-						autoAck: declaration.AutoAck,
-						consumerTag:  $"{declaration.Tag}_{index}",
-						noLocal: declaration.NoLocal,
-						exclusive: declaration.Exclusive,
-						arguments: declaration.Arguments,
-						consumer: new RabbitMQConsumer(channel, options, serviceProvider, declaration, token));
+					var channel = channelProvider.FromDeclaration(declaration);
+
+					// PrefetchSize != 0 is not implemented for now
+					channel.BasicQos(0, declaration.PrefetchCount, declaration.Global);
+
+					for (var index = 0; index < declaration.Count; index++)
+					{
+						channel.BasicConsume(
+							queue: queue.Name,
+							autoAck: declaration.AutoAck,
+							consumerTag: declaration.Tag is null
+								? string.Empty
+								: $"{declaration.Tag}_{index}",
+							noLocal: declaration.NoLocal,
+							exclusive: declaration.Exclusive,
+							arguments: declaration.Arguments,
+							consumer: new RabbitMQConsumer(channel, options, serviceProvider, declaration, token));
+					}
 				}
 			}
 

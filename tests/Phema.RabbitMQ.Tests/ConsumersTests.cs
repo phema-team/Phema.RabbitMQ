@@ -1,5 +1,3 @@
-using System;
-using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Xunit;
@@ -15,7 +13,7 @@ namespace Phema.RabbitMQ.Tests
 
 			services.AddRabbitMQ("test", "amqp://test.test")
 				.AddConnection("connection", connection =>
-					connection.AddConsumer(connection.AddQueue<ConsumersTests>("queue"), (scope, s) => new ValueTask()));
+					connection.AddConsumer(connection.AddQueue<ConsumersTests>("queue")));
 
 			var provider = services.BuildServiceProvider();
 
@@ -31,10 +29,10 @@ namespace Phema.RabbitMQ.Tests
 			Assert.False(declaration.Multiple);
 			Assert.False(declaration.NoLocal);
 			Assert.Equal(0, declaration.PrefetchCount);
-			Assert.Equal("queue", declaration.Queue.Name);
+			Assert.Equal("queue", Assert.Single(declaration.Queues).Name);
 			Assert.Equal("connection", declaration.Connection.Name);
 			Assert.False(declaration.Requeue);
-			Assert.True(Guid.TryParse(declaration.Tag, out _));
+			Assert.Null(declaration.Tag);
 		}
 
 		[Fact]
@@ -44,7 +42,7 @@ namespace Phema.RabbitMQ.Tests
 
 			services.AddRabbitMQ("test", "amqp://test.test")
 				.AddConnection("consumers", connection =>
-					connection.AddConsumer(connection.AddQueue<ConsumersTests>("queue"), (scope, tests) => new ValueTask())
+					connection.AddConsumer(connection.AddQueue<ConsumersTests>("queue"))
 						.Argument("x-argument", "argument")
 						.AutoAck()
 						.Count(2)
@@ -72,7 +70,7 @@ namespace Phema.RabbitMQ.Tests
 			Assert.True(declaration.Multiple);
 			Assert.True(declaration.NoLocal);
 			Assert.Equal(2, declaration.PrefetchCount);
-			Assert.Equal("queue", declaration.Queue.Name);
+			Assert.Equal("queue", Assert.Single(declaration.Queues).Name);
 			Assert.True(declaration.Requeue);
 			Assert.Equal("tag", declaration.Tag);
 		}

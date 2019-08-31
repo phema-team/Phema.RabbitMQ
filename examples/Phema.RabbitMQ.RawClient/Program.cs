@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading;
-using System.Threading.Tasks;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
@@ -18,7 +17,7 @@ namespace Phema.RabbitMQ.RawClient
 					//                   queue1 -> produce click to queue2
 					// click -> exchange
 					//                   queue2 -> consume click from queue1
-					channel1.ExchangeDeclare("exchange", ExchangeType.Direct);
+					channel1.ExchangeDeclare("exchange", ExchangeType.Direct, autoDelete: true);
 					channel1.QueueDeclare("queue1");
 					channel1.QueueBind("queue1", "exchange", "queue1");
 					channel1.QueueDeclare("queue2");
@@ -45,7 +44,7 @@ namespace Phema.RabbitMQ.RawClient
 					};
 					channel1.BasicConsume(
 						"queue1",
-						autoAck: false,
+						autoAck: true,
 						consumer1);
 
 					// Change to EventingBasicConsumer
@@ -56,7 +55,7 @@ namespace Phema.RabbitMQ.RawClient
 					};
 					channel1.BasicConsume(
 						"queue2",
-						autoAck: false,
+						autoAck: true,
 						consumer2);
 
 					while (true)
@@ -71,6 +70,7 @@ namespace Phema.RabbitMQ.RawClient
 					}
 				}
 			}
+			// ReSharper disable once FunctionNeverReturns
 		}
 	}
 }

@@ -32,16 +32,18 @@ namespace Phema.RabbitMQ.ConsumerPriority
 								.BoundTo(exchange);
 
 							// Typed checks
-							connection.AddConsumer(queue1, async (scope, payload) =>
-							{
-								await Console.Out.WriteLineAsync("1:" + payload.Name);
-							});
+							connection.AddConsumer(queue1)
+								.Dispatch(async (scope, payload) =>
+								{
+									await Console.Out.WriteLineAsync("1:" + payload.Name);
+								});
 
 							// Typed checks
-							connection.AddConsumer(queue2, async (scope, payload) =>
-							{
-								await Console.Out.WriteLineAsync("2:" + payload.Age);
-							});
+							connection.AddConsumer(queue2)
+								.Dispatch(async (scope, payload) =>
+								{
+									await Console.Out.WriteLineAsync("2:" + payload.Age);
+								});
 
 							connection.AddProducer<ToQueue1>(exchange)
 								// Typed checks

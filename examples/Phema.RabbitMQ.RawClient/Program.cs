@@ -44,7 +44,7 @@ namespace Phema.RabbitMQ.RawClient
 					};
 					channel1.BasicConsume(
 						"queue1",
-						autoAck: false,
+						autoAck: true,
 						consumer1);
 
 					// Change to EventingBasicConsumer
@@ -55,7 +55,7 @@ namespace Phema.RabbitMQ.RawClient
 					};
 					channel1.BasicConsume(
 						"queue2",
-						autoAck: false,
+						autoAck: true,
 						consumer2);
 
 					while (true)

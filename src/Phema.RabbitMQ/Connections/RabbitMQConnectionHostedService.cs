@@ -9,12 +9,12 @@ namespace Phema.RabbitMQ
 	{
 		private readonly RabbitMQOptions options;
 		private readonly IRabbitMQConnectionCache connectionCache;
-		private readonly IRabbitMQChannelCache channelCache;
+		private readonly IRabbitMQProducerChannelCache channelCache;
 
 		public RabbitMQConnectionHostedService(
 			IOptions<RabbitMQOptions> options,
 			IRabbitMQConnectionCache connectionCache,
-			IRabbitMQChannelCache channelCache)
+			IRabbitMQProducerChannelCache channelCache)
 		{
 			this.options = options.Value;
 			this.connectionCache = connectionCache;

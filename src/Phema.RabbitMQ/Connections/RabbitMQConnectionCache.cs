@@ -6,6 +6,9 @@ namespace Phema.RabbitMQ
 {
 	public interface IRabbitMQConnectionCache
 	{
+		/// <summary>
+		/// Get cached thread-safe connection
+		/// </summary>
 		IConnection FromDeclaration(RabbitMQConnectionDeclaration connection);
 	}
 

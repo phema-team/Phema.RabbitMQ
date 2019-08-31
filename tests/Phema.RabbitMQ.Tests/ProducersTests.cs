@@ -46,7 +46,7 @@ namespace Phema.RabbitMQ.Tests
 						.WaitForConfirms(TimeSpan.Zero)
 						.Mandatory()
 						.Property(x => x.Persistent = true)
-						.RoutingKey("routing_key")
+						.RoutedTo("routing_key")
 						.AppId("app1")
 						.Transactional());
 

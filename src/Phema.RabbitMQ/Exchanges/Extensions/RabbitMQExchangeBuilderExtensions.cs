@@ -7,7 +7,8 @@ namespace Phema.RabbitMQ
 		/// <summary>
 		///   Declare exchange as durable
 		/// </summary>
-		public static IRabbitMQExchangeBuilder<TPayload> Durable<TPayload>(this IRabbitMQExchangeBuilder<TPayload> builder)
+		public static IRabbitMQExchangeBuilder<TPayload> Durable<TPayload>(
+			this IRabbitMQExchangeBuilder<TPayload> builder)
 		{
 			builder.Declaration.Durable = true;
 
@@ -17,7 +18,8 @@ namespace Phema.RabbitMQ
 		/// <summary>
 		///   Nowait for exchange declaration
 		/// </summary>
-		public static IRabbitMQExchangeBuilder<TPayload> NoWait<TPayload>(this IRabbitMQExchangeBuilder<TPayload> builder)
+		public static IRabbitMQExchangeBuilder<TPayload> NoWait<TPayload>(
+			this IRabbitMQExchangeBuilder<TPayload> builder)
 		{
 			builder.Declaration.NoWait = true;
 
@@ -28,7 +30,8 @@ namespace Phema.RabbitMQ
 		///   Declare exchange as internal.
 		///   Exchange can't be accessed from producers directly, only by exchange to exchange bindings
 		/// </summary>
-		public static IRabbitMQExchangeBuilder<TPayload> Internal<TPayload>(this IRabbitMQExchangeBuilder<TPayload> builder)
+		public static IRabbitMQExchangeBuilder<TPayload> Internal<TPayload>(
+			this IRabbitMQExchangeBuilder<TPayload> builder)
 		{
 			builder.Declaration.Internal = true;
 
@@ -51,10 +54,10 @@ namespace Phema.RabbitMQ
 		/// </summary>
 		public static IRabbitMQExchangeBuilder<TPayload> Deleted<TPayload>(
 			this IRabbitMQExchangeBuilder<TPayload> builder,
-			bool ifUnused = false)
+			bool unusedOnly = false)
 		{
 			builder.Declaration.Deleted = true;
-			builder.Declaration.IfUnused = ifUnused;
+			builder.Declaration.UnusedOnly = unusedOnly;
 
 			return builder;
 		}
@@ -84,13 +87,13 @@ namespace Phema.RabbitMQ
 		///   instead of mark as dead, publish to specified exchange
 		/// </summary>
 		public static IRabbitMQExchangeBuilder<TPayload> AlternateTo<TPayload>(
-			this IRabbitMQExchangeBuilder<TPayload> configuration,
+			this IRabbitMQExchangeBuilder<TPayload> builder,
 			IRabbitMQExchangeBuilder<TPayload> exchange)
 		{
 			if (exchange is null)
 				throw new ArgumentNullException(nameof(exchange));
 
-			return configuration.Argument("alternate-exchange", exchange.Declaration.Name);
+			return builder.Argument("alternate-exchange", exchange.Declaration.Name);
 		}
 
 		/// <summary>

@@ -19,7 +19,8 @@ namespace Phema.RabbitMQ
 				(scope, payload, token) => consumer(scope, (TPayload)payload, token));
 
 			connection.Services
-				.Configure<RabbitMQOptions>(options => options.ConsumerDeclarations.Add(declaration));
+				.Configure<RabbitMQOptions>(
+					options => options.ConsumerDeclarations.Add(declaration));
 
 			return new RabbitMQConsumerBuilder<TPayload>(declaration);
 		}

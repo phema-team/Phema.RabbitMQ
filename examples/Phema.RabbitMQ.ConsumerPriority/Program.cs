@@ -47,7 +47,7 @@ namespace Phema.RabbitMQ.ConsumerPriority
 
 							connection.AddProducer<string>(exchange)
 								// Typed checks
-								.ToQueue(queue);
+								.RoutedTo(queue);
 						});
 
 					services.AddHostedService<Worker>();

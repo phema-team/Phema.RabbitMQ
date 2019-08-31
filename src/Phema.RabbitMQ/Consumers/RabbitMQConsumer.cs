@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -37,7 +36,7 @@ namespace Phema.RabbitMQ
 			IBasicProperties properties,
 			byte[] body)
 		{
-			var payload = await Deserialize(body).ConfigureAwait(false);
+			var payload = JsonSerializer.Deserialize(body, declaration.Type, options.JsonSerializerOptions);
 
 			using (var scope = serviceProvider.CreateScope())
 			{
@@ -62,18 +61,6 @@ namespace Phema.RabbitMQ
 				{
 					Model.BasicAck(deliveryTag, declaration.Multiple);
 				}
-			}
-		}
-
-		private async ValueTask<object> Deserialize(byte[] body)
-		{
-			await using (var stream = new MemoryStream(body))
-			{
-				return await JsonSerializer.DeserializeAsync(
-					stream,
-					declaration.Type,
-					options.JsonSerializerOptions,
-					token);
 			}
 		}
 	}

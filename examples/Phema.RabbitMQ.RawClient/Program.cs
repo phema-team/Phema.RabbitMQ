@@ -70,6 +70,7 @@ namespace Phema.RabbitMQ.RawClient
 					}
 				}
 			}
+
 			// ReSharper disable once FunctionNeverReturns
 		}
 	}

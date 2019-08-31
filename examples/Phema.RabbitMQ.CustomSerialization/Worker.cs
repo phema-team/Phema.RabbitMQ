@@ -2,7 +2,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 
-namespace Phema.RabbitMQ.ConsumerPriority
+namespace Phema.RabbitMQ.CustomSerialization
 {
 	public class Worker : BackgroundService
 	{
@@ -15,14 +15,13 @@ namespace Phema.RabbitMQ.ConsumerPriority
 
 		protected override async Task ExecuteAsync(CancellationToken stoppingToken)
 		{
+			var index = 0;
+
 			while (!stoppingToken.IsCancellationRequested)
 			{
-				await producer.Publish(new ToQueue
-				{
-					Name = "Alice"
-				});
+				await producer.Publish($"Message: {index++}");
 
-				await Task.Delay(200, stoppingToken);
+				await Task.Delay(1000, stoppingToken);
 			}
 		}
 	}

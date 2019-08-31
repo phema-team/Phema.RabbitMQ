@@ -1,6 +1,4 @@
 using System;
-using System.IO;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
@@ -37,15 +35,15 @@ namespace Phema.RabbitMQ
 			IBasicProperties properties,
 			byte[] body)
 		{
-			var payload = await Deserialize(body).ConfigureAwait(false);
+			var payload = options.Deserializer(body, declaration.Type);
 
 			using (var scope = serviceProvider.CreateScope())
 			{
 				try
 				{
-					if (declaration.Dispatch != null)
+					foreach (var subscription in declaration.Subscriptions)
 					{
-						await declaration.Dispatch.Invoke(scope, payload, token).ConfigureAwait(false);
+						await subscription(scope, payload, token).ConfigureAwait(false);
 					}
 				}
 				catch
@@ -62,18 +60,6 @@ namespace Phema.RabbitMQ
 				{
 					Model.BasicAck(deliveryTag, declaration.Multiple);
 				}
-			}
-		}
-
-		private async ValueTask<object> Deserialize(byte[] body)
-		{
-			await using (var stream = new MemoryStream(body))
-			{
-				return await JsonSerializer.DeserializeAsync(
-					stream,
-					declaration.Type,
-					options.JsonSerializerOptions,
-					token);
 			}
 		}
 	}

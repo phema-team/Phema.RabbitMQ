@@ -20,7 +20,7 @@ namespace Phema.RabbitMQ.ConsumerPriority
 			while (!stoppingToken.IsCancellationRequested)
 			{
 				await Task.Delay(500, stoppingToken);
-				await producer.Produce($"Index: {index++}");
+				await producer.Publish($"Index: {index++}");
 			}
 		}
 	}

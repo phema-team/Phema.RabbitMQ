@@ -18,12 +18,13 @@ namespace Phema.RabbitMQ
 			Queues = queues;
 			Count = 1;
 			Arguments = new Dictionary<string, object>();
+			Subscriptions = new List<Func<IServiceScope, object, CancellationToken, ValueTask>>();
 		}
 
 		public Type Type { get; }
 		public RabbitMQConnectionDeclaration Connection { get; }
 		public RabbitMQQueueDeclaration[] Queues { get; }
-		public Func<IServiceScope, object, CancellationToken, ValueTask> Dispatch { get; set; }
+		public ICollection<Func<IServiceScope, object, CancellationToken, ValueTask>> Subscriptions { get; }
 
 		public string Tag { get; set; }
 		public ushort PrefetchCount { get; set; }

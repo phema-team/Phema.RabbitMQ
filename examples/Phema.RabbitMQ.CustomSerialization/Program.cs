@@ -1,8 +1,9 @@
 using System;
+using System.Text;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace Phema.RabbitMQ.ProducerOverrides
+namespace Phema.RabbitMQ.CustomSerialization
 {
 	public class Program
 	{
@@ -15,22 +16,24 @@ namespace Phema.RabbitMQ.ProducerOverrides
 			Host.CreateDefaultBuilder(args)
 				.ConfigureServices((hostContext, services) =>
 				{
-					services.AddRabbitMQ()
-						.AddConnection("connection", connection =>
+					services.AddRabbitMQ(options =>
+							options.UseSerialization(
+								serializer: payload => Encoding.UTF8.GetBytes(payload.ToString()),
+								deserializer: (bytes, type) => Encoding.UTF8.GetString(bytes)))
+						.AddConnection(connection =>
 						{
-							var exchange = connection.AddDirectExchange<string>("exchange")
+							var exchange = connection.AddDirectExchange("exchange")
 								.AutoDelete();
 
-							var queue1 = connection.AddQueue<string>("queue1")
+							var queue = connection.AddQueue<string>("queue")
+								.AutoDelete()
 								.BoundTo(exchange);
 
-							var queue2 = connection.AddQueue<string>("queue2")
-								.BoundTo(exchange);
-
-							connection.AddConsumer(queue1, queue2)
+							connection.AddConsumer(queue)
 								.Subscribe(async payload => await Console.Out.WriteLineAsync(payload));
 
-							connection.AddProducer(exchange);
+							connection.AddProducer<string>(exchange)
+								.RoutedTo(queue);
 						});
 
 					services.AddHostedService<Worker>();

@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
@@ -11,11 +9,11 @@ namespace Phema.RabbitMQ
 {
 	public interface IRabbitMQProducer
 	{
-		Task<bool> Produce<TPayload>(
+		ValueTask<bool> Publish<TPayload>(
 			TPayload payload,
 			Action<IRabbitMQProducerBuilder<TPayload>> overrides = null);
 
-		Task<bool> BatchProduce<TPayload>(
+		ValueTask<bool> PublishBatch<TPayload>(
 			IEnumerable<TPayload> payloads,
 			Action<IRabbitMQProducerBuilder<TPayload>> overrides = null);
 	}
@@ -33,16 +31,13 @@ namespace Phema.RabbitMQ
 			this.channelProvider = channelProvider;
 		}
 
-		public async Task<bool> Produce<TPayload>(
+		public ValueTask<bool> Publish<TPayload>(
 			TPayload payload,
 			Action<IRabbitMQProducerBuilder<TPayload>> overrides = null)
 		{
 			var declaration = GetDeclaration(overrides);
-
 			var channel = FromDeclaration(declaration);
-
 			var properties = CreateBasicProperties(channel, declaration);
-			var body = await Serialize(payload).ConfigureAwait(false);
 
 			var routingKey = declaration.RoutingKey ?? declaration.Exchange.Name;
 
@@ -53,14 +48,14 @@ namespace Phema.RabbitMQ
 					routingKey,
 					declaration.Mandatory,
 					properties,
-					body);
+					options.Serializer(payload));
 
 				if (declaration.Transactional)
 				{
 					channel.TxCommit();
 				}
 
-				return !declaration.WaitForConfirms || WaitForConfirms(channel, declaration);
+				return new ValueTask<bool>(!declaration.WaitForConfirms || WaitForConfirms(channel, declaration));
 			}
 			catch
 			{
@@ -73,15 +68,13 @@ namespace Phema.RabbitMQ
 			}
 		}
 
-		public async Task<bool> BatchProduce<TPayload>(
+		public ValueTask<bool> PublishBatch<TPayload>(
 			IEnumerable<TPayload> payloads,
 			Action<IRabbitMQProducerBuilder<TPayload>> overrides = null)
 		{
 			var declaration = GetDeclaration(overrides);
-
 			var channel = FromDeclaration(declaration);
-
-			var batch = await CreateBasicPublishBatch(channel, declaration, payloads).ConfigureAwait(false);
+			var batch = CreateBasicPublishBatch(channel, declaration, payloads);
 
 			try
 			{
@@ -92,7 +85,7 @@ namespace Phema.RabbitMQ
 					channel.TxCommit();
 				}
 
-				return !declaration.WaitForConfirms || WaitForConfirms(channel, declaration);
+				return new ValueTask<bool>(!declaration.WaitForConfirms || WaitForConfirms(channel, declaration));
 			}
 			catch
 			{
@@ -105,7 +98,7 @@ namespace Phema.RabbitMQ
 			}
 		}
 
-		private bool WaitForConfirms(IModel channel, RabbitMQProducerDeclaration declaration)
+		private static bool WaitForConfirms(IModel channel, RabbitMQProducerDeclaration declaration)
 		{
 			if (declaration.Die)
 			{
@@ -139,7 +132,7 @@ namespace Phema.RabbitMQ
 
 			return declaration;
 		}
-		
+
 		private IModel FromDeclaration(RabbitMQProducerDeclaration declaration)
 		{
 			var channel = channelProvider.FromDeclaration(declaration);
@@ -156,8 +149,8 @@ namespace Phema.RabbitMQ
 
 			return channel;
 		}
-		
-		private async Task<IBasicPublishBatch> CreateBasicPublishBatch<TPayload>(
+
+		private IBasicPublishBatch CreateBasicPublishBatch<TPayload>(
 			IModel channel,
 			RabbitMQProducerDeclaration declaration,
 			IEnumerable<TPayload> payloads)
@@ -174,13 +167,13 @@ namespace Phema.RabbitMQ
 					routingKey,
 					declaration.Mandatory,
 					properties,
-					await Serialize(payload).ConfigureAwait(false));
+					options.Serializer(payload));
 			}
 
 			return batch;
 		}
 
-		private IBasicProperties CreateBasicProperties(IModel channel, RabbitMQProducerDeclaration declaration)
+		private static IBasicProperties CreateBasicProperties(IModel channel, RabbitMQProducerDeclaration declaration)
 		{
 			var properties = channel.CreateBasicProperties();
 
@@ -190,16 +183,6 @@ namespace Phema.RabbitMQ
 			}
 
 			return properties;
-		}
-
-		private async ValueTask<byte[]> Serialize<TPayload>(TPayload payload)
-		{
-			await using (var stream = new MemoryStream())
-			{
-				await JsonSerializer.SerializeAsync(stream, payload, options.JsonSerializerOptions).ConfigureAwait(false);
-
-				return stream.ToArray();
-			}
 		}
 	}
 }

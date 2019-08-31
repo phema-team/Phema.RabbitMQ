@@ -21,12 +21,12 @@ namespace Phema.RabbitMQ.ProducerOverrides
 			{
 				if (index++ % 2 == 0)
 				{
-					await producer.Produce("Send to queue1",
+					await producer.Publish("Send to queue1",
 						builder => builder.RoutedTo("queue1"));
 				}
 				else
 				{
-					await producer.Produce("Send to queue2",
+					await producer.Publish("Send to queue2",
 						builder => builder.RoutedTo("queue2"));
 				}
 

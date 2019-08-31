@@ -29,10 +29,12 @@
 ## Usage ([examples](https://github.com/phema-team/Phema.RabbitMQ/tree/master/examples))
 
 ```csharp
-services.AddRabbitMQ("instance", "amqp://connection.string")
+services.AddRabbitMQ(options =>
+  options.UseConnectionUrl("amqp://connection.string")
+    .UseClientProvidedName("instance"))
   .AddConnection(connection =>
   {
-    var queue = connection.AddQueue<Payload>("name")
+    var queue = connection.AddQueue<Payload>("queue")
       // .Exclusive()
       // .Deleted()
       // .NoWait()
@@ -57,9 +59,9 @@ services.AddRabbitMQ("instance", "amqp://connection.string")
       // .Priority(2)
       .Count(2)
       .Requeue()
-      .Dispatch(...);
+      .Subscribe(...);
 
-    var exchange = connection.AddDirectExchange("name")
+    var exchange = connection.AddDirectExchange("exchange")
       // .Internal()
       // .NoWait()
       // .Deleted()
@@ -75,7 +77,7 @@ services.AddRabbitMQ("instance", "amqp://connection.string")
       .Persistent();
   });
 
-    // Get or inject
+// Get or inject
 var producer = provider.GetRequiredService<IRabbitMQProducer>();
 
 // Use

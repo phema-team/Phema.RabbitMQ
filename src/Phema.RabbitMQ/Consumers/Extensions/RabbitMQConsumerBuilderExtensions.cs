@@ -36,9 +36,9 @@ namespace Phema.RabbitMQ
 		/// </summary>
 		public static IRabbitMQConsumerBuilder<TPayload> Subscribe<TPayload>(
 			this IRabbitMQConsumerBuilder<TPayload> builder,
-			Func<TPayload, ValueTask> dispatch)
+			Func<TPayload, ValueTask> subscription)
 		{
-			return builder.Subscribe((scope, payload, token) => dispatch(payload));
+			return builder.Subscribe((scope, payload, token) => subscription(payload));
 		}
 
 		/// <summary>

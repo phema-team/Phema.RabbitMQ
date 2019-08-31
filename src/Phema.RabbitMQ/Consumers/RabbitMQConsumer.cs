@@ -43,9 +43,9 @@ namespace Phema.RabbitMQ
 			{
 				try
 				{
-					if (declaration.Dispatch != null)
+					foreach (var subscription in declaration.Subscriptions)
 					{
-						await declaration.Dispatch.Invoke(scope, payload, token).ConfigureAwait(false);
+						await subscription(scope, payload, token).ConfigureAwait(false);
 					}
 				}
 				catch

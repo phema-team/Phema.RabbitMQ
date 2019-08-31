@@ -35,13 +35,13 @@ namespace Phema.RabbitMQ.ConsumerPriority
 								.RoutedTo(clickRequests);
 
 							connection.AddConsumer(clickRequests)
-								.Dispatch(async (scope, click) =>
+								.Subscribe(async (scope, click) =>
 								{
 									Console.WriteLine("Click request: " + click.Id);
 
 									var producer = scope.ServiceProvider.GetRequiredService<IRabbitMQProducer>();
 
-									await producer.Produce(new ProcessClick
+									await producer.Publish(new ProcessClick
 									{
 										Id = click.Id
 									});
@@ -58,7 +58,7 @@ namespace Phema.RabbitMQ.ConsumerPriority
 
 							connection.AddConsumer(processClicks)
 								.Count(2)
-								.Dispatch(async (scope, click) =>
+								.Subscribe(async (scope, click) =>
 								{
 									await Console.Out.WriteLineAsync($"Click {click.Id} processed");
 								});

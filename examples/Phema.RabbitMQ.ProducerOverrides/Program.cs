@@ -28,7 +28,7 @@ namespace Phema.RabbitMQ.ProducerOverrides
 								.BoundTo(exchange);
 
 							connection.AddConsumer(queue1, queue2)
-								.Dispatch(async payload => await Console.Out.WriteLineAsync(payload));
+								.Subscribe(async payload => await Console.Out.WriteLineAsync(payload));
 
 							connection.AddProducer(exchange);
 						});

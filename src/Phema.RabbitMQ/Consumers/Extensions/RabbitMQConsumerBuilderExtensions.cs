@@ -10,11 +10,13 @@ namespace Phema.RabbitMQ
 		/// <summary>
 		///   Received payload handler with service scope support and cancellation support
 		/// </summary>
-		public static IRabbitMQConsumerBuilder<TPayload> Dispatch<TPayload>(
+		public static IRabbitMQConsumerBuilder<TPayload> Subscribe<TPayload>(
 			this IRabbitMQConsumerBuilder<TPayload> builder,
-			Func<IServiceScope, TPayload, CancellationToken, ValueTask> dispatch)
+			Func<IServiceScope, TPayload, CancellationToken, ValueTask> subscription)
 		{
-			builder.Declaration.Dispatch = (scope, payload, token) => dispatch(scope, (TPayload)payload, token);
+			builder.Declaration
+				.Subscriptions
+				.Add((scope, payload, token) => subscription(scope, (TPayload)payload, token));
 
 			return builder;
 		}
@@ -22,21 +24,21 @@ namespace Phema.RabbitMQ
 		/// <summary>
 		///   Received payload handler with service scope support
 		/// </summary>
-		public static IRabbitMQConsumerBuilder<TPayload> Dispatch<TPayload>(
+		public static IRabbitMQConsumerBuilder<TPayload> Subscribe<TPayload>(
 			this IRabbitMQConsumerBuilder<TPayload> builder,
-			Func<IServiceScope, TPayload, ValueTask> dispatch)
+			Func<IServiceScope, TPayload, ValueTask> subscription)
 		{
-			return builder.Dispatch((scope, payload, token) => dispatch(scope, payload));
+			return builder.Subscribe((scope, payload, token) => subscription(scope, payload));
 		}
 		
 		/// <summary>
 		///   Received payload handler
 		/// </summary>
-		public static IRabbitMQConsumerBuilder<TPayload> Dispatch<TPayload>(
+		public static IRabbitMQConsumerBuilder<TPayload> Subscribe<TPayload>(
 			this IRabbitMQConsumerBuilder<TPayload> builder,
 			Func<TPayload, ValueTask> dispatch)
 		{
-			return builder.Dispatch((scope, payload, token) => dispatch(payload));
+			return builder.Subscribe((scope, payload, token) => dispatch(payload));
 		}
 
 		/// <summary>

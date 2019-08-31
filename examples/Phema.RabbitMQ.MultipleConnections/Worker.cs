@@ -19,7 +19,7 @@ namespace Phema.RabbitMQ.ConsumerPriority
 
 			while (!stoppingToken.IsCancellationRequested)
 			{
-				await producer.Produce(new ToQueue
+				await producer.Publish(new ToQueue
 				{
 					Id = index++
 				});

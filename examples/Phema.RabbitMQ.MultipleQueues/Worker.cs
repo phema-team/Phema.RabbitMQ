@@ -21,14 +21,14 @@ namespace Phema.RabbitMQ.ConsumerPriority
 			{
 				if (index++ % 2 == 0)
 				{
-					await producer.Produce(new ToQueue1
+					await producer.Publish(new ToQueue1
 					{
 						Name = "Alice"
 					});
 				}
 				else
 				{
-					await producer.Produce(new ToQueue2
+					await producer.Publish(new ToQueue2
 					{
 						Age = 72
 					});

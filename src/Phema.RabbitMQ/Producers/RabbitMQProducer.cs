@@ -11,11 +11,11 @@ namespace Phema.RabbitMQ
 {
 	public interface IRabbitMQProducer
 	{
-		Task<bool> Produce<TPayload>(
+		Task<bool> Publish<TPayload>(
 			TPayload payload,
 			Action<IRabbitMQProducerBuilder<TPayload>> overrides = null);
 
-		Task<bool> BatchProduce<TPayload>(
+		Task<bool> Publish<TPayload>(
 			IEnumerable<TPayload> payloads,
 			Action<IRabbitMQProducerBuilder<TPayload>> overrides = null);
 	}
@@ -33,7 +33,7 @@ namespace Phema.RabbitMQ
 			this.channelProvider = channelProvider;
 		}
 
-		public async Task<bool> Produce<TPayload>(
+		public async Task<bool> Publish<TPayload>(
 			TPayload payload,
 			Action<IRabbitMQProducerBuilder<TPayload>> overrides = null)
 		{
@@ -73,7 +73,7 @@ namespace Phema.RabbitMQ
 			}
 		}
 
-		public async Task<bool> BatchProduce<TPayload>(
+		public async Task<bool> Publish<TPayload>(
 			IEnumerable<TPayload> payloads,
 			Action<IRabbitMQProducerBuilder<TPayload>> overrides = null)
 		{
@@ -139,7 +139,7 @@ namespace Phema.RabbitMQ
 
 			return declaration;
 		}
-		
+
 		private IModel FromDeclaration(RabbitMQProducerDeclaration declaration)
 		{
 			var channel = channelProvider.FromDeclaration(declaration);
@@ -156,7 +156,7 @@ namespace Phema.RabbitMQ
 
 			return channel;
 		}
-		
+
 		private async Task<IBasicPublishBatch> CreateBasicPublishBatch<TPayload>(
 			IModel channel,
 			RabbitMQProducerDeclaration declaration,

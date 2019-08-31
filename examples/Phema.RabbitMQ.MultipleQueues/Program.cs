@@ -33,14 +33,14 @@ namespace Phema.RabbitMQ.ConsumerPriority
 
 							// Typed checks
 							connection.AddConsumer(queue1)
-								.Dispatch(async (scope, payload) =>
+								.Subscribe(async (scope, payload) =>
 								{
 									await Console.Out.WriteLineAsync("1:" + payload.Name);
 								});
 
 							// Typed checks
 							connection.AddConsumer(queue2)
-								.Dispatch(async (scope, payload) =>
+								.Subscribe(async (scope, payload) =>
 								{
 									await Console.Out.WriteLineAsync("2:" + payload.Age);
 								});

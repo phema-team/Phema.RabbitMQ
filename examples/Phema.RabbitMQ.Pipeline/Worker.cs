@@ -22,7 +22,7 @@ namespace Phema.RabbitMQ.ConsumerPriority
 			{
 				await Task.Delay(1000, stoppingToken);
 
-				await producer.Produce(new ClickRequest
+				await producer.Publish(new ClickRequest
 				{
 					Id = clickId
 				});

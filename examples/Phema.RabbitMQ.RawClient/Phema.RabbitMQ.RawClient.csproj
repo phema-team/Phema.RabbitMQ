@@ -9,8 +9,4 @@
 	  <PackageReference Include="RabbitMQ.Client" Version="6.0.0-pre3" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <ProjectReference Include="..\..\src\Phema.RabbitMQ\Phema.RabbitMQ.csproj" />
-	</ItemGroup>
-
 </Project>

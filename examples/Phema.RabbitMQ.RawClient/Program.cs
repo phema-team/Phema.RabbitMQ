@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using RabbitMQ.Client;
@@ -12,7 +11,7 @@ namespace Phema.RabbitMQ.RawClient
 		static void Main()
 		{
 			// Change to DispatchConsumersAsync = false 
-			using (var connection = new RabbitMQConnection(new ConnectionFactory { DispatchConsumersAsync = true }.CreateConnection()))
+			using (var connection = new ConnectionFactory { DispatchConsumersAsync = true }.CreateConnection())
 			{
 				using (var channel1 = connection.CreateModel())
 				{
@@ -54,7 +53,6 @@ namespace Phema.RabbitMQ.RawClient
 					consumer2.Received += async (sender, args) =>
 					{
 						await Console.Out.WriteLineAsync("Click processed");
-						await Task.Delay(3000);
 					};
 					channel1.BasicConsume(
 						"queue2",

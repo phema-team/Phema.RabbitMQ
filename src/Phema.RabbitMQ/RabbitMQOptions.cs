@@ -5,7 +5,7 @@ using RabbitMQ.Client;
 
 namespace Phema.RabbitMQ
 {
-	public class RabbitMQOptions
+	public sealed class RabbitMQOptions
 	{
 		public RabbitMQOptions()
 		{

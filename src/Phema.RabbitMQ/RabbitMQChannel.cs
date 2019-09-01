@@ -9,7 +9,7 @@ using RabbitMQ.Client.Impl;
 
 namespace Phema.RabbitMQ
 {
-	public class RabbitMQChannel : IDisposable
+	public sealed class RabbitMQChannel : IDisposable
 	{
 		private readonly object @lock = new object();
 

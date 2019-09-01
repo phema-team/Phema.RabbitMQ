@@ -22,9 +22,11 @@ namespace Phema.RabbitMQ.ProducerOverrides
 								.AutoDelete();
 
 							var queue1 = connection.AddQueue<string>("queue1")
+								.AutoDelete()
 								.BoundTo(exchange);
 
 							var queue2 = connection.AddQueue<string>("queue2")
+								.AutoDelete()
 								.BoundTo(exchange);
 
 							connection.AddConsumer(queue1, queue2)

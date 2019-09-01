@@ -30,10 +30,16 @@
 
 ```csharp
 services.AddRabbitMQ(options =>
-  options.UseConnectionUrl("amqp://connection.string")
-    .UseClientProvidedName("instance"))
+    options.UseConnectionFactory(factory => ...))
   .AddConnection(connection =>
   {
+    var exchange = connection.AddDirectExchange("exchange")
+      // .Internal()
+      // .NoWait()
+      // .Deleted()
+      .AutoDelete()
+      .Durable();
+
     var queue = connection.AddQueue<Payload>("queue")
       // .Exclusive()
       // .Deleted()
@@ -46,7 +52,8 @@ services.AddRabbitMQ(options =>
       // .MessageTimeToLive(1000)
       // .RejectPublish()
       .AutoDelete()
-      .Durable();
+      .Durable()
+      .BoundTo(exchange);
 
     connection.AddConsumer(queue)
       // .Tagged("tag")
@@ -61,24 +68,16 @@ services.AddRabbitMQ(options =>
       .Requeue()
       .Subscribe(...);
 
-    var exchange = connection.AddDirectExchange("exchange")
-      // .Internal()
-      // .NoWait()
-      // .Deleted()
-      .AutoDelete()
-      .Durable();
-
     connection.AddProducer<Payload>(exchange)
       // .WaitForConfirms()
       // .Transactional()
       // .Mandatory()
-      // .Priority(1)
       // .MessageTimeToLive(10000)
       .Persistent();
   });
 
 // Get or inject
-var producer = provider.GetRequiredService<IRabbitMQProducer>();
+var producer = serviceProvider.GetRequiredService<IRabbitMQProducer>();
 
 // Use
 await producer.Produce(new Payload(), overrides => ...);

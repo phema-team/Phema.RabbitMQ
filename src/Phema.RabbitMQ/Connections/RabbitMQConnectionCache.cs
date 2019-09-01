@@ -17,16 +17,18 @@ namespace Phema.RabbitMQ
 	internal sealed class RabbitMQConnectionProvider : IRabbitMQConnectionProvider
 	{
 		private readonly RabbitMQOptions options;
-		private readonly ILogger<RabbitMQConnection> connectionLogger;
 		private readonly ConcurrentDictionary<string, RabbitMQConnection> connections;
+
 		private readonly ILogger<RabbitMQChannel> channelLogger;
+		private readonly ILogger<RabbitMQConnection> connectionLogger;
 
 		public RabbitMQConnectionProvider(IServiceProvider serviceProvider)
 		{
 			connections = new ConcurrentDictionary<string, RabbitMQConnection>();
-			connectionLogger = serviceProvider.GetService<ILogger<RabbitMQConnection>>();
-			channelLogger = serviceProvider.GetService<ILogger<RabbitMQChannel>>();
 			options = serviceProvider.GetRequiredService<IOptions<RabbitMQOptions>>().Value;
+
+			channelLogger = serviceProvider.GetService<ILogger<RabbitMQChannel>>();
+			connectionLogger = serviceProvider.GetService<ILogger<RabbitMQConnection>>();
 		}
 
 		public RabbitMQConnection FromDeclaration(RabbitMQConnectionDeclaration declaration)

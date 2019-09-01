@@ -13,8 +13,8 @@ namespace Phema.RabbitMQ
 	{
 		private readonly object @lock = new object();
 
-		private readonly ILogger<RabbitMQChannel> logger;
 		private readonly IFullModel channel;
+		private readonly ILogger<RabbitMQChannel> logger;
 
 		public RabbitMQChannel(
 			RabbitMQConnectionDeclaration connectionDeclaration,

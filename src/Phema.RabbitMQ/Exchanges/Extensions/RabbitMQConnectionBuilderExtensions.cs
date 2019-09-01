@@ -5,12 +5,17 @@ namespace Phema.RabbitMQ
 {
 	public static partial class RabbitMQConnectionBuilderExtensions
 	{
-		public static IRabbitMQExchangeBuilder<object> AddExchange(
+		public static IRabbitMQExchangeBuilder AddExchange(
 			this IRabbitMQConnectionBuilder connection,
 			string type,
 			string name)
 		{
-			return connection.AddExchange<object>(type, name);
+			var declaration = new RabbitMQExchangeDeclaration(connection.Declaration, type, name);
+
+			connection.Services
+				.Configure<RabbitMQOptions>(options => options.ExchangeDeclarations.Add(declaration));
+
+			return new RabbitMQExchangeBuilder(declaration);
 		}
 
 		public static IRabbitMQExchangeBuilder<TPayload> AddExchange<TPayload>(
@@ -26,7 +31,7 @@ namespace Phema.RabbitMQ
 			return new RabbitMQExchangeBuilder<TPayload>(declaration);
 		}
 
-		public static IRabbitMQExchangeBuilder<object> AddDirectExchange(
+		public static IRabbitMQExchangeBuilder AddDirectExchange(
 			this IRabbitMQConnectionBuilder connection,
 			string name)
 		{
@@ -47,7 +52,7 @@ namespace Phema.RabbitMQ
 			return connection.AddExchange<TPayload>(ExchangeType.Fanout, name);
 		}
 
-		public static IRabbitMQExchangeBuilder<object> AddTopicExchange(
+		public static IRabbitMQExchangeBuilder AddTopicExchange(
 			this IRabbitMQConnectionBuilder connection,
 			string name)
 		{
@@ -61,7 +66,7 @@ namespace Phema.RabbitMQ
 			return connection.AddExchange<TPayload>(ExchangeType.Topic, name);
 		}
 
-		public static IRabbitMQExchangeBuilder<object> AddHeadersExchange(
+		public static IRabbitMQExchangeBuilder AddHeadersExchange(
 			this IRabbitMQConnectionBuilder connection,
 			string name)
 		{

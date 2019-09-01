@@ -166,13 +166,10 @@ namespace Phema.RabbitMQ
 			return builder.Argument("x-overflow", "reject-publish");
 		}
 
-		/// <summary>
-		///   Declare exchange to exchange binding
-		/// </summary>
-		public static IRabbitMQQueueBuilder<TPayload> BoundTo<TPayload>(
+		private static IRabbitMQQueueBuilder<TPayload> BoundTo<TPayload>(
 			this IRabbitMQQueueBuilder<TPayload> builder,
-			IRabbitMQExchangeBuilder<TPayload> exchange,
-			Action<IRabbitMQQueueBindingBuilder> binding = null)
+			IRabbitMQExchangeBuilderCore exchange,
+			Action<IRabbitMQQueueBindingBuilder> binding)
 		{
 			if (exchange is null)
 				throw new ArgumentNullException(nameof(exchange));
@@ -184,6 +181,28 @@ namespace Phema.RabbitMQ
 			builder.Declaration.BindingDeclarations.Add(declaration);
 
 			return builder;
+		}
+
+		/// <summary>
+		///   Declare exchange to exchange binding
+		/// </summary>
+		public static IRabbitMQQueueBuilder<TPayload> BoundTo<TPayload>(
+			this IRabbitMQQueueBuilder<TPayload> builder,
+			IRabbitMQExchangeBuilder exchange,
+			Action<IRabbitMQQueueBindingBuilder> binding = null)
+		{
+			return builder.BoundTo((IRabbitMQExchangeBuilderCore)exchange, binding);
+		}
+
+		/// <summary>
+		///   Declare exchange to exchange binding
+		/// </summary>
+		public static IRabbitMQQueueBuilder<TPayload> BoundTo<TPayload>(
+			this IRabbitMQQueueBuilder<TPayload> builder,
+			IRabbitMQExchangeBuilder<TPayload> exchange,
+			Action<IRabbitMQQueueBindingBuilder> binding = null)
+		{
+			return builder.BoundTo((IRabbitMQExchangeBuilderCore)exchange, binding);
 		}
 
 		/// <summary>

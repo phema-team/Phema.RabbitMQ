@@ -80,7 +80,7 @@ services.AddRabbitMQ(options =>
 var producer = serviceProvider.GetRequiredService<IRabbitMQProducer>();
 
 // Use
-await producer.Produce(new Payload(), overrides => ...);
+await producer.Publish(new Payload(), overrides => ...);
 ```
 
 ## Supported

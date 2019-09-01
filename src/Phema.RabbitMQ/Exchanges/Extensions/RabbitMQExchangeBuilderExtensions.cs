@@ -77,7 +77,7 @@ namespace Phema.RabbitMQ
 
 			binding?.Invoke(new RabbitMQExchangeBindingBuilder(declaration));
 
-			builder.Declaration.Bindings.Add(declaration);
+			builder.Declaration.BindingDeclarations.Add(declaration);
 
 			return builder;
 		}

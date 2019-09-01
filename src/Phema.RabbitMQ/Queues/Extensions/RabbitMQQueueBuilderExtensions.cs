@@ -39,12 +39,12 @@ namespace Phema.RabbitMQ
 		/// </summary>
 		public static IRabbitMQQueueBuilder<TPayload> Deleted<TPayload>(
 			this IRabbitMQQueueBuilder<TPayload> builder,
-			bool ifUnused = false,
-			bool ifEmpty = false)
+			bool unusedOnly = false,
+			bool emptyOnly = false)
 		{
 			builder.Declaration.Deleted = true;
-			builder.Declaration.IfUnused = ifUnused;
-			builder.Declaration.IfEmpty = ifEmpty;
+			builder.Declaration.UnusedOnly = unusedOnly;
+			builder.Declaration.EmptyOnly = emptyOnly;
 
 			return builder;
 		}
@@ -120,8 +120,8 @@ namespace Phema.RabbitMQ
 			IRabbitMQQueueBuilder<TPayload> queue)
 		{
 			var binding = queue.Declaration
-				.Bindings
-				.FirstOrDefault(b => b.Exchange == exchange.Declaration);
+				.BindingDeclarations
+				.FirstOrDefault(b => b.ExchangeDeclaration == exchange.Declaration);
 
 			return builder.DeadLetterTo(exchange, binding?.RoutingKey ?? queue.Declaration.Name);
 		}
@@ -181,7 +181,7 @@ namespace Phema.RabbitMQ
 
 			binding?.Invoke(new RabbitMQQueueBindingBuilder(declaration));
 
-			builder.Declaration.Bindings.Add(declaration);
+			builder.Declaration.BindingDeclarations.Add(declaration);
 
 			return builder;
 		}

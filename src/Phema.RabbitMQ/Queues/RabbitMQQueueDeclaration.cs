@@ -5,25 +5,25 @@ namespace Phema.RabbitMQ
 	public sealed class RabbitMQQueueDeclaration
 	{
 		public RabbitMQQueueDeclaration(
-			RabbitMQConnectionDeclaration connection,
+			RabbitMQConnectionDeclaration connectionDeclaration,
 			string name)
 		{
-			Connection = connection;
+			ConnectionDeclaration = connectionDeclaration;
 			Name = name;
 			Arguments = new Dictionary<string, object>();
-			Bindings = new List<RabbitMQQueueBindingDeclaration>();
+			BindingDeclarations = new List<RabbitMQQueueBindingDeclaration>();
 		}
 
-		public RabbitMQConnectionDeclaration Connection { get; }
+		public RabbitMQConnectionDeclaration ConnectionDeclaration { get; }
 		public string Name { get; }
 		public bool Durable { get; set; }
 		public bool Exclusive { get; set; }
 		public bool AutoDelete { get; set; }
 		public bool NoWait { get; set; }
 		public bool Deleted { get; set; }
-		public bool IfUnused { get; set; }
-		public bool IfEmpty { get; set; }
+		public bool UnusedOnly { get; set; }
+		public bool EmptyOnly { get; set; }
 		public IDictionary<string, object> Arguments { get; }
-		public IList<RabbitMQQueueBindingDeclaration> Bindings { get; }
+		public IList<RabbitMQQueueBindingDeclaration> BindingDeclarations { get; }
 	}
 }

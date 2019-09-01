@@ -32,8 +32,8 @@ namespace Phema.RabbitMQ.Tests
 			Assert.False(declaration.Multiple);
 			Assert.False(declaration.NoLocal);
 			Assert.Equal(0, declaration.PrefetchCount);
-			Assert.Equal("queue", Assert.Single(declaration.Queues).Name);
-			Assert.Equal("connection", declaration.Connection.Name);
+			Assert.Equal("queue", Assert.Single(declaration.QueueDeclarations).Name);
+			Assert.Equal("connection", declaration.ConnectionDeclaration.Name);
 			Assert.False(declaration.Requeue);
 			Assert.Null(declaration.Tag);
 		}
@@ -71,11 +71,11 @@ namespace Phema.RabbitMQ.Tests
 			Assert.Equal(2u, declaration.Count);
 			Assert.True(declaration.Exclusive);
 			Assert.False(declaration.Global);
-			Assert.Equal("consumers", declaration.Connection.Name);
+			Assert.Equal("consumers", declaration.ConnectionDeclaration.Name);
 			Assert.True(declaration.Multiple);
 			Assert.True(declaration.NoLocal);
 			Assert.Equal(2, declaration.PrefetchCount);
-			Assert.Equal("queue", Assert.Single(declaration.Queues).Name);
+			Assert.Equal("queue", Assert.Single(declaration.QueueDeclarations).Name);
 			Assert.True(declaration.Requeue);
 			Assert.Equal("tag", declaration.Tag);
 		}

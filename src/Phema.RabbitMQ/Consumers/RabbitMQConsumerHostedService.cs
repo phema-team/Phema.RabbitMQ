@@ -10,46 +10,38 @@ namespace Phema.RabbitMQ
 	{
 		private readonly RabbitMQOptions options;
 		private readonly IServiceProvider serviceProvider;
-		private readonly IRabbitMQChannelProvider channelProvider;
+		private readonly IRabbitMQConnectionProvider connectionProvider;
 
 		public RabbitMQConsumerHostedService(
 			IServiceProvider serviceProvider,
 			IOptions<RabbitMQOptions> options,
-			IRabbitMQChannelProvider channelProvider)
+			IRabbitMQConnectionProvider connectionProvider)
 		{
 			this.options = options.Value;
 			this.serviceProvider = serviceProvider;
-			this.channelProvider = channelProvider;
+			this.connectionProvider = connectionProvider;
 		}
 
-		public Task StartAsync(CancellationToken token)
+		public async Task StartAsync(CancellationToken cancellationToken)
 		{
 			foreach (var declaration in options.ConsumerDeclarations)
 			{
-				foreach (var queue in declaration.Queues)
+				foreach (var queueDeclaration in declaration.QueueDeclarations)
 				{
-					var channel = channelProvider.FromDeclaration(declaration);
+					var channel = await connectionProvider
+						.FromDeclaration(declaration.ConnectionDeclaration)
+						.CreateChannelAsync();
 
-					// PrefetchSize != 0 is not implemented for now
-					channel.BasicQos(0, declaration.PrefetchCount, declaration.Global);
+					channel.BasicQos(declaration);
 
-					for (var index = 0; index < declaration.Count; index++)
-					{
-						channel.BasicConsume(
-							queue: queue.Name,
-							autoAck: declaration.AutoAck,
-							consumerTag: declaration.Tag is null
-								? string.Empty
-								: $"{declaration.Tag}_{index}",
-							noLocal: declaration.NoLocal,
-							exclusive: declaration.Exclusive,
-							arguments: declaration.Arguments,
-							consumer: new RabbitMQConsumer(channel, options, serviceProvider, declaration, token));
-					}
+					channel.BasicConsume(
+						serviceProvider,
+						options,
+						queueDeclaration,
+						declaration,
+						cancellationToken);
 				}
 			}
-
-			return Task.CompletedTask;
 		}
 
 		public Task StopAsync(CancellationToken cancellationToken)

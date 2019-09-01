@@ -14,8 +14,8 @@ namespace Phema.RabbitMQ
 			IRabbitMQQueueBuilder<TPayload> queue)
 		{
 			var binding = queue.Declaration
-				.Bindings
-				.FirstOrDefault(b => b.Exchange == builder.Declaration.Exchange);
+				.BindingDeclarations
+				.FirstOrDefault(b => b.ExchangeDeclaration == builder.Declaration.ExchangeDeclaration);
 
 			builder.Declaration.RoutingKey = binding?.RoutingKey ?? queue.Declaration.Name;
 			return builder;

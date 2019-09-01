@@ -18,8 +18,7 @@ namespace Phema.RabbitMQ.ConsumerPriority
 				.ConfigureLogging(builder => builder.AddConsole())
 				.ConfigureServices((hostContext, services) =>
 				{
-					services.AddRabbitMQ(options => options
-							.UseConnectionFactory(factory => factory.ClientProvidedName = "pipeline"))
+					services.AddRabbitMQ(options => options.UseClientProvidedName("pipeline"))
 						.AddConnection("connection", connection =>
 						{
 							var exchange = connection.AddDirectExchange("exchange")

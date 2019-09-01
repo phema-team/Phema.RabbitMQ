@@ -26,8 +26,8 @@ namespace Phema.RabbitMQ.Tests
 
 			Assert.Empty(declaration.Arguments);
 			Assert.False(declaration.Die);
-			Assert.Equal("exchange", declaration.Exchange.Name);
-			Assert.Equal("connection", declaration.Connection.Name);
+			Assert.Equal("exchange", declaration.ExchangeDeclaration.Name);
+			Assert.Equal("connection", declaration.ConnectionDeclaration.Name);
 			Assert.False(declaration.Mandatory);
 			Assert.Empty(declaration.Properties);
 			Assert.Null(declaration.RoutingKey);
@@ -65,8 +65,8 @@ namespace Phema.RabbitMQ.Tests
 			Assert.Equal("argument", value);
 
 			Assert.True(declaration.Die);
-			Assert.Equal("exchange", declaration.Exchange.Name);
-			Assert.Equal("exchanges", declaration.Connection.Name);
+			Assert.Equal("exchange", declaration.ExchangeDeclaration.Name);
+			Assert.Equal("exchanges", declaration.ConnectionDeclaration.Name);
 			Assert.True(declaration.Mandatory);
 			Assert.Equal(2, declaration.Properties.Count);
 			Assert.Equal("routing_key", declaration.RoutingKey);

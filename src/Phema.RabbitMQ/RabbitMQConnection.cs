@@ -1,282 +1,47 @@
 using System;
-using System.Collections.Generic;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using RabbitMQ.Client.Impl;
 
 namespace Phema.RabbitMQ
 {
-	public class RabbitMQConnection : IConnection
+	public sealed class RabbitMQConnection : IDisposable
 	{
 		private readonly object @lock = new object();
 
 		private readonly IConnection connection;
+		private readonly ILogger<RabbitMQChannel> channelLogger;
 
-		public RabbitMQConnection(IConnection connection)
+		public RabbitMQConnection(
+			ILogger<RabbitMQChannel> channelLogger,
+			RabbitMQConnectionDeclaration connectionDeclaration,
+			IConnection connection)
 		{
+			ConnectionDeclaration = connectionDeclaration;
+			this.channelLogger = channelLogger;
 			this.connection = connection;
 		}
 
-		public int LocalPort
-		{
-			get
-			{
-				lock (@lock)
-				{
-					return connection.LocalPort;
-				}
-			}
-		}
+		public string ClientProvidedName => connection.ClientProvidedName;
+		public RabbitMQConnectionDeclaration ConnectionDeclaration { get; }
 
-		public int RemotePort
+		public Task<RabbitMQChannel> CreateChannelAsync()
 		{
-			get
+			lock (@lock)
 			{
-				lock (@lock)
-				{
-					return connection.RemotePort;
-				}
+				// TODO: Hack https://github.com/rabbitmq/rabbitmq-dotnet-client/issues/650
+				return Task.Run(() => new RabbitMQChannel(
+					ConnectionDeclaration,
+					(IFullModel)connection.CreateModel(),
+					channelLogger));
 			}
 		}
 
 		public void Dispose()
 		{
-			lock (@lock)
-			{
-				connection.Dispose();
-			}
-		}
-
-		public void Abort()
-		{
-			lock (@lock)
-			{
-				connection.Abort();
-			}
-		}
-
-		public void Abort(ushort reasonCode, string reasonText)
-		{
-			lock (@lock)
-			{
-				connection.Abort(reasonCode, reasonText);
-			}
-		}
-
-		public void Abort(int timeout)
-		{
-			lock (@lock)
-			{
-				connection.Abort(timeout);
-			}
-		}
-
-		public void Abort(ushort reasonCode, string reasonText, int timeout)
-		{
-			lock (@lock)
-			{
-				connection.Abort(reasonCode, reasonText, timeout);
-			}
-		}
-
-		public void Close()
-		{
-			lock (@lock)
-			{
-				connection.Close();
-			}
-		}
-
-		public void Close(ushort reasonCode, string reasonText)
-		{
-			lock (@lock)
-			{
-				connection.Close(reasonCode, reasonText);
-			}
-		}
-
-		public void Close(int timeout)
-		{
-			lock (@lock)
-			{
-				connection.Close(timeout);
-			}
-		}
-
-		public void Close(ushort reasonCode, string reasonText, int timeout)
-		{
-			lock (@lock)
-			{
-				connection.Close(reasonCode, reasonText, timeout);
-			}
-		}
-
-		public IModel CreateModel()
-		{
-			lock (@lock)
-			{
-				return new RabbitMQChannel((IFullModel)connection.CreateModel());
-			}
-		}
-
-		public void HandleConnectionBlocked(string reason)
-		{
-			lock (@lock)
-			{
-				connection.HandleConnectionBlocked(reason);
-			}
-		}
-
-		public void HandleConnectionUnblocked()
-		{
-			lock (@lock)
-			{
-				connection.HandleConnectionUnblocked();
-			}
-		}
-
-		public ushort ChannelMax
-		{
-			get
-			{
-				lock (@lock)
-				{
-					return connection.ChannelMax;
-				}
-			}
-		}
-
-		public IDictionary<string, object> ClientProperties
-		{
-			get
-			{
-				lock (@lock)
-				{
-					return connection.ClientProperties;
-				}
-			}
-		}
-
-		public ShutdownEventArgs CloseReason
-		{
-			get
-			{
-				lock (@lock)
-				{
-					return connection.CloseReason;
-				}
-			}
-		}
-
-		public AmqpTcpEndpoint Endpoint
-		{
-			get
-			{
-				lock (@lock)
-				{
-					return connection.Endpoint;
-				}
-			}
-		}
-
-		public uint FrameMax
-		{
-			get
-			{
-				lock (@lock)
-				{
-					return connection.FrameMax;
-				}
-			}
-		}
-
-		public ushort Heartbeat
-		{
-			get
-			{
-				lock (@lock)
-				{
-					return connection.Heartbeat;
-				}
-			}
-		}
-
-		public bool IsOpen
-		{
-			get
-			{
-				lock (@lock)
-				{
-					return connection.IsOpen;
-				}
-			}
-		}
-
-		public AmqpTcpEndpoint[] KnownHosts
-		{
-			get
-			{
-				lock (@lock)
-				{
-					return connection.KnownHosts;
-				}
-			}
-		}
-
-		public IProtocol Protocol
-		{
-			get
-			{
-				lock (@lock)
-				{
-					return connection.Protocol;
-				}
-			}
-		}
-
-		public IDictionary<string, object> ServerProperties
-		{
-			get
-			{
-				lock (@lock)
-				{
-					return connection.ServerProperties;
-				}
-			}
-		}
-
-		public IList<ShutdownReportEntry> ShutdownReport
-		{
-			get
-			{
-				lock (@lock)
-				{
-					return connection.ShutdownReport;
-				}
-			}
-		}
-
-		public string ClientProvidedName
-		{
-			get
-			{
-				lock (@lock)
-				{
-					return connection.ClientProvidedName;
-				}
-			}
-		}
-
-		// TODO: Thread-safe?
-		public ConsumerWorkService ConsumerWorkService
-		{
-			get
-			{
-				lock (@lock)
-				{
-					return connection.ConsumerWorkService;
-				}
-			}
+			connection?.Dispose();
 		}
 
 		public event EventHandler<CallbackExceptionEventArgs> CallbackException

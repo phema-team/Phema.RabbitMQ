@@ -29,10 +29,10 @@ namespace Phema.RabbitMQ.Tests
 			Assert.False(declaration.AutoDelete);
 			Assert.False(declaration.Deleted);
 			Assert.False(declaration.Durable);
-			Assert.Empty(declaration.Bindings);
+			Assert.Empty(declaration.BindingDeclarations);
 			Assert.Equal("exchange", declaration.Name);
 			Assert.Equal(ExchangeType.Direct, declaration.Type);
-			Assert.Equal("connection", declaration.Connection.Name);
+			Assert.Equal("connection", declaration.ConnectionDeclaration.Name);
 			Assert.False(declaration.UnusedOnly);
 			Assert.False(declaration.Internal);
 			Assert.False(declaration.NoWait);
@@ -73,9 +73,9 @@ namespace Phema.RabbitMQ.Tests
 			Assert.True(declaration.AutoDelete);
 			Assert.True(declaration.Deleted);
 			Assert.True(declaration.Durable);
-			var binding = Assert.Single(declaration.Bindings);
+			var binding = Assert.Single(declaration.BindingDeclarations);
 			Assert.Equal("routing_key", binding.RoutingKey);
-			Assert.Equal("exchange2", binding.Exchange.Name);
+			Assert.Equal("exchange2", binding.ExchangeDeclaration.Name);
 			Assert.True(binding.Deleted);
 			Assert.True(binding.NoWait);
 
@@ -85,7 +85,7 @@ namespace Phema.RabbitMQ.Tests
 
 			Assert.Equal("exchange", declaration.Name);
 			Assert.Equal(ExchangeType.Topic, declaration.Type);
-			Assert.Equal("exchanges", declaration.Connection.Name);
+			Assert.Equal("exchanges", declaration.ConnectionDeclaration.Name);
 			Assert.True(declaration.UnusedOnly);
 			Assert.True(declaration.Internal);
 			Assert.True(declaration.NoWait);

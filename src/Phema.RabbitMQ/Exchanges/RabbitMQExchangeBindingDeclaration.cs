@@ -4,13 +4,13 @@ namespace Phema.RabbitMQ
 {
 	public sealed class RabbitMQExchangeBindingDeclaration
 	{
-		public RabbitMQExchangeBindingDeclaration(RabbitMQExchangeDeclaration exchange)
+		public RabbitMQExchangeBindingDeclaration(RabbitMQExchangeDeclaration exchangeDeclaration)
 		{
-			Exchange = exchange;
+			ExchangeDeclaration = exchangeDeclaration;
 			Arguments = new Dictionary<string, object>();
 		}
 
-		public RabbitMQExchangeDeclaration Exchange { get; }
+		public RabbitMQExchangeDeclaration ExchangeDeclaration { get; }
 		public string RoutingKey { get; set; }
 		public bool NoWait { get; set; }
 		public bool Deleted { get; set; }

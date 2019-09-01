@@ -4,9 +4,9 @@ namespace Phema.RabbitMQ
 {
 	public static partial class RabbitMQConnectionBuilderExtensions
 	{
-		public static IRabbitMQProducerBuilder<TPayload> AddProducer<TPayload>(
+		private static IRabbitMQProducerBuilder<TPayload> AddProducer<TPayload>(
 			this IRabbitMQConnectionBuilder connection,
-			IRabbitMQExchangeBuilder<TPayload> exchange)
+			IRabbitMQExchangeBuilderCore exchange)
 		{
 			var declaration = new RabbitMQProducerDeclaration(
 				typeof(TPayload),
@@ -18,6 +18,20 @@ namespace Phema.RabbitMQ
 					options => options.ProducerDeclarations.Add(declaration));
 
 			return new RabbitMQProducerBuilder<TPayload>(declaration);
+		}
+
+		public static IRabbitMQProducerBuilder<TPayload> AddProducer<TPayload>(
+			this IRabbitMQConnectionBuilder connection,
+			IRabbitMQExchangeBuilder exchange)
+		{
+			return connection.AddProducer<TPayload>((IRabbitMQExchangeBuilderCore)exchange);
+		}
+		
+		public static IRabbitMQProducerBuilder<TPayload> AddProducer<TPayload>(
+			this IRabbitMQConnectionBuilder connection,
+			IRabbitMQExchangeBuilder<TPayload> exchange)
+		{
+			return connection.AddProducer<TPayload>((IRabbitMQExchangeBuilderCore)exchange);
 		}
 	}
 }

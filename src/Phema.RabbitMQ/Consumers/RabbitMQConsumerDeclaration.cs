@@ -10,20 +10,20 @@ namespace Phema.RabbitMQ
 	{
 		public RabbitMQConsumerDeclaration(
 			Type type,
-			RabbitMQConnectionDeclaration connection,
-			RabbitMQQueueDeclaration[] queues)
+			RabbitMQConnectionDeclaration connectionDeclaration,
+			RabbitMQQueueDeclaration[] queueDeclarations)
 		{
 			Type = type;
-			Connection = connection;
-			Queues = queues;
+			ConnectionDeclaration = connectionDeclaration;
+			QueueDeclarations = queueDeclarations;
 			Count = 1;
 			Arguments = new Dictionary<string, object>();
 			Subscriptions = new List<Func<IServiceScope, object, CancellationToken, ValueTask>>();
 		}
 
 		public Type Type { get; }
-		public RabbitMQConnectionDeclaration Connection { get; }
-		public RabbitMQQueueDeclaration[] Queues { get; }
+		public RabbitMQConnectionDeclaration ConnectionDeclaration { get; }
+		public RabbitMQQueueDeclaration[] QueueDeclarations { get; }
 		public ICollection<Func<IServiceScope, object, CancellationToken, ValueTask>> Subscriptions { get; }
 
 		public string Tag { get; set; }

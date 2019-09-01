@@ -8,19 +8,19 @@ namespace Phema.RabbitMQ
 	{
 		public RabbitMQProducerDeclaration(
 			Type type,
-			RabbitMQConnectionDeclaration connection,
-			RabbitMQExchangeDeclaration exchange)
+			RabbitMQConnectionDeclaration connectionDeclaration,
+			RabbitMQExchangeDeclaration exchangeDeclaration)
 		{
 			Type = type;
-			Connection = connection;
-			Exchange = exchange;
+			ConnectionDeclaration = connectionDeclaration;
+			ExchangeDeclaration = exchangeDeclaration;
 			Properties = new List<Action<IBasicProperties>>();
 			Arguments = new Dictionary<string, object>();
 		}
 
 		public Type Type { get; }
-		public RabbitMQConnectionDeclaration Connection { get; }
-		public RabbitMQExchangeDeclaration Exchange { get; }
+		public RabbitMQConnectionDeclaration ConnectionDeclaration { get; }
+		public RabbitMQExchangeDeclaration ExchangeDeclaration { get; }
 		public string RoutingKey { get; set; }
 		public bool Mandatory { get; set; }
 		public bool Transactional { get; set; }
@@ -32,7 +32,10 @@ namespace Phema.RabbitMQ
 
 		public static RabbitMQProducerDeclaration FromDeclaration(RabbitMQProducerDeclaration declaration)
 		{
-			return new RabbitMQProducerDeclaration(declaration.Type, declaration.Connection, declaration.Exchange)
+			return new RabbitMQProducerDeclaration(
+				declaration.Type,
+				declaration.ConnectionDeclaration,
+				declaration.ExchangeDeclaration)
 			{
 				RoutingKey = declaration.RoutingKey,
 				Mandatory = declaration.Mandatory,

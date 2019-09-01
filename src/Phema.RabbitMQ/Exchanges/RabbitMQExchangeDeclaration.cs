@@ -5,18 +5,18 @@ namespace Phema.RabbitMQ
 	public sealed class RabbitMQExchangeDeclaration
 	{
 		public RabbitMQExchangeDeclaration(
-			RabbitMQConnectionDeclaration connection,
+			RabbitMQConnectionDeclaration connectionDeclaration,
 			string type,
 			string name)
 		{
-			Connection = connection;
+			ConnectionDeclaration = connectionDeclaration;
 			Type = type;
 			Name = name;
 			Arguments = new Dictionary<string, object>();
-			Bindings = new List<RabbitMQExchangeBindingDeclaration>();
+			BindingDeclarations = new List<RabbitMQExchangeBindingDeclaration>();
 		}
 
-		public RabbitMQConnectionDeclaration Connection { get; }
+		public RabbitMQConnectionDeclaration ConnectionDeclaration { get; }
 		public string Type { get; }
 		public string Name { get; }
 		public bool Durable { get; set; }
@@ -28,6 +28,6 @@ namespace Phema.RabbitMQ
 		public bool UnusedOnly { get; set; }
 
 		public IDictionary<string, object> Arguments { get; }
-		public IList<RabbitMQExchangeBindingDeclaration> Bindings { get; }
+		public IList<RabbitMQExchangeBindingDeclaration> BindingDeclarations { get; }
 	}
 }

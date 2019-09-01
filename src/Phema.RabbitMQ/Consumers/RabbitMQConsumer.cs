@@ -11,18 +11,18 @@ namespace Phema.RabbitMQ
 		private readonly RabbitMQOptions options;
 		private readonly IServiceProvider serviceProvider;
 		private readonly RabbitMQConsumerDeclaration declaration;
-		private readonly CancellationToken token;
+		private readonly CancellationToken cancellationToken;
 
 		public RabbitMQConsumer(
 			IModel channel,
 			RabbitMQOptions options,
 			IServiceProvider serviceProvider,
 			RabbitMQConsumerDeclaration declaration,
-			CancellationToken token) : base(channel)
+			CancellationToken cancellationToken) : base(channel)
 		{
 			this.options = options;
 			this.declaration = declaration;
-			this.token = token;
+			this.cancellationToken = cancellationToken;
 			this.serviceProvider = serviceProvider;
 		}
 
@@ -43,7 +43,7 @@ namespace Phema.RabbitMQ
 				{
 					foreach (var subscription in declaration.Subscriptions)
 					{
-						await subscription(scope, payload, token).ConfigureAwait(false);
+						await subscription(scope, payload, cancellationToken).ConfigureAwait(false);
 					}
 				}
 				catch

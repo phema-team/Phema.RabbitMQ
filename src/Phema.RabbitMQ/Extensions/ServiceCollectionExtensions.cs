@@ -16,7 +16,6 @@ namespace Phema.RabbitMQ
 				.AddSingleton<IRabbitMQProducer, RabbitMQProducer>()
 				.AddSingleton<IRabbitMQChannelProvider, RabbitMQChannelProvider>()
 				.AddSingleton<IRabbitMQConnectionProvider, RabbitMQConnectionProvider>()
-				.AddHostedService<RabbitMQConnectionHostedService>()
 				.AddHostedService<RabbitMQExchangeHostedService>()
 				.AddHostedService<RabbitMQQueueHostedService>()
 				.AddHostedService<RabbitMQConsumerHostedService>();

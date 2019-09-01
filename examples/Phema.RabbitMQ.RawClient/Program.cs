@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using System.Threading.Tasks;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
@@ -9,7 +10,6 @@ namespace Phema.RabbitMQ.RawClient
 	{
 		static void Main()
 		{
-			// Change to DispatchConsumersAsync = false 
 			using (var connection = new ConnectionFactory { DispatchConsumersAsync = true }.CreateConnection())
 			{
 				using (var channel1 = connection.CreateModel())
@@ -23,18 +23,20 @@ namespace Phema.RabbitMQ.RawClient
 					channel1.QueueDeclare("queue2");
 					channel1.QueueBind("queue2", "exchange", "queue2");
 
-					// Change to EventingBasicConsumer
 					var consumer1 = new AsyncEventingBasicConsumer(channel1);
 					consumer1.Received += async (sender, args) =>
 					{
 						try
 						{
-							// Issue with opening channel in async consumers
-							using (var channel2 = connection.CreateModel())
+							// TODO: Hack https://github.com/rabbitmq/rabbitmq-dotnet-client/issues/650
+							await Task.Run(async () =>
 							{
-								await Console.Out.WriteLineAsync("Click requested");
-								channel2.BasicPublish("exchange", "queue2");
-							}
+								using (var channel2 = connection.CreateModel())
+								{
+									await Console.Out.WriteLineAsync("Click requested");
+									channel2.BasicPublish("exchange", "queue2");
+								}
+							});
 						}
 						catch (TimeoutException e)
 						{
@@ -47,7 +49,6 @@ namespace Phema.RabbitMQ.RawClient
 						autoAck: true,
 						consumer1);
 
-					// Change to EventingBasicConsumer
 					var consumer2 = new AsyncEventingBasicConsumer(channel1);
 					consumer2.Received += async (sender, args) =>
 					{

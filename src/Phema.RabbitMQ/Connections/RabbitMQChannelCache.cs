@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Concurrent;
+using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using RabbitMQ.Client;
 
 namespace Phema.RabbitMQ
 {
@@ -11,90 +11,67 @@ namespace Phema.RabbitMQ
 		/// <summary>
 		/// Get cached thread-safe channel for producer declaration
 		/// </summary>
-		IModel FromDeclaration(RabbitMQProducerDeclaration declaration);
-
-		/// <summary>
-		/// Get cached thread-safe channel for consumer declaration
-		/// </summary>
-		IModel FromDeclaration(RabbitMQConsumerDeclaration declaration);
-
-		/// <summary>
-		/// Get thread-safe channel for exchange declaration
-		/// </summary>
-		IModel FromDeclaration(RabbitMQExchangeDeclaration declaration);
-
-		/// <summary>
-		/// Get thread-safe channel for queue declaration
-		/// </summary>
-		IModel FromDeclaration(RabbitMQQueueDeclaration declaration);
+		ValueTask<RabbitMQChannel> FromDeclaration(RabbitMQProducerDeclaration declaration);
 	}
 
 	internal sealed class RabbitMQChannelProvider : IRabbitMQChannelProvider
 	{
 		private readonly ILogger<RabbitMQChannel> logger;
 		private readonly IRabbitMQConnectionProvider connectionProvider;
-		private readonly ConcurrentDictionary<(Type, string, string), IModel> channels;
+		private readonly ConcurrentDictionary<(Type, string, string), RabbitMQChannel> channels;
 
-		public RabbitMQChannelProvider(IServiceProvider serviceProvider)
+		public RabbitMQChannelProvider(IServiceProvider serviceProvider, IRabbitMQConnectionProvider connectionProvider)
 		{
+			this.connectionProvider = connectionProvider;
 			logger = serviceProvider.GetService<ILogger<RabbitMQChannel>>();
-			connectionProvider = serviceProvider.GetRequiredService<IRabbitMQConnectionProvider>();
-			channels = new ConcurrentDictionary<(Type, string, string), IModel>();
+			channels = new ConcurrentDictionary<(Type, string, string), RabbitMQChannel>();
 		}
 
-		public IModel FromDeclaration(RabbitMQProducerDeclaration declaration)
+		public async ValueTask<RabbitMQChannel> FromDeclaration(RabbitMQProducerDeclaration declaration)
 		{
-			var key = (declaration.Type, declaration.Connection.Name, declaration.Exchange.Name);
-			var connection = connectionProvider.FromDeclaration(declaration.Connection);
+			var key = (declaration.Type, declaration.ConnectionDeclaration.Name, declaration.ExchangeDeclaration.Name);
+			var connection = connectionProvider.FromDeclaration(declaration.ConnectionDeclaration);
 
-			return channels.GetOrAdd(key, _ =>
+			if (!channels.TryGetValue(key, out var channel))
 			{
-				var channel = connection.CreateModel();
+				channel = await connection.CreateChannelAsync();
 
-				EnsureLogging(channel, declaration.Connection);
+				EnsureLogging(channel);
 
-				return channel;
-			});
-		}
+				channels.TryAdd(key, channel);
 
-		public IModel FromDeclaration(RabbitMQConsumerDeclaration declaration)
-		{
-			var connection = connectionProvider.FromDeclaration(declaration.Connection);
+				if (declaration.WaitForConfirms)
+				{
+					channel.ConfirmSelect();
+				}
 
-			var channel = connection.CreateModel();
-
-			EnsureLogging(channel, declaration.Connection);
+				if (declaration.Transactional)
+				{
+					channel.TxSelect();
+				}
+			}
 
 			return channel;
 		}
 
-		public IModel FromDeclaration(RabbitMQExchangeDeclaration declaration)
-		{
-			return connectionProvider.FromDeclaration(declaration.Connection).CreateModel();
-		}
-
-		public IModel FromDeclaration(RabbitMQQueueDeclaration declaration)
-		{
-			return connectionProvider.FromDeclaration(declaration.Connection).CreateModel();
-		}
-
-		private void EnsureLogging(IModel channel, RabbitMQConnectionDeclaration declaration)
+		private void EnsureLogging(RabbitMQChannel channel)
 		{
 			channel.CallbackException += (sender, args) =>
 				logger?.LogError(
 					args.Exception,
-					$"Channel '{channel.ChannelNumber}' exception. Connection: '{declaration.Name}'");
+					$"Channel '{channel.ChannelNumber}' exception. Connection: '{channel.ConnectionDeclaration.Name}'");
 
 			channel.FlowControl += (sender, args) =>
 				logger?.LogWarning(
-					$"Channel '{channel.ChannelNumber}' flow control. Connection: '{declaration.Name}', active: {args.Active}");
+					$"Channel '{channel.ChannelNumber}' flow control. Connection: '{channel.ConnectionDeclaration.Name}', active: {args.Active}");
 
 			channel.BasicRecoverOk += (sender, args) =>
-				logger?.LogInformation($"Channel '{channel.ChannelNumber}' recovery. Connection: '{declaration.Name}'");
+				logger?.LogInformation(
+					$"Channel '{channel.ChannelNumber}' recovery. Connection: '{channel.ConnectionDeclaration.Name}'");
 
 			channel.ModelShutdown += (sender, args) =>
 				logger?.LogError(
-					$"Channel '{channel.ChannelNumber}' shutdown. Connection: '{declaration.Name}', reason: '{args.ReplyText}'");
+					$"Channel '{channel.ChannelNumber}' shutdown. Connection: '{channel.ConnectionDeclaration.Name}', reason: '{args.ReplyText}'");
 		}
 	}
 }

@@ -16,7 +16,7 @@ namespace Phema.RabbitMQ
 		{
 			builder.Declaration
 				.Subscriptions
-				.Add((scope, payload, token) => subscription(scope, (TPayload)payload, token));
+				.Add((scope, payload, cancellationToken) => subscription(scope, (TPayload)payload, cancellationToken));
 
 			return builder;
 		}
@@ -28,7 +28,7 @@ namespace Phema.RabbitMQ
 			this IRabbitMQConsumerBuilder<TPayload> builder,
 			Func<IServiceScope, TPayload, ValueTask> subscription)
 		{
-			return builder.Subscribe((scope, payload, token) => subscription(scope, payload));
+			return builder.Subscribe((scope, payload, cancellationToken) => subscription(scope, payload));
 		}
 
 		/// <summary>
@@ -38,7 +38,7 @@ namespace Phema.RabbitMQ
 			this IRabbitMQConsumerBuilder<TPayload> builder,
 			Func<TPayload, ValueTask> subscription)
 		{
-			return builder.Subscribe((scope, payload, token) => subscription(payload));
+			return builder.Subscribe((scope, payload, cancellationToken) => subscription(payload));
 		}
 
 		/// <summary>

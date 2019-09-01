@@ -33,6 +33,7 @@ services.AddRabbitMQ(options =>
     options.UseConnectionFactory(factory => ...))
   .AddConnection(connection =>
   {
+    // Enable type checks with .AddDirectExchange<TPayload>() extension
     var exchange = connection.AddDirectExchange("exchange")
       // .Internal()
       // .NoWait()
@@ -53,8 +54,10 @@ services.AddRabbitMQ(options =>
       // .RejectPublish()
       .AutoDelete()
       .Durable()
+      // Type checks
       .BoundTo(exchange);
 
+    // Type checks
     connection.AddConsumer(queue)
       // .Tagged("tag")
       // .Prefetch(1)
@@ -68,6 +71,7 @@ services.AddRabbitMQ(options =>
       .Requeue()
       .Subscribe(...);
 
+    // Type cheks
     connection.AddProducer<Payload>(exchange)
       // .WaitForConfirms()
       // .Transactional()

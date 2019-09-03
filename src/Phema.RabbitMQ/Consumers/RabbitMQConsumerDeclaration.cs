@@ -24,7 +24,7 @@ namespace Phema.RabbitMQ
 		public Type PayloadType { get; }
 		public RabbitMQConnectionDeclaration ConnectionDeclaration { get; }
 		public RabbitMQQueueDeclaration[] QueueDeclarations { get; }
-		public ICollection<Func<IServiceScope, object, CancellationToken, ValueTask>> Subscriptions { get; }
+		public IList<Func<IServiceScope, object, CancellationToken, ValueTask>> Subscriptions { get; }
 
 		public string Tag { get; set; }
 		public ushort PrefetchCount { get; set; }

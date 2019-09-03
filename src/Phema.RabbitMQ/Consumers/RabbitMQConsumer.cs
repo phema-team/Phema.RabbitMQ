@@ -35,7 +35,7 @@ namespace Phema.RabbitMQ
 			IBasicProperties properties,
 			byte[] body)
 		{
-			var payload = options.Deserializer(body, declaration.Type);
+			var payload = options.Deserializer(body, declaration.PayloadType);
 
 			using (var scope = serviceProvider.CreateScope())
 			{

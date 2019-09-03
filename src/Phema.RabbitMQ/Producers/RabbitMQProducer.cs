@@ -105,7 +105,8 @@ namespace Phema.RabbitMQ
 		private RabbitMQProducerDeclaration GetDeclaration<TPayload>(Action<IRabbitMQProducerBuilder<TPayload>> overrides)
 		{
 			// TODO: Dictionary?
-			var declaration = options.ProducerDeclarations.First(d => d.Type == typeof(TPayload));
+			var declaration = options.ProducerDeclarations.FirstOrDefault(d => d.PayloadType == typeof(TPayload))
+				?? throw new RabbitMQMissingDeclarationException(typeof(TPayload));
 
 			if (overrides != null)
 			{

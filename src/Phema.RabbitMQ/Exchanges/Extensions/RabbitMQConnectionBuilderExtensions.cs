@@ -10,7 +10,7 @@ namespace Phema.RabbitMQ
 			string type,
 			string name)
 		{
-			var declaration = new RabbitMQExchangeDeclaration(connection.Declaration, type, name);
+			var declaration = new RabbitMQExchangeDeclaration(connection.ConnectionDeclaration, type, name);
 
 			connection.Services
 				.Configure<RabbitMQOptions>(options => options.ExchangeDeclarations.Add(declaration));
@@ -23,7 +23,7 @@ namespace Phema.RabbitMQ
 			string type,
 			string name)
 		{
-			var declaration = new RabbitMQExchangeDeclaration(connection.Declaration, type, name);
+			var declaration = new RabbitMQExchangeDeclaration(connection.ConnectionDeclaration, type, name);
 
 			connection.Services
 				.Configure<RabbitMQOptions>(options => options.ExchangeDeclarations.Add(declaration));

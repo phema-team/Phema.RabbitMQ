@@ -34,7 +34,7 @@ namespace Phema.RabbitMQ
 		internal IList<RabbitMQConnectionDeclaration> ConnectionDeclarations { get; }
 		internal IList<RabbitMQExchangeDeclaration> ExchangeDeclarations { get; }
 		internal IList<RabbitMQQueueDeclaration> QueueDeclarations { get; }
-		internal List<RabbitMQConsumerDeclaration> ConsumerDeclarations { get; }
-		internal List<RabbitMQProducerDeclaration> ProducerDeclarations { get; }
+		internal IList<RabbitMQConsumerDeclaration> ConsumerDeclarations { get; }
+		internal IList<RabbitMQProducerDeclaration> ProducerDeclarations { get; }
 	}
 }

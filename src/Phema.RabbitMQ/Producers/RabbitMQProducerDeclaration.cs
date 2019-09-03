@@ -7,18 +7,18 @@ namespace Phema.RabbitMQ
 	public sealed class RabbitMQProducerDeclaration
 	{
 		public RabbitMQProducerDeclaration(
-			Type type,
+			Type payloadType,
 			RabbitMQConnectionDeclaration connectionDeclaration,
 			RabbitMQExchangeDeclaration exchangeDeclaration)
 		{
-			Type = type;
+			PayloadType = payloadType;
 			ConnectionDeclaration = connectionDeclaration;
 			ExchangeDeclaration = exchangeDeclaration;
 			Properties = new List<Action<IBasicProperties>>();
 			Arguments = new Dictionary<string, object>();
 		}
 
-		public Type Type { get; }
+		public Type PayloadType { get; }
 		public RabbitMQConnectionDeclaration ConnectionDeclaration { get; }
 		public RabbitMQExchangeDeclaration ExchangeDeclaration { get; }
 		public string RoutingKey { get; set; }
@@ -33,7 +33,7 @@ namespace Phema.RabbitMQ
 		public static RabbitMQProducerDeclaration FromDeclaration(RabbitMQProducerDeclaration declaration)
 		{
 			return new RabbitMQProducerDeclaration(
-				declaration.Type,
+				declaration.PayloadType,
 				declaration.ConnectionDeclaration,
 				declaration.ExchangeDeclaration)
 			{

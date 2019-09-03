@@ -107,7 +107,7 @@ namespace Phema.RabbitMQ
 				builder.Argument("x-dead-letter-routing-key", routingKey);
 			}
 
-			return builder.Argument("x-dead-letter-exchange", exchange.Declaration.Name);
+			return builder.Argument("x-dead-letter-exchange", exchange.ExchangeDeclaration.Name);
 		}
 
 		/// <summary>
@@ -121,7 +121,7 @@ namespace Phema.RabbitMQ
 		{
 			var binding = queue.Declaration
 				.BindingDeclarations
-				.FirstOrDefault(b => b.ExchangeDeclaration == exchange.Declaration);
+				.FirstOrDefault(b => b.ExchangeDeclaration == exchange.ExchangeDeclaration);
 
 			return builder.DeadLetterTo(exchange, binding?.RoutingKey ?? queue.Declaration.Name);
 		}
@@ -174,7 +174,7 @@ namespace Phema.RabbitMQ
 			if (exchange is null)
 				throw new ArgumentNullException(nameof(exchange));
 
-			var declaration = new RabbitMQQueueBindingDeclaration(exchange.Declaration);
+			var declaration = new RabbitMQQueueBindingDeclaration(exchange.ExchangeDeclaration);
 
 			binding?.Invoke(new RabbitMQQueueBindingBuilder(declaration));
 

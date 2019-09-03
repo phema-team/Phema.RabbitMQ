@@ -9,11 +9,11 @@ namespace Phema.RabbitMQ
 	public sealed class RabbitMQConsumerDeclaration
 	{
 		public RabbitMQConsumerDeclaration(
-			Type type,
+			Type payloadType,
 			RabbitMQConnectionDeclaration connectionDeclaration,
 			RabbitMQQueueDeclaration[] queueDeclarations)
 		{
-			Type = type;
+			PayloadType = payloadType;
 			ConnectionDeclaration = connectionDeclaration;
 			QueueDeclarations = queueDeclarations;
 			Count = 1;
@@ -21,7 +21,7 @@ namespace Phema.RabbitMQ
 			Subscriptions = new List<Func<IServiceScope, object, CancellationToken, ValueTask>>();
 		}
 
-		public Type Type { get; }
+		public Type PayloadType { get; }
 		public RabbitMQConnectionDeclaration ConnectionDeclaration { get; }
 		public RabbitMQQueueDeclaration[] QueueDeclarations { get; }
 		public ICollection<Func<IServiceScope, object, CancellationToken, ValueTask>> Subscriptions { get; }

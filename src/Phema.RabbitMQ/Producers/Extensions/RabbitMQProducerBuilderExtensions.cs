@@ -15,9 +15,9 @@ namespace Phema.RabbitMQ
 		{
 			var binding = queue.Declaration
 				.BindingDeclarations
-				.FirstOrDefault(b => b.ExchangeDeclaration == builder.Declaration.ExchangeDeclaration);
+				.FirstOrDefault(b => b.ExchangeDeclaration == builder.ProducerDeclaration.ExchangeDeclaration);
 
-			builder.Declaration.RoutingKey = binding?.RoutingKey ?? queue.Declaration.Name;
+			builder.ProducerDeclaration.RoutingKey = binding?.RoutingKey ?? queue.Declaration.Name;
 			return builder;
 		}
 
@@ -28,7 +28,7 @@ namespace Phema.RabbitMQ
 			this IRabbitMQProducerBuilder<TPayload> builder,
 			string routingKey)
 		{
-			builder.Declaration.RoutingKey = routingKey;
+			builder.ProducerDeclaration.RoutingKey = routingKey;
 			return builder;
 		}
 
@@ -38,7 +38,7 @@ namespace Phema.RabbitMQ
 		public static IRabbitMQProducerBuilder<TPayload> Mandatory<TPayload>(
 			this IRabbitMQProducerBuilder<TPayload> builder)
 		{
-			builder.Declaration.Mandatory = true;
+			builder.ProducerDeclaration.Mandatory = true;
 			return builder;
 		}
 
@@ -48,7 +48,7 @@ namespace Phema.RabbitMQ
 		public static IRabbitMQProducerBuilder<TPayload> Transactional<TPayload>(
 			this IRabbitMQProducerBuilder<TPayload> builder)
 		{
-			builder.Declaration.Transactional = true;
+			builder.ProducerDeclaration.Transactional = true;
 			return builder;
 		}
 
@@ -60,9 +60,9 @@ namespace Phema.RabbitMQ
 			TimeSpan? timeout = null,
 			bool die = true)
 		{
-			builder.Declaration.WaitForConfirms = true;
-			builder.Declaration.Timeout = timeout;
-			builder.Declaration.Die = die;
+			builder.ProducerDeclaration.WaitForConfirms = true;
+			builder.ProducerDeclaration.Timeout = timeout;
+			builder.ProducerDeclaration.Die = die;
 
 			return builder;
 		}
@@ -116,7 +116,7 @@ namespace Phema.RabbitMQ
 			this IRabbitMQProducerBuilder<TPayload> builder,
 			Action<IBasicProperties> property)
 		{
-			builder.Declaration.Properties.Add(property);
+			builder.ProducerDeclaration.Properties.Add(property);
 			return builder;
 		}
 
@@ -148,7 +148,7 @@ namespace Phema.RabbitMQ
 			string argument,
 			object value)
 		{
-			builder.Declaration.Arguments.Add(argument, value);
+			builder.ProducerDeclaration.Arguments.Add(argument, value);
 			return builder;
 		}
 	}

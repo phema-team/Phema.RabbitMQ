@@ -2,16 +2,16 @@ namespace Phema.RabbitMQ
 {
 	public interface IRabbitMQConsumerBuilder<TPayload>
 	{
-		RabbitMQConsumerDeclaration Declaration { get; }
+		RabbitMQConsumerDeclaration ConsumerDeclaration { get; }
 	}
 
 	internal sealed class RabbitMQConsumerBuilder<TPayload> : IRabbitMQConsumerBuilder<TPayload>
 	{
-		public RabbitMQConsumerBuilder(RabbitMQConsumerDeclaration declaration)
+		public RabbitMQConsumerBuilder(RabbitMQConsumerDeclaration consumerDeclaration)
 		{
-			Declaration = declaration;
+			ConsumerDeclaration = consumerDeclaration;
 		}
 
-		public RabbitMQConsumerDeclaration Declaration { get; }
+		public RabbitMQConsumerDeclaration ConsumerDeclaration { get; }
 	}
 }

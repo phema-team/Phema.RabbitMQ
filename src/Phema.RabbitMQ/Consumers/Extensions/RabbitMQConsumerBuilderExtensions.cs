@@ -14,7 +14,7 @@ namespace Phema.RabbitMQ
 			this IRabbitMQConsumerBuilder<TPayload> builder,
 			Func<IServiceScope, TPayload, CancellationToken, ValueTask> subscription)
 		{
-			builder.Declaration
+			builder.ConsumerDeclaration
 				.Subscriptions
 				.Add((scope, payload, cancellationToken) => subscription(scope, (TPayload)payload, cancellationToken));
 
@@ -51,7 +51,7 @@ namespace Phema.RabbitMQ
 			if (tag is null)
 				throw new ArgumentNullException(nameof(tag));
 
-			builder.Declaration.Tag = tag;
+			builder.ConsumerDeclaration.Tag = tag;
 
 			return builder;
 		}
@@ -64,8 +64,8 @@ namespace Phema.RabbitMQ
 			ushort prefetchCount,
 			bool global = false)
 		{
-			builder.Declaration.PrefetchCount = prefetchCount;
-			builder.Declaration.Global = global;
+			builder.ConsumerDeclaration.PrefetchCount = prefetchCount;
+			builder.ConsumerDeclaration.Global = global;
 
 			return builder;
 		}
@@ -77,7 +77,7 @@ namespace Phema.RabbitMQ
 			this IRabbitMQConsumerBuilder<TPayload> builder,
 			uint count)
 		{
-			builder.Declaration.Count = count;
+			builder.ConsumerDeclaration.Count = count;
 
 			return builder;
 		}
@@ -88,7 +88,7 @@ namespace Phema.RabbitMQ
 		public static IRabbitMQConsumerBuilder<TPayload> Exclusive<TPayload>(
 			this IRabbitMQConsumerBuilder<TPayload> builder)
 		{
-			builder.Declaration.Exclusive = true;
+			builder.ConsumerDeclaration.Exclusive = true;
 			return builder;
 		}
 
@@ -97,7 +97,7 @@ namespace Phema.RabbitMQ
 		/// </summary>
 		public static IRabbitMQConsumerBuilder<TPayload> NoLocal<TPayload>(this IRabbitMQConsumerBuilder<TPayload> builder)
 		{
-			builder.Declaration.NoLocal = true;
+			builder.ConsumerDeclaration.NoLocal = true;
 
 			return builder;
 		}
@@ -107,7 +107,7 @@ namespace Phema.RabbitMQ
 		/// </summary>
 		public static IRabbitMQConsumerBuilder<TPayload> AutoAck<TPayload>(this IRabbitMQConsumerBuilder<TPayload> builder)
 		{
-			builder.Declaration.AutoAck = true;
+			builder.ConsumerDeclaration.AutoAck = true;
 
 			return builder;
 		}
@@ -119,8 +119,8 @@ namespace Phema.RabbitMQ
 			this IRabbitMQConsumerBuilder<TPayload> builder,
 			bool multiple = false)
 		{
-			builder.Declaration.Requeue = true;
-			builder.Declaration.Multiple = multiple;
+			builder.ConsumerDeclaration.Requeue = true;
+			builder.ConsumerDeclaration.Multiple = multiple;
 
 			return builder;
 		}
@@ -144,10 +144,10 @@ namespace Phema.RabbitMQ
 			if (argument is null)
 				throw new ArgumentNullException(nameof(argument));
 
-			if (builder.Declaration.Arguments.ContainsKey(argument))
+			if (builder.ConsumerDeclaration.Arguments.ContainsKey(argument))
 				throw new ArgumentException($"Argument {argument} already registered", nameof(argument));
 
-			builder.Declaration.Arguments.Add(argument, value);
+			builder.ConsumerDeclaration.Arguments.Add(argument, value);
 
 			return builder;
 		}

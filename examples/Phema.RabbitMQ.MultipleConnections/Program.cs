@@ -34,7 +34,7 @@ namespace Phema.RabbitMQ.ConsumerPriority
 								.Subscribe(async (scope, payload) =>
 								{
 									await Console.Out.WriteLineAsync(
-										$"Connection: {consumers.Declaration.Name}, payload: {payload.Id.ToString()}");
+										$"Connection: {consumers.ConnectionDeclaration.Name}, payload: {payload.Id.ToString()}");
 								});
 						});
 

@@ -9,7 +9,7 @@ namespace Phema.RabbitMQ
 	public interface IRabbitMQChannelProvider
 	{
 		/// <summary>
-		/// Get cached thread-safe channel for producer declaration
+		/// Get cached thread-safe channel from producer declaration
 		/// </summary>
 		ValueTask<RabbitMQChannel> FromDeclaration(RabbitMQProducerDeclaration declaration);
 	}
@@ -29,7 +29,7 @@ namespace Phema.RabbitMQ
 
 		public async ValueTask<RabbitMQChannel> FromDeclaration(RabbitMQProducerDeclaration declaration)
 		{
-			var key = (declaration.Type, declaration.ConnectionDeclaration.Name, declaration.ExchangeDeclaration.Name);
+			var key = (declaration.PayloadType, declaration.ConnectionDeclaration.Name, declaration.ExchangeDeclaration.Name);
 			var connection = connectionProvider.FromDeclaration(declaration.ConnectionDeclaration);
 
 			if (!channels.TryGetValue(key, out var channel))

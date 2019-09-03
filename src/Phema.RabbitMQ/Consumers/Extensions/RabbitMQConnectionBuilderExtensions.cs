@@ -11,7 +11,7 @@ namespace Phema.RabbitMQ
 		{
 			var declaration = new RabbitMQConsumerDeclaration(
 				typeof(TPayload),
-				connection.Declaration,
+				connection.ConnectionDeclaration,
 				queues.Select(queue => queue.Declaration).ToArray());
 
 			connection.Services

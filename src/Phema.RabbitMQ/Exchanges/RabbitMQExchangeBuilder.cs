@@ -2,7 +2,7 @@ namespace Phema.RabbitMQ
 {
 	public interface IRabbitMQExchangeBuilderCore
 	{
-		RabbitMQExchangeDeclaration Declaration { get; }
+		RabbitMQExchangeDeclaration ExchangeDeclaration { get; }
 	}
 
 	public interface IRabbitMQExchangeBuilder : IRabbitMQExchangeBuilderCore
@@ -11,12 +11,12 @@ namespace Phema.RabbitMQ
 
 	internal sealed class RabbitMQExchangeBuilder : IRabbitMQExchangeBuilder
 	{
-		public RabbitMQExchangeBuilder(RabbitMQExchangeDeclaration declaration)
+		public RabbitMQExchangeBuilder(RabbitMQExchangeDeclaration exchangeDeclaration)
 		{
-			Declaration = declaration;
+			ExchangeDeclaration = exchangeDeclaration;
 		}
 
-		public RabbitMQExchangeDeclaration Declaration { get; }
+		public RabbitMQExchangeDeclaration ExchangeDeclaration { get; }
 	}
 
 	public interface IRabbitMQExchangeBuilder<in TPayload> : IRabbitMQExchangeBuilderCore
@@ -25,11 +25,11 @@ namespace Phema.RabbitMQ
 
 	internal sealed class RabbitMQExchangeBuilder<TPayload> : IRabbitMQExchangeBuilder<TPayload>
 	{
-		public RabbitMQExchangeBuilder(RabbitMQExchangeDeclaration declaration)
+		public RabbitMQExchangeBuilder(RabbitMQExchangeDeclaration exchangeDeclaration)
 		{
-			Declaration = declaration;
+			ExchangeDeclaration = exchangeDeclaration;
 		}
 
-		public RabbitMQExchangeDeclaration Declaration { get; }
+		public RabbitMQExchangeDeclaration ExchangeDeclaration { get; }
 	}
 }

@@ -5,18 +5,18 @@ namespace Phema.RabbitMQ
 	public interface IRabbitMQConnectionBuilder
 	{
 		IServiceCollection Services { get; }
-		RabbitMQConnectionDeclaration Declaration { get; }
+		RabbitMQConnectionDeclaration ConnectionDeclaration { get; }
 	}
 
 	internal sealed class RabbitMQConnectionBuilder : IRabbitMQConnectionBuilder
 	{
-		public RabbitMQConnectionBuilder(IServiceCollection services, RabbitMQConnectionDeclaration declaration)
+		public RabbitMQConnectionBuilder(IServiceCollection services, RabbitMQConnectionDeclaration connectionDeclaration)
 		{
 			Services = services;
-			Declaration = declaration;
+			ConnectionDeclaration = connectionDeclaration;
 		}
 
 		public IServiceCollection Services { get; }
-		public RabbitMQConnectionDeclaration Declaration { get; }
+		public RabbitMQConnectionDeclaration ConnectionDeclaration { get; }
 	}
 }

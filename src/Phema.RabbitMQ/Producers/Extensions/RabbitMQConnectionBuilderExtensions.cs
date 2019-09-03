@@ -10,8 +10,8 @@ namespace Phema.RabbitMQ
 		{
 			var declaration = new RabbitMQProducerDeclaration(
 				typeof(TPayload),
-				connection.Declaration,
-				exchange.Declaration);
+				connection.ConnectionDeclaration,
+				exchange.ExchangeDeclaration);
 
 			connection.Services
 				.Configure<RabbitMQOptions>(

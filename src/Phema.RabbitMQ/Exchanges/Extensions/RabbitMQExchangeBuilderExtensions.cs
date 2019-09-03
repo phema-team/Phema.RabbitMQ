@@ -11,7 +11,7 @@ namespace Phema.RabbitMQ
 			this TBuilder builder)
 			where TBuilder : IRabbitMQExchangeBuilderCore
 		{
-			builder.Declaration.Durable = true;
+			builder.ExchangeDeclaration.Durable = true;
 
 			return builder;
 		}
@@ -23,7 +23,7 @@ namespace Phema.RabbitMQ
 			this TBuilder builder)
 			where TBuilder : IRabbitMQExchangeBuilderCore
 		{
-			builder.Declaration.NoWait = true;
+			builder.ExchangeDeclaration.NoWait = true;
 
 			return builder;
 		}
@@ -36,7 +36,7 @@ namespace Phema.RabbitMQ
 			this TBuilder builder)
 			where TBuilder : IRabbitMQExchangeBuilderCore
 		{
-			builder.Declaration.Internal = true;
+			builder.ExchangeDeclaration.Internal = true;
 
 			return builder;
 		}
@@ -48,7 +48,7 @@ namespace Phema.RabbitMQ
 			this TBuilder builder)
 			where TBuilder : IRabbitMQExchangeBuilderCore
 		{
-			builder.Declaration.AutoDelete = true;
+			builder.ExchangeDeclaration.AutoDelete = true;
 
 			return builder;
 		}
@@ -61,8 +61,8 @@ namespace Phema.RabbitMQ
 			bool unusedOnly = false)
 			where TBuilder : IRabbitMQExchangeBuilderCore
 		{
-			builder.Declaration.Deleted = true;
-			builder.Declaration.UnusedOnly = unusedOnly;
+			builder.ExchangeDeclaration.Deleted = true;
+			builder.ExchangeDeclaration.UnusedOnly = unusedOnly;
 
 			return builder;
 		}
@@ -76,7 +76,7 @@ namespace Phema.RabbitMQ
 			object value)
 			where TBuilder : IRabbitMQExchangeBuilderCore
 		{
-			builder.Declaration.Arguments.Add(argument, value);
+			builder.ExchangeDeclaration.Arguments.Add(argument, value);
 
 			return builder;
 		}
@@ -90,11 +90,11 @@ namespace Phema.RabbitMQ
 			if (exchange is null)
 				throw new ArgumentNullException(nameof(exchange));
 
-			var declaration = new RabbitMQExchangeBindingDeclaration(exchange.Declaration);
+			var declaration = new RabbitMQExchangeBindingDeclaration(exchange.ExchangeDeclaration);
 
 			binding?.Invoke(new RabbitMQExchangeBindingBuilder(declaration));
 
-			builder.Declaration.BindingDeclarations.Add(declaration);
+			builder.ExchangeDeclaration.BindingDeclarations.Add(declaration);
 
 			return builder;
 		}
@@ -140,7 +140,7 @@ namespace Phema.RabbitMQ
 			if (exchange is null)
 				throw new ArgumentNullException(nameof(exchange));
 
-			return builder.Argument("alternate-exchange", exchange.Declaration.Name);
+			return builder.Argument("alternate-exchange", exchange.ExchangeDeclaration.Name);
 		}
 		
 		/// <summary>

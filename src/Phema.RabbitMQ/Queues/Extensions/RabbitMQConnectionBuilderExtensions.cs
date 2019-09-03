@@ -8,7 +8,7 @@ namespace Phema.RabbitMQ
 			this IRabbitMQConnectionBuilder connection,
 			string queueName)
 		{
-			var declaration = new RabbitMQQueueDeclaration(connection.Declaration, queueName);
+			var declaration = new RabbitMQQueueDeclaration(connection.ConnectionDeclaration, queueName);
 
 			connection.Services
 				.Configure<RabbitMQOptions>(

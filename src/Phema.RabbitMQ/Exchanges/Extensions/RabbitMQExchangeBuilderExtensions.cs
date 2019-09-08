@@ -81,6 +81,8 @@ namespace Phema.RabbitMQ
 			return builder;
 		}
 
+		#region BoundTo
+
 		private static TBuilder BoundTo<TBuilder>(
 			this TBuilder builder,
 			IRabbitMQExchangeBuilderCore exchange,
@@ -132,6 +134,10 @@ namespace Phema.RabbitMQ
 			return builder.BoundTo<IRabbitMQExchangeBuilder<TPayload>>(exchange, binding);
 		}
 
+		#endregion
+
+		#region AlternateTo
+
 		private static TBuilder AlternateTo<TBuilder>(
 			this TBuilder builder,
 			IRabbitMQExchangeBuilderCore exchange)
@@ -175,5 +181,7 @@ namespace Phema.RabbitMQ
 		{
 			return builder.AlternateTo<IRabbitMQExchangeBuilder<TPayload>>(exchange);
 		}
+		
+		#endregion
 	}
 }

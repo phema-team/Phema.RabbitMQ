@@ -6,6 +6,8 @@ namespace Phema.RabbitMQ
 {
 	public static class RabbitMQProducerBuilderExtensions
 	{
+		#region RoutedTo
+
 		/// <summary>
 		///   Sets routing key to queue name or queue binding routing key
 		/// </summary>
@@ -17,8 +19,7 @@ namespace Phema.RabbitMQ
 				.BindingDeclarations
 				.FirstOrDefault(b => b.ExchangeDeclaration == builder.ProducerDeclaration.ExchangeDeclaration);
 
-			builder.ProducerDeclaration.RoutingKey = binding?.RoutingKey ?? queue.Declaration.Name;
-			return builder;
+			return builder.RoutedTo(binding?.RoutingKey ?? queue.Declaration.Name);
 		}
 
 		/// <summary>
@@ -29,8 +30,11 @@ namespace Phema.RabbitMQ
 			string routingKey)
 		{
 			builder.ProducerDeclaration.RoutingKey = routingKey;
+
 			return builder;
 		}
+
+		#endregion
 
 		/// <summary>
 		///   Produce messages as mandatory

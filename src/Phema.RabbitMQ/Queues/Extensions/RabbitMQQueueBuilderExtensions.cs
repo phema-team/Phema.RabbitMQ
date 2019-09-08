@@ -90,14 +90,12 @@ namespace Phema.RabbitMQ
 			return builder.Argument("x-max-length-bytes", (long)bytes);
 		}
 
-		/// <summary>
-		///   Declare x-dead-letter-exchange argument. When message is dead, send to x-dead-letter-exchange.
-		///   Declare x-dead-letter-routing-key argument. When message is dead, send to x-dead-letter-exchange with routing key.
-		/// </summary>
-		public static IRabbitMQQueueBuilder<TPayload> DeadLetterTo<TPayload>(
+		#region DeadLetterTo
+
+		private static IRabbitMQQueueBuilder<TPayload> DeadLetterTo<TPayload>(
 			this IRabbitMQQueueBuilder<TPayload> builder,
-			IRabbitMQExchangeBuilder<TPayload> exchange,
-			string routingKey = null)
+			IRabbitMQExchangeBuilderCore exchange,
+			string routingKey)
 		{
 			if (exchange is null)
 				throw new ArgumentNullException(nameof(exchange));
@@ -108,6 +106,30 @@ namespace Phema.RabbitMQ
 			}
 
 			return builder.Argument("x-dead-letter-exchange", exchange.ExchangeDeclaration.Name);
+		}
+		
+		/// <summary>
+		///   Declare x-dead-letter-exchange argument. When message is dead, send to x-dead-letter-exchange.
+		///   Declare x-dead-letter-routing-key argument. When message is dead, send to x-dead-letter-exchange with routing key.
+		/// </summary>
+		public static IRabbitMQQueueBuilder<TPayload> DeadLetterTo<TPayload>(
+			this IRabbitMQQueueBuilder<TPayload> builder,
+			IRabbitMQExchangeBuilder<TPayload> exchange,
+			string routingKey = null)
+		{
+			return builder.DeadLetterTo((IRabbitMQExchangeBuilderCore)exchange, routingKey);
+		}
+
+		/// <summary>
+		///   Declare x-dead-letter-exchange argument. When message is dead, send to x-dead-letter-exchange.
+		///   Declare x-dead-letter-routing-key argument. When message is dead, send to x-dead-letter-exchange with routing key.
+		/// </summary>
+		public static IRabbitMQQueueBuilder<TPayload> DeadLetterTo<TPayload>(
+			this IRabbitMQQueueBuilder<TPayload> builder,
+			IRabbitMQExchangeBuilder exchange,
+			string routingKey = null)
+		{
+			return builder.DeadLetterTo((IRabbitMQExchangeBuilderCore)exchange, routingKey);
 		}
 
 		/// <summary>
@@ -125,6 +147,24 @@ namespace Phema.RabbitMQ
 
 			return builder.DeadLetterTo(exchange, binding?.RoutingKey ?? queue.Declaration.Name);
 		}
+
+		/// <summary>
+		///   Declare x-dead-letter-exchange argument. When message is dead, send to x-dead-letter-exchange.
+		///   Declare x-dead-letter-routing-key argument. When message is dead, send to x-dead-letter-exchange with routing key.
+		/// </summary>
+		public static IRabbitMQQueueBuilder<TPayload> DeadLetterTo<TPayload>(
+			this IRabbitMQQueueBuilder<TPayload> builder,
+			IRabbitMQExchangeBuilder exchange,
+			IRabbitMQQueueBuilder<TPayload> queue)
+		{
+			var binding = queue.Declaration
+				.BindingDeclarations
+				.FirstOrDefault(b => b.ExchangeDeclaration == exchange.ExchangeDeclaration);
+
+			return builder.DeadLetterTo(exchange, binding?.RoutingKey ?? queue.Declaration.Name);
+		}
+
+		#endregion
 
 		/// <summary>
 		///   Declare x-expires argument for queue. When expires queue will be deleted
@@ -166,6 +206,8 @@ namespace Phema.RabbitMQ
 			return builder.Argument("x-overflow", "reject-publish");
 		}
 
+		#region BoundTo
+
 		private static IRabbitMQQueueBuilder<TPayload> BoundTo<TPayload>(
 			this IRabbitMQQueueBuilder<TPayload> builder,
 			IRabbitMQExchangeBuilderCore exchange,
@@ -204,6 +246,8 @@ namespace Phema.RabbitMQ
 		{
 			return builder.BoundTo((IRabbitMQExchangeBuilderCore)exchange, binding);
 		}
+
+		#endregion
 
 		/// <summary>
 		///   Declare RabbitMQ arguments. Allow multiple

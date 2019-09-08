@@ -7,6 +7,8 @@ namespace Phema.RabbitMQ
 {
 	public static class RabbitMQConsumerBuilderExtensions
 	{
+		#region Subscribe
+
 		/// <summary>
 		///   Received payload handler with service scope support and cancellation support
 		/// </summary>
@@ -40,6 +42,8 @@ namespace Phema.RabbitMQ
 		{
 			return builder.Subscribe((scope, payload, cancellationToken) => subscription(payload));
 		}
+
+		#endregion
 
 		/// <summary>
 		///   Declare consumer tag

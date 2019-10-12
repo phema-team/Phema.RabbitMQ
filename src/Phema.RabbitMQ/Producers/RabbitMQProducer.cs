@@ -104,17 +104,17 @@ namespace Phema.RabbitMQ
 
 		private RabbitMQProducerDeclaration GetDeclaration<TPayload>(Action<IRabbitMQProducerBuilder<TPayload>> overrides)
 		{
-			// TODO: Dictionary?
-			var declaration = options.ProducerDeclarations.FirstOrDefault(d => d.PayloadType == typeof(TPayload))
-				?? throw new RabbitMQMissingDeclarationException(typeof(TPayload));
+			var producerDeclaration = options.ProducerDeclarations.TryGetValue(typeof(TPayload), out var declaration)
+				? declaration
+				: throw new RabbitMQMissingDeclarationException(typeof(TPayload));
 
 			if (overrides != null)
 			{
-				declaration = RabbitMQProducerDeclaration.FromDeclaration(declaration);
-				overrides(new RabbitMQProducerBuilder<TPayload>(declaration));
+				producerDeclaration = RabbitMQProducerDeclaration.FromDeclaration(producerDeclaration);
+				overrides(new RabbitMQProducerBuilder<TPayload>(producerDeclaration));
 			}
 
-			return declaration;
+			return producerDeclaration;
 		}
 	}
 }

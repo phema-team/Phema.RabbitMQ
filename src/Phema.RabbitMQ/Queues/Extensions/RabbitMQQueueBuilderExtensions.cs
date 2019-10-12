@@ -75,8 +75,7 @@ namespace Phema.RabbitMQ
 			this IRabbitMQQueueBuilder<TPayload> builder,
 			uint count)
 		{
-			// TODO: Hack, because does not uint table value support yet
-			return builder.Argument("x-max-length", (long)count);
+			return builder.Argument("x-max-length", count);
 		}
 
 		/// <summary>
@@ -86,8 +85,7 @@ namespace Phema.RabbitMQ
 			this IRabbitMQQueueBuilder<TPayload> builder,
 			uint bytes)
 		{
-			// TODO: Hack, because does not uint table value support yet
-			return builder.Argument("x-max-length-bytes", (long)bytes);
+			return builder.Argument("x-max-length-bytes", bytes);
 		}
 
 		#region DeadLetterTo
@@ -193,8 +191,7 @@ namespace Phema.RabbitMQ
 			this IRabbitMQQueueBuilder<TPayload> builder,
 			byte priority)
 		{
-			// TODO: Hack, because RabbitMQ.Client has no conversion to byte
-			return builder.Argument("x-max-priority", (int)priority);
+			return builder.Argument("x-max-priority", priority);
 		}
 
 		/// <summary>

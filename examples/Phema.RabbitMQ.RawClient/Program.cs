@@ -28,7 +28,6 @@ namespace Phema.RabbitMQ.RawClient
 					{
 						try
 						{
-							// TODO: Hack https://github.com/rabbitmq/rabbitmq-dotnet-client/issues/650
 							await Task.Run(async () =>
 							{
 								using (var channel2 = connection.CreateModel())

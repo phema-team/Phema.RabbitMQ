@@ -12,7 +12,6 @@ namespace Phema.RabbitMQ
 			ConnectionFactory = new ConnectionFactory
 			{
 				DispatchConsumersAsync = true,
-				// TODO: Hack for now, because StackOverflowException
 				AutomaticRecoveryEnabled = false
 			};
 

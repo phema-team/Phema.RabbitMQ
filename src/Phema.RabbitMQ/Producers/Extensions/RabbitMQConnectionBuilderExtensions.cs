@@ -15,7 +15,7 @@ namespace Phema.RabbitMQ
 
 			connection.Services
 				.Configure<RabbitMQOptions>(
-					options => options.ProducerDeclarations.Add(declaration));
+					options => options.ProducerDeclarations.Add(typeof(TPayload), declaration));
 
 			return new RabbitMQProducerBuilder<TPayload>(declaration);
 		}

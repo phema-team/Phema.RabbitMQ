@@ -22,7 +22,7 @@ namespace Phema.RabbitMQ.Tests
 
 			var declarations = provider.GetRequiredService<IOptions<RabbitMQOptions>>().Value.ProducerDeclarations;
 
-			var declaration = Assert.Single(declarations);
+			var declaration = Assert.Single(declarations.Values);
 
 			Assert.Empty(declaration.Arguments);
 			Assert.False(declaration.Die);
@@ -58,7 +58,7 @@ namespace Phema.RabbitMQ.Tests
 
 			var declarations = provider.GetRequiredService<IOptions<RabbitMQOptions>>().Value.ProducerDeclarations;
 
-			var declaration = Assert.Single(declarations);
+			var declaration = Assert.Single(declarations.Values);
 
 			var (key, value) = Assert.Single(declaration.Arguments);
 			Assert.Equal("x-argument", key);

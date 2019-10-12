@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>netcoreapp3.0</TargetFramework>
-		<Version>3.1.7</Version>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<Version>3.1.8</Version>
 		<RootNamespace>Phema.RabbitMQ</RootNamespace>
 		<Authors>sergeyshaykhullin</Authors>
 		<Description>
@@ -25,6 +25,7 @@
 		<PackageReference Include="Microsoft.Extensions.Options" Version="3.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="3.0.0" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.0.0" />
+		<PackageReference Include="System.Text.Json" Version="4.6.0" />
 	</ItemGroup>
 
 </Project>

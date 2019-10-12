@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<TargetFramework>netcoreapp3.0</TargetFramework>
-		<Version>3.1.6</Version>
+		<Version>3.1.7</Version>
 		<RootNamespace>Phema.RabbitMQ</RootNamespace>
 		<Authors>sergeyshaykhullin</Authors>
 		<Description>
@@ -21,7 +21,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="RabbitMQ.Client" Version="6.0.0-pre3" />
+		<PackageReference Include="RabbitMQ.Client" Version="6.0.0-pre6" />
 		<PackageReference Include="Microsoft.Extensions.Options" Version="3.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="3.0.0" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.0.0" />

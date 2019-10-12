@@ -249,6 +249,26 @@ namespace Phema.RabbitMQ
 
 		#endregion
 
+		public static IRabbitMQQueueBuilder<TPayload> Quorum<TPayload>(
+			this IRabbitMQQueueBuilder<TPayload> builder,
+			int? initialGroupSize = null)
+		{
+			builder.Argument("x-queue-type", "quorum");
+
+			if (initialGroupSize != null)
+			{
+				builder.Argument("x-quorum-initial-group-size", initialGroupSize);
+			}
+
+			return builder;
+		}
+		
+		public static IRabbitMQQueueBuilder<TPayload> SingleActiveConsumer<TPayload>(
+			this IRabbitMQQueueBuilder<TPayload> builder)
+		{
+			return builder.Argument("x-single-active-consumer", true);
+		}
+
 		/// <summary>
 		///   Declare RabbitMQ arguments. Allow multiple
 		/// </summary>

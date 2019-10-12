@@ -4,7 +4,7 @@
 [![Nuget](https://img.shields.io/nuget/v/Phema.RabbitMQ.svg)](https://www.nuget.org/packages/Phema.RabbitMQ)
 [![Nuget](https://img.shields.io/nuget/dt/Phema.RabbitMQ.svg)](https://nuget.org/packages/Phema.RabbitMQ)
 
-.NET Core strongly typed RabbitMQ integration library
+.NET Core strongly typed RabbitMQ integration library with quorum queues support
 
 ## Concepts
 
@@ -52,6 +52,8 @@ services.AddRabbitMQ(options =>
       // .MaxMessageCount(1000)
       // .MessageTimeToLive(1000)
       // .RejectPublish()
+      // .Quorum()
+      // .SingleActiveConsumer()
       .AutoDelete()
       .Durable()
       // Type checks
